@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/mainActivityCL"
+    tools:context=".MainActivity">
+
+    <!-- Set up the calendar -->
+
+    <!-- Set up the columns that show Mon, Tue, Wed... -->
+    <LinearLayout
+        android:id="@+id/daysLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_bias="0.0"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+
+        <TextView
+            android:id="@+id/monTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="#222222"
+            android:text="MON"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tueTV"/>
+
+        <TextView
+            android:id="@+id/tueTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="#222222"
+            android:text="TUE"
+
+            app:layout_constraintStart_toEndOf="@id/monTV"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/wedTV"/>
+
+        <TextView
+            android:id="@+id/wedTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="#222222"
+            android:text="WED"
+
+            app:layout_constraintStart_toEndOf="@id/tueTV"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/thuTV"/>
+
+        <TextView
+            android:id="@+id/thuTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="#222222"
+            android:text="THU"
+
+            app:layout_constraintStart_toEndOf="@id/wedTV"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/friTV"/>
+
+        <TextView
+            android:id="@+id/friTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="#222222"
+            android:text="FRI"
+
+            app:layout_constraintStart_toEndOf="@id/thuTV"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/satTV"/>
+
+        <TextView
+            android:id="@+id/satTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="#222222"
+            android:text="SAT"
+
+            app:layout_constraintStart_toEndOf="@id/satTV"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sunTV"/>
+
+        <TextView
+            android:id="@+id/sunTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="#222222"
+            android:text="SUN"
+
+            app:layout_constraintStart_toEndOf="@id/satTV"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+
+    </LinearLayout>
+
+
+    <GridView
+        android:id="@+id/calendarGridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+
+        android:numColumns="7"
+        app:layout_constraintVertical_bias="0.0"
+        android:gravity="center_horizontal"
+        android:stretchMode="columnWidth"
+
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/daysLL"
+        />
+
+    <!-- Set up the calendar -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
