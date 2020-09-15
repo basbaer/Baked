@@ -1,52 +1,44 @@
 package com.basbaer.baked;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import java.security.AccessControlContext;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Locale;
 
 class CalendarAdapter extends BaseAdapter {
 
-    private ArrayList<Calendar> datesAL;
+    private HashMap<Integer, Calendar> datesHashMap;
     private final Context context;
-    private TextView textView;
-    private int paddingBottom;
+    private TextView datesTextView;
 
 
-    public CalendarAdapter(Context context, ArrayList<Calendar> datesAL, int paddingBottom){
+
+    public CalendarAdapter(Context context, HashMap<Integer, Calendar> datesAL){
         super();
 
         this.context = context;
-        this.datesAL = datesAL;
-        this.paddingBottom = paddingBottom;
+        this.datesHashMap = datesAL;
+
 
     }
 
 
     @Override
     public int getCount() {
-        return datesAL.size();
+        return datesHashMap.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return datesAL.get(position);
+        return datesHashMap.get(position);
     }
 
     @Override
@@ -60,28 +52,38 @@ class CalendarAdapter extends BaseAdapter {
         //inflates the View with the custom_calendar_day.xml
         convertView = LayoutInflater.from(context).inflate(R.layout.custom_calendar_day, parent, false);
 
-
-        textView = convertView.findViewById(R.id.daysTV);
-
-        textView.setPadding(5,5,5, paddingBottom);
-
-        int displayedDate = datesAL.get(position).get(Calendar.DAY_OF_MONTH);
-
-        textView.setText(String.valueOf(displayedDate));
-
-        textView.setClickable(false);
-
-        //gets the constraint layout
-        ConstraintLayout cl = convertView.findViewById(R.id.daysCL);
+        datesTextView = convertView.findViewById(R.id.daysTV);
 
 
-        convertView.setOnClickListener(new View.OnClickListener() {
+        Calendar displayedDate = datesHashMap.get(position);
+
+        if(position < 7){
+
+            datesTextView.setText(displayedDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+
+            //design
+            datesTextView.setTextColor(Color.parseColor("#222222"));
+            datesTextView.setTextAppearance(R.style.TextAppearance_AppCompat_Body1);
+            datesTextView.setTextSize(18f);
+            datesTextView.setPadding(5,5,5,5);
+
+        }else{
+
+
+            datesTextView.setText(String.valueOf(displayedDate.get(Calendar.DAY_OF_MONTH)));
+
+        }
+
+
+
+
+        datesTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent intent = new Intent(context, AddActivity.class);
 
-                long dateInSeconds = datesAL.get(position).getTime().getTime();
+                long dateInSeconds = datesHashMap.get(position).getTime().getTime();
 
                 intent.putExtra("date", dateInSeconds);
 
@@ -93,6 +95,6 @@ class CalendarAdapter extends BaseAdapter {
             }
         });
 
-        return textView;
+        return datesTextView;
     }
 }

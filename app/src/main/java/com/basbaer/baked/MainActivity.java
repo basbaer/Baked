@@ -19,7 +19,9 @@ import com.basbaer.baked.databinding.ActivityMainBinding;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 + calendar.get(Calendar.YEAR));
 
 
-        calendarAdapter = new CalendarAdapter(this, getDatesToBeDisplayed((Calendar) calendar.clone()), getPaddingBottom());
+        calendarAdapter = new CalendarAdapter(this, getDatesToBeDisplayed((Calendar) calendar.clone()));
 
 
 
@@ -133,11 +135,31 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<Calendar> getDatesToBeDisplayed(Calendar calendar) {
+    private HashMap<Integer, Calendar> getDatesToBeDisplayed(Calendar calendar) {
+        //HashMap where the key says if it's for the weekdays in the first line(key = 0 - 6) or for the
+        //actual dates (key = 7 - ...)
+        HashMap<Integer, Calendar> allDisplayedDatesAL = new HashMap<Integer, Calendar>();
 
-        ArrayList<Calendar> allDisplayedDatesAL = new ArrayList<>();
+        //Calendar instance to loop through the week days
+        Calendar weekdayscalendar = Calendar.getInstance();
 
-        //determint how many day have to be added at the end
+        weekdayscalendar.set(Calendar.DAY_OF_WEEK, 2);
+
+        for(int i = 0; i < 7; i++){
+
+            allDisplayedDatesAL.put(i, (Calendar) weekdayscalendar.clone());
+
+            weekdayscalendar.set(Calendar.DAY_OF_WEEK, weekdayscalendar.get(Calendar.DAY_OF_WEEK) +1);
+
+        }
+
+        Log.i("AL", weekdayscalendar.toString());
+
+
+
+
+
+        //determine how many day have to be added at the end
 
         //amount of days in this month (needed later)
         int amountOfDaysThisMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -181,11 +203,16 @@ public class MainActivity extends AppCompatActivity {
         //determining how many dates have to be displayed
         int amountOfDates = displayedPastDays + amountOfDaysThisMonth + weekDaysToBeAdded;
 
+        //sets the key
+        int keySeter = 7;
+
         //adding all needed dates to the ArrayList
-        while (allDisplayedDatesAL.size() < amountOfDates) {
+        while (allDisplayedDatesAL.size()-7 < amountOfDates) {
 
             //adds the first date that should be displayed
-            allDisplayedDatesAL.add((Calendar) calendar.clone());
+            allDisplayedDatesAL.put(keySeter, (Calendar) calendar.clone());
+
+            keySeter++;
 
             //jumps one day forward
             calendar.add(Calendar.DAY_OF_MONTH, 1);
@@ -196,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private int getPaddingBottom() {
+    /*private int getPaddingBottom() {
 
         DisplayMetrics dM = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dM);
@@ -211,12 +238,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+
+
         int maximumHeightOfOneCell = (displayHeight - actionBarHeight - activityMainBinding.daysLL.getHeight()) / 6;
 
-        return maximumHeightOfOneCell - 20;
+        Log.i("height", String.valueOf(maximumHeightOfOneCell));
+
+        return maximumHeightOfOneCell - 75;
 
 
     }
+    */
+
 
     private void setUpActivitiesDB() {
 
