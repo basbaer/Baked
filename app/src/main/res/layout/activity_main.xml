@@ -6,11 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/mainActivityCL"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
 
-    <!-- Set up the calendar -->
+    >
 
-    <!-- Set up the columns that show Mon, Tue, Wed... -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:src="@drawable/blue"
+        android:alpha="0.6"
+        ></ImageView>
 
 
 

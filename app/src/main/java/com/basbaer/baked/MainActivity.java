@@ -4,11 +4,8 @@ package com.basbaer.baked;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridView;
@@ -16,12 +13,10 @@ import android.widget.GridView;
 import com.basbaer.baked.databinding.ActivityMainBinding;
 
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,8 +29,7 @@ public class MainActivity extends AppCompatActivity {
     //A calendar variable is always respresents one day with its corresponding information
     protected static CalendarAdapter calendarAdapter;
 
-    //local database where all activities are stored
-    protected static SQLiteDatabase activitiesDB;
+
 
     //needed for checking if a swipe is done
     float startingPointOfTouch = 0;
@@ -76,9 +70,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        if(activitiesDB == null){
-            setUpActivitiesDB();
-        }
+
 
 
 
@@ -220,57 +212,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return allDisplayedDatesAL;
-
-    }
-
-    /*private int getPaddingBottom() {
-
-        DisplayMetrics dM = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dM);
-        int displayHeight = dM.heightPixels;
-
-        // Calculate ActionBar height
-        TypedValue tv = new TypedValue();
-        int actionBarHeight = 0;
-
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-
-
-
-
-        int maximumHeightOfOneCell = (displayHeight - actionBarHeight - activityMainBinding.daysLL.getHeight()) / 6;
-
-        Log.i("height", String.valueOf(maximumHeightOfOneCell));
-
-        return maximumHeightOfOneCell - 75;
-
-
-    }
-    */
-
-
-    private void setUpActivitiesDB() {
-
-
-        try {
-            if (activitiesDB == null) {
-                activitiesDB = this.openOrCreateDatabase("activitiesDB", MODE_PRIVATE, null);
-
-                String createTableSqlCode = "CREATE TABLE IF NOT EXISTS activities ("
-                        + "id INTEGER PRIMARY KEY, "
-                        + "activity VARCHAR, "
-                        + "activityType VARCHAR, "
-                        + "date INTEGER, "
-                        + "color VARCHAR)";
-
-                activitiesDB.execSQL(createTableSqlCode);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 
