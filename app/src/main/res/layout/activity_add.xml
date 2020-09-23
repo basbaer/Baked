@@ -4,152 +4,183 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddActivity"
     android:background="@drawable/colorful"
-    >
+    tools:context=".AddActivity">
 
     <GridLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
         android:id="@+id/GriyLayoutAddActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
 
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-    <TextView
-        android:id="@+id/textViewDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:text="Date"
-        android:textSize="20sp"
-        android:fontFamily="monospace"
-
-        android:layout_row="0"
-        android:layout_column="0"
-
-      ></TextView>
-
-
-    <EditText
-        android:id="@+id/editTextDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="date"
-
-        android:minWidth="220dp"
-
-        android:layout_row="0"
-        android:layout_column="1"
-       />
-
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewActivity"
-
-        app:layout_constraintHorizontal_weight="1"
-        android:text="Activity"
-        android:textSize="20sp"
-        android:fontFamily="monospace"
-
-        android:layout_row="1"
-        android:layout_column="0"
-
-        ></TextView>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/activityEditText"
-
-        android:minWidth="220dp"
-
-
-        android:layout_row="1"
-        android:layout_column="1"
-
-
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewActivityType"
-
-        android:text="Activity Type"
-        android:textSize="20dp"
-        android:fontFamily="monospace"
-
-        android:layout_row="2"
-        android:layout_column="0"
-        ></TextView>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/activityTypeEditText"
-
-        android:layout_row="2"
-        android:layout_column="1"
-
-        android:minWidth="220dp"
-
-
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/colorTextView"
-
-        app:layout_constraintHorizontal_weight="1"
-        android:textSize="20sp"
-        android:text="Color"
-        android:fontFamily="monospace"
-
-        android:layout_row="3"
-        android:layout_column="0"
-
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/colorEditText"
-        app:layout_constraintTop_toBottomOf="@id/textViewActivityType"
-        app:layout_constraintBottom_toBottomOf="parent"></TextView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/colorEditText"
+        <TextView
+            android:id="@+id/textViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-        android:layout_row="3"
-        android:layout_column="1"
 
-        android:minWidth="220dp"/>
+            android:layout_row="0"
+            android:layout_column="0"
+            android:fontFamily="monospace"
+
+            android:text="Date"
+            android:textSize="22sp"
+
+            ></TextView>
+
+
+        <EditText
+            android:id="@+id/editTextDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="1"
+
+            android:textSize="22sp"
+
+
+            android:inputType="date"
+            android:minWidth="170dp" />
+
+        <ImageButton
+            android:id="@+id/dateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:src="@android:drawable/ic_menu_month"
+
+            android:onClick="onImageButtonDateClicked"
+
+
+
+            android:layout_row="0"
+            android:layout_column="2" />
+
+
+        <TextView
+            android:id="@+id/textViewActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_row="1"
+            android:layout_column="0"
+            android:fontFamily="monospace"
+            android:text="Activity"
+            android:layout_marginRight="10dp"
+
+            android:textSize="22sp"
+            app:layout_constraintHorizontal_weight="1"
+
+            ></TextView>
+
+        <Spinner
+            android:id="@+id/activitySpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_row="1"
+            android:layout_column="1"
+
+            android:minHeight="35dp"
+
+            android:minWidth="170dp"
+
+
+            />
+
+        <ImageButton
+            android:id="@+id/addActivityImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_row="1"
+            android:layout_column="2"
+
+            android:onClick="onImageButtonActivityClicked"
+
+            android:src="@android:drawable/ic_input_add"/>
+
+        <TextView
+            android:id="@+id/textViewActivityType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_row="2"
+            android:layout_column="0"
+            android:fontFamily="monospace"
+            android:layout_marginRight="10dp"
+
+            android:text="Category"
+            android:textSize="22sp"></TextView>
+
+        <EditText
+            android:id="@+id/activityTypeEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_row="2"
+            android:layout_column="1"
+
+            android:minWidth="170dp"
+            android:textSize="22sp"
+
+
+            />
+
+        <TextView
+            android:id="@+id/colorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_row="3"
+            android:layout_column="0"
+            android:fontFamily="monospace"
+            android:text="Color"
+
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+
+            app:layout_constraintEnd_toStartOf="@id/colorEditText"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewActivityType"></TextView>
+
+        <EditText
+            android:id="@+id/colorEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_row="3"
+            android:layout_column="1"
+
+            android:minWidth="170dp"
+            android:textSize="22sp"/>
 
 
     </GridLayout>
 
     <Button
+        android:id="@+id/addActivityButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/addActivityButton"
 
-        android:text="Add activity"
         android:onClick="addActivity"
+        android:text="Add activity"
 
-        app:layout_constraintVertical_bias="1.0"
-
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
 
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@id/GriyLayoutAddActivity"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

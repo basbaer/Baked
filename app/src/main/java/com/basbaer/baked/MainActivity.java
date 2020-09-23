@@ -4,11 +4,16 @@ package com.basbaer.baked;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.basbaer.baked.databinding.ActivityMainBinding;
 
@@ -49,6 +54,24 @@ public class MainActivity extends AppCompatActivity {
         //Initializing the variables
         calendarGV = activityMainBinding.calendarGridView;
 
+        ImageView background = activityMainBinding.backgroudMainActivityIV;
+
+        //create db
+        TrackedActivity.createDB(this);
+
+        //adjusting the picture
+        ColorMatrix cm = new ColorMatrix();
+        // Increase Contrast, Slightly Reduce Brightness
+        float contrast = 0.5f;
+        float brightness = 50;
+        cm.set(new float[] { contrast, 0, 0, 0, brightness, 0,
+                contrast, 0, 0, brightness, 0, 0, contrast, 0,
+                brightness, 0, 0, 0, 1, 0 });
+
+        background.setColorFilter(new ColorMatrixColorFilter(cm));
+
+
+
         if (displayedMonthCalendar == null) {
             displayedMonthCalendar = Calendar.getInstance();
             displayedMonthCalendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -67,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
             Calendar activeCalendar = Calendar.getInstance();
 
             activeCalendar.setTime(new Date(date));
+
+
+            updateCalendar(activeCalendar);
         }
 
 
@@ -108,10 +134,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateCalendar(Calendar calendar) {
 
+
+
         //setting up the calendar
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
 
-        Log.i("d", String.valueOf(calendar.get(Calendar.YEAR)));
+        Log.i("dateMonth", String.valueOf(calendar.get(Calendar.MONTH)));
 
         getSupportActionBar().setTitle(calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
                 + " "
@@ -133,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         HashMap<Integer, Calendar> allDisplayedDatesAL = new HashMap<Integer, Calendar>();
 
         //Calendar instance to loop through the week days
-        Calendar weekdayscalendar = Calendar.getInstance();
+        Calendar weekdayscalendar = (Calendar) calendar.clone();
 
         weekdayscalendar.set(Calendar.DAY_OF_WEEK, 2);
 
@@ -152,15 +180,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         //determine how many day have to be added at the end
+        Calendar calendarClone = (Calendar) calendar.clone();
 
         //amount of days in this month (needed later)
-        int amountOfDaysThisMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int amountOfDaysThisMonth = calendarClone.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         //setting the calendar to the last day of the month
-        calendar.set(Calendar.DAY_OF_MONTH, amountOfDaysThisMonth);
+        calendarClone.set(Calendar.DAY_OF_MONTH, amountOfDaysThisMonth);
 
         //getting the week day
-        int lastWeekDayOfMonth = calendar.get(Calendar.DAY_OF_WEEK);
+        int lastWeekDayOfMonth = calendarClone.get(Calendar.DAY_OF_WEEK);
 
         //determining the weekdays that have to be added at the end
         int weekDaysToBeAdded;
@@ -172,10 +201,10 @@ public class MainActivity extends AppCompatActivity {
 
         //get where the calendar starts
         //sets the current calendar variable to the first day of the month
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendarClone.set(Calendar.DAY_OF_MONTH, 1);
 
         //getting the current week day
-        int currentWeekDay = calendar.get(Calendar.DAY_OF_WEEK);
+        int currentWeekDay = calendarClone.get(Calendar.DAY_OF_WEEK);
 
 
         //amount of days of the past month that have to be displayed
@@ -189,11 +218,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //jumps back to the first day that has to be displayed
-        calendar.add(Calendar.DAY_OF_MONTH, -displayedPastDays);
+        calendarClone.add(Calendar.DAY_OF_MONTH, -displayedPastDays);
 
 
         //determining how many dates have to be displayed
         int amountOfDates = displayedPastDays + amountOfDaysThisMonth + weekDaysToBeAdded;
+
+        CalendarAdapter.weeksOfMonth = amountOfDates/7;
 
         //sets the key
         int keySeter = 7;
@@ -202,12 +233,12 @@ public class MainActivity extends AppCompatActivity {
         while (allDisplayedDatesAL.size()-7 < amountOfDates) {
 
             //adds the first date that should be displayed
-            allDisplayedDatesAL.put(keySeter, (Calendar) calendar.clone());
+            allDisplayedDatesAL.put(keySeter, (Calendar) calendarClone.clone());
 
             keySeter++;
 
             //jumps one day forward
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            calendarClone.add(Calendar.DAY_OF_MONTH, 1);
 
         }
 
