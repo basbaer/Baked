@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -239,7 +240,90 @@ public class TrackedActivity {
 
         }
 
+        //sort the list
+        Collections.sort(list);
+
+        int pos = -1;
+
+        //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
+        //so it can be put as a starting selection
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i).equals(AddActivity.sharedPreferences.getString("activity", null))){
+                pos = i;
+
+            }
+        }
+
+        AddActivity.sharedPreferences.edit().putInt("positionOfPreviousSelectedActivity", pos).apply();
+
         return list;
+
+
+
+    }
+
+    public static List<String> getDifferentCategories(){
+
+        List<String> list = new ArrayList<>();
+        Cursor c = database.rawQuery("SELECT * FROM activities", null);
+
+        boolean moreEntries = c.moveToFirst();
+
+        while(moreEntries){
+
+            String nameOfCategory = c.getString(activityTypeIndex);
+
+            if(!list.contains(nameOfCategory)){
+
+                list.add(nameOfCategory);
+
+
+            }
+
+            moreEntries = c.moveToNext();
+
+
+        }
+
+        //sort the list
+        Collections.sort(list);
+
+        String category = getCategory(AddActivity.sharedPreferences.getString("activity", null));
+
+
+        int pos = -1;
+
+        //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
+        //so it can be put as a starting selection
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i).equals(category)){
+                pos = i;
+
+            }
+        }
+
+        AddActivity.sharedPreferences.edit().putInt("positionOfPreviousSelectedCategory", pos).apply();
+
+        return list;
+
+    }
+
+    public static String getCategory(String activity){
+
+        String sql = "SELECT * FROM activities WHERE "
+                + "activity = '"
+                + activity
+                + "' LIMIT 1";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        if(c.moveToFirst()){
+
+            return c.getString(activityTypeIndex);
+
+        }else{
+            return null;
+        }
 
 
 

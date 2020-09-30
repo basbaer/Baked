@@ -8,7 +8,7 @@
         android:id="@+id/alertDialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Give your activity a name"
+        android:text="Give your category a name"
         android:gravity="center_horizontal"
         android:textStyle="bold"
         android:textSize="20sp"
@@ -19,25 +19,25 @@
         />
 
     <EditText
-        android:id="@+id/activity_name"
+        android:id="@+id/category_name"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
-        android:hint="activity name"
+        android:hint="category name"
         app:layout_constraintTop_toBottomOf="@id/alertDialogTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
     <Button
-        android:id="@+id/createActivityButton"
+        android:id="@+id/createCategoryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add activity to list"
+        android:text="Add category to list"
         android:layout_marginBottom="10dp"
-        android:onClick="alertDialogButtonClicked"
-        app:layout_constraintTop_toBottomOf="@id/activity_name"
+        android:onClick="alertDialogCategoryButtonClicked"
+        app:layout_constraintTop_toBottomOf="@id/category_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -119,19 +119,32 @@
             android:text="Category"
             android:textSize="22sp"></TextView>
 
-        <EditText
-            android:id="@+id/activityTypeEditText"
+        <Spinner
+            android:id="@+id/categorySpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
             android:layout_row="2"
             android:layout_column="1"
 
+            android:minHeight="35dp"
+
             android:minWidth="170dp"
-            android:textSize="22sp"
 
 
             />
+
+        <ImageButton
+            android:id="@+id/addCategoryImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_row="2"
+            android:layout_column="2"
+
+            android:onClick="onImageButtonCategoryClicked"
+
+            android:src="@android:drawable/ic_input_add"/>
 
         <TextView
             android:id="@+id/colorTextView"
@@ -146,24 +159,29 @@
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
 
-            app:layout_constraintEnd_toStartOf="@id/colorEditText"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewActivityType"></TextView>
+            ></TextView>
 
-        <EditText
-            android:id="@+id/colorEditText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
 
-            android:layout_row="3"
-            android:layout_column="1"
-
-            android:minWidth="170dp"
-            android:textSize="22sp"/>
 
 
     </GridLayout>
+
+    <GridView
+        android:id="@+id/colorGridView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numColumns="5"
+
+
+        app:layout_constraintVertical_bias="0.0"
+
+        android:minWidth="170dp"
+        android:textSize="22sp"
+
+        app:layout_constraintTop_toBottomOf="@id/GriyLayoutAddActivity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"/>
 
     <Button
         android:id="@+id/addActivityButton"
@@ -179,7 +197,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
 
-        app:layout_constraintTop_toBottomOf="@id/GriyLayoutAddActivity"
+        app:layout_constraintTop_toBottomOf="@id/colorGridView"
         app:layout_constraintVertical_bias="0.0" />
 
 
