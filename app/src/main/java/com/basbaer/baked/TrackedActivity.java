@@ -57,7 +57,7 @@ public class TrackedActivity {
         this.color = color;
         mcontext = context;
 
-
+        this.insertInDb();
 
 
 
@@ -325,6 +325,26 @@ public class TrackedActivity {
             return null;
         }
 
+
+
+    }
+
+    public static String getColor(String activity){
+
+        String sql = "SELECT * FROM activities WHERE "
+                + "activity = '"
+                + activity
+                + "' LIMIT 1";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        if(c.moveToFirst()){
+
+            return c.getString(colorIndex);
+
+        }else{
+            return null;
+        }
 
 
     }

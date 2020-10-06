@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.drm.DrmStore;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,6 +45,7 @@ public class AddActivity extends AppCompatActivity {
     protected static EditText dateEditText;
     protected static String activity;
     protected static String category;
+    protected static String color;
     Spinner activitySpinner;
     Spinner categorySpinner;
     GridView colorPickerGridView;
@@ -71,6 +73,8 @@ public class AddActivity extends AppCompatActivity {
         //EditText, where the users types what is requested (e.g. a group name)
         alertDialogEditTextActivity = alertDialogLayoutActivityBinding.activityName;
         alertDialogEditTextCategory = alertDialogLayoutCategoryBinding.categoryName;
+
+        getSupportActionBar().setTitle("Add your Activity");
 
         Intent inputIntent = getIntent();
 
@@ -150,6 +154,20 @@ public class AddActivity extends AppCompatActivity {
                     Log.i("ActivityType", "no type saved");
                 }
 
+                //selects the color automatically if a activity was selected, that already existed
+                String color = TrackedActivity.getColor(activity);
+
+                if(color != null){
+
+                    ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), color);
+
+                    colorPickerGridView.setAdapter(colorPickerAdapter);
+
+                }else{
+                    Log.i("Color", "no color saved");
+                }
+
+
 
 
             }
@@ -199,8 +217,7 @@ public class AddActivity extends AppCompatActivity {
     public void addActivity(View view) {
 
         long date = getDate();
-        String activityType = getCategory();
-        String color = getColor();
+        String activityType = getCategory();;
 
         if (date != -1L && activity != null && color != null) {
 
@@ -281,14 +298,6 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-
-    private String getColor() {
-
-
-      return ColorHandler.getColorsArrayList().get(0);
-
-
-    }
 
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {

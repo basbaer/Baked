@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.basbaer.baked.databinding.ActivityMainBinding;
 
@@ -53,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Initializing the variables
         calendarGV = activityMainBinding.calendarGridView;
-
         ImageView background = activityMainBinding.backgroudMainActivityIV;
 
         //create db
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         //adjusting the picture
         ColorMatrix cm = new ColorMatrix();
+
         // Increase Contrast, Slightly Reduce Brightness
         float contrast = 0.5f;
         float brightness = 50;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         background.setColorFilter(new ColorMatrixColorFilter(cm));
 
 
-
+        //get's the current month
         if (displayedMonthCalendar == null) {
             displayedMonthCalendar = Calendar.getInstance();
             displayedMonthCalendar.set(Calendar.DAY_OF_MONTH, 1);

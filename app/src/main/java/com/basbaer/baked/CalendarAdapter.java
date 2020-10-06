@@ -70,6 +70,8 @@ class CalendarAdapter extends BaseAdapter {
 
         Calendar displayedDate = datesHashMap.get(position);
 
+
+
         if(position < 7){
 
             datesTextView.setText(displayedDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
@@ -91,6 +93,7 @@ class CalendarAdapter extends BaseAdapter {
 
             ArrayList<TrackedActivity> activitiesOfTheDay = TrackedActivity.getActivities(displayedDate);
 
+
             if(activitiesOfTheDay.size() == 1){
 
                 datesTextView.setPadding(5,5,5,5);
@@ -100,6 +103,23 @@ class CalendarAdapter extends BaseAdapter {
                 firstActivityTextView.setPadding(5,5,5, 30);
 
                 firstActivityTextView.setBackgroundColor(Color.parseColor(activitiesOfTheDay.get(0).getActivityColor()));
+
+                final String firstActivityOfTheDay = activitiesOfTheDay.get(0).getActivityName();
+
+                //onClick Listener for the activities
+                firstActivityTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intentToActivityOverview = new Intent(context, ActivityOverview.class);
+
+                        intentToActivityOverview.putExtra("activity", firstActivityOfTheDay);
+
+                        context.startActivity(intentToActivityOverview);
+
+
+                    }
+                });
 
             }
 
@@ -127,6 +147,9 @@ class CalendarAdapter extends BaseAdapter {
 
             }
         });
+
+
+
 
         return convertView;
     }

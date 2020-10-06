@@ -17,7 +17,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0">
+        app:layout_constraintVertical_bias="0"
+        >
 
         <TextView
             android:id="@+id/textViewDate"
@@ -27,10 +28,9 @@
 
             android:layout_row="0"
             android:layout_column="0"
-            android:fontFamily="monospace"
 
             android:text="Date"
-            android:textSize="22sp"
+            android:textSize="26sp"
 
             ></TextView>
 
@@ -42,11 +42,11 @@
             android:layout_row="0"
             android:layout_column="1"
 
-            android:textSize="22sp"
+            android:textSize="26sp"
 
 
             android:inputType="date"
-            android:minWidth="170dp" />
+            android:minWidth="240dp" />
 
         <ImageButton
             android:id="@+id/dateButton"
@@ -70,11 +70,10 @@
 
             android:layout_row="1"
             android:layout_column="0"
-            android:fontFamily="monospace"
             android:text="Activity"
             android:layout_marginRight="10dp"
 
-            android:textSize="22sp"
+            android:textSize="26sp"
             app:layout_constraintHorizontal_weight="1"
 
             ></TextView>
@@ -89,7 +88,7 @@
 
             android:minHeight="35dp"
 
-            android:minWidth="170dp"
+            android:minWidth="240dp"
 
 
             />
@@ -113,11 +112,10 @@
 
             android:layout_row="2"
             android:layout_column="0"
-            android:fontFamily="monospace"
             android:layout_marginRight="10dp"
 
             android:text="Category"
-            android:textSize="22sp"></TextView>
+            android:textSize="26sp"></TextView>
 
         <Spinner
             android:id="@+id/categorySpinner"
@@ -129,7 +127,7 @@
 
             android:minHeight="35dp"
 
-            android:minWidth="170dp"
+            android:minWidth="240dp"
 
 
             />
@@ -153,10 +151,9 @@
 
             android:layout_row="3"
             android:layout_column="0"
-            android:fontFamily="monospace"
             android:text="Color"
 
-            android:textSize="22sp"
+            android:textSize="26sp"
             app:layout_constraintBottom_toBottomOf="parent"
 
             ></TextView>
