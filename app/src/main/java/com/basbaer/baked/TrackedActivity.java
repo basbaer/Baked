@@ -27,7 +27,7 @@ public class TrackedActivity {
     private static int colorIndex;
     private String activity;
     private String activityType;
-    private Long exactDate;
+    private long exactDate;
     private int dateDay;
     private int dateMonth;
     private int dateYear;
@@ -37,12 +37,14 @@ public class TrackedActivity {
     protected static SharedPreferences sharedPreferences;
 
 
-    public TrackedActivity(String activity, String activityType, Long date, String color, Context context) {
+    public TrackedActivity(String activity, String activityType, long date, String color, Context context) {
 
 
         if (database == null) {
             createDB(context);
         }
+
+        Log.i("TrackedActivity", "long value: " + date);
 
         Calendar givenDateCalendar = Calendar.getInstance();
 
@@ -57,7 +59,7 @@ public class TrackedActivity {
         this.color = color;
         mcontext = context;
 
-        this.insertInDb();
+
 
 
 
@@ -70,7 +72,7 @@ public class TrackedActivity {
                 + ") VALUES ('"
                 + this.activity + "', '"
                 + this.activityType + "', "
-                + this.exactDate.intValue() + ", "
+                + this.exactDate + ", "
                 + this.dateDay + ", "
                 + this.dateMonth + ", "
                 + this.dateYear + ", '"
@@ -145,8 +147,6 @@ public class TrackedActivity {
             //create a new TrackedActivity
             TrackedActivity i = new TrackedActivity(c.getString(activityIndex), c.getString(activityTypeIndex), c.getLong(exactDateIndex), c.getString(colorIndex), mcontext);
 
-            i.printActiviy();
-
             arrayListActivies.add(i);
 
             moreEntries = c.moveToNext();
@@ -159,20 +159,8 @@ public class TrackedActivity {
 
     }
 
-    public void printActiviy(){
 
-        String print = "Date: "
-                + this.dateDay + "." + this.dateMonth + "." + this.dateYear
-                + ", Activity: " + this.activity
-                + ", ActivityType: " + this.activityType
-                + ", Color: " + this.color;
-
-        Log.i("currentActivity", print);
-
-    }
-
-
-    public void printDatabase() {
+    public static void printDatabase() {
 
 
         String sql = "SELECT * FROM activities";
@@ -190,7 +178,7 @@ public class TrackedActivity {
                     + "  activityType: "
                     + c.getString(activityTypeIndex)
                     + "  date: "
-                    + c.getInt(exactDateIndex)
+                    + c.getLong(exactDateIndex)
                     + "  dateDay: "
                     + c.getInt(dateDayIndex)
                     + "  dateMonth: "
@@ -210,7 +198,9 @@ public class TrackedActivity {
 
     }
 
-    public void clearDatabase() {
+
+
+    public static void clearDatabase() {
 
         database.execSQL("DELETE FROM activities");
 
@@ -308,6 +298,7 @@ public class TrackedActivity {
 
     }
 
+
     public static String getCategory(String activity){
 
         String sql = "SELECT * FROM activities WHERE "
@@ -348,4 +339,177 @@ public class TrackedActivity {
 
 
     }
+
+    public static int getTotalAmountActivityWasDone(String activity){
+
+        String sql = "SELECT * FROM activities WHERE "
+                + "activity = '"
+                + activity
+                + "'";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        return c.getCount();
+
+    }
+
+    public static Date dateActivityWasLastDone(String activity){
+
+        //gets all entries of this activity out of the database
+        String sql = "SELECT * FROM activities WHERE "
+                + "activity = '"
+                + activity
+                + "'";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        boolean moreEntries = c.moveToFirst();
+
+        long latestActivity = 0;
+        Date currentDate = new Date();
+        long currentDateLong = currentDate.getTime();
+
+        while (moreEntries){
+            //sets the one with highest exactDate value (which is a long variable and represents the ms gone since 1970) as latest activity
+            //but if there is an already an activity in the future, it does not take it into account
+            if(c.getLong(exactDateIndex) > latestActivity && c.getLong(exactDateIndex) < currentDateLong){
+
+                latestActivity = c.getLong(exactDateIndex);
+
+            }
+
+            moreEntries = c.moveToNext();
+
+        }
+
+        if(latestActivity == 0){
+            return null;
+        }else{
+            return new Date(latestActivity);
+        }
+
+
+    }
+
+
+    public static int getTimesDoneThisMonth(String activity){
+
+        //gets all entries of this activity out of the database
+        String sql = "SELECT * FROM activities WHERE "
+                + "activity = '"
+                + activity
+                + "'";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        boolean moreEntries = c.moveToFirst();
+        Date currentDate = new Date();
+        long currentDateLong = currentDate.getTime();
+
+        Calendar firstOfMonth = Calendar.getInstance();
+        //setting the calendar to the very first second of the month
+        firstOfMonth.set(firstOfMonth.get(Calendar.YEAR),
+                firstOfMonth.get(Calendar.MONTH),
+                firstOfMonth.getActualMinimum(Calendar.DAY_OF_MONTH),
+                firstOfMonth.getActualMinimum(Calendar.HOUR_OF_DAY),
+                firstOfMonth.getActualMinimum(Calendar.MINUTE),
+                firstOfMonth.getActualMinimum(Calendar.SECOND));
+
+        long firstOfMonthDate = firstOfMonth.getTime().getTime();
+
+        int timesDoneThisMonth = 0;
+
+        while(moreEntries){
+
+            if(c.getLong(exactDateIndex) < currentDateLong && c.getLong(exactDateIndex) > firstOfMonthDate){
+
+                timesDoneThisMonth++;
+
+            }
+
+            moreEntries = c.moveToNext();
+
+        }
+
+        return timesDoneThisMonth;
+
+    }
+
+    public static int getTimesDoneThisYear(String activity){
+
+        //gets all entries of this activity out of the database
+        String sql = "SELECT * FROM activities WHERE "
+                + "activity = '"
+                + activity
+                + "'";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        boolean moreEntries = c.moveToFirst();
+        Date currentDate = new Date();
+        long currentDateLong = currentDate.getTime();
+
+        Calendar firstOfYearCalendar = Calendar.getInstance();
+        //setting the calendar to the very first second of the year
+        firstOfYearCalendar.set(firstOfYearCalendar.get(Calendar.YEAR),
+                firstOfYearCalendar.getActualMinimum(Calendar.YEAR),
+                firstOfYearCalendar.getActualMinimum(Calendar.DAY_OF_MONTH),
+                firstOfYearCalendar.getActualMinimum(Calendar.HOUR_OF_DAY),
+                firstOfYearCalendar.getActualMinimum(Calendar.MINUTE),
+                firstOfYearCalendar.getActualMinimum(Calendar.SECOND));
+
+        long firstOfYearLong = firstOfYearCalendar.getTime().getTime();
+
+        int timesDoneThisMonth = 0;
+
+        while(moreEntries){
+
+            if(c.getLong(exactDateIndex) < currentDateLong && c.getLong(exactDateIndex) > firstOfYearLong){
+
+                timesDoneThisMonth++;
+
+            }
+
+            moreEntries = c.moveToNext();
+
+        }
+
+        return timesDoneThisMonth;
+
+    }
+
+    public static int getAmountofDayGoneSince(String activity, long date){
+
+        //gets all entries of this activity out of the database
+        String sql = "SELECT * FROM activities WHERE "
+                + "activity = '"
+                + activity
+                + "'";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        boolean moreEntries = c.moveToFirst();
+        Date currentDate = new Date();
+        long currentDateLong = currentDate.getTime();
+
+        int amountInPeriod = 0;
+
+        while(moreEntries){
+
+            long dateOfCurrentActivity = c.getLong(exactDateIndex);
+
+            if(dateOfCurrentActivity < currentDateLong && dateOfCurrentActivity > date){
+
+                amountInPeriod++;
+            }
+
+            moreEntries = c.moveToNext();
+
+        }
+
+        return amountInPeriod;
+
+    }
 }
+
+

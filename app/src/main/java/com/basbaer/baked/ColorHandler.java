@@ -13,7 +13,7 @@ public class ColorHandler {
     //setting the colors
     private static String blue = "#0152CF";
     private static String red = "#C70039";
-    private static String green = "#3DEC12";
+    private static String green = "#2ECC71";
     private static String green_n = "#65EF75";
     private static String yellow = "#F8E800";
     private static String white = "#FFFFFF";

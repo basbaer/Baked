@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     public static Calendar displayedMonthCalendar;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +54,17 @@ public class MainActivity extends AppCompatActivity {
         View view = activityMainBinding.getRoot();
         setContentView(view);
 
+
+
         //Initializing the variables
         calendarGV = activityMainBinding.calendarGridView;
         ImageView background = activityMainBinding.backgroudMainActivityIV;
 
         //create db
         TrackedActivity.createDB(this);
+
+        //delete everything
+        //TrackedActivity.clearDatabase();
 
         //adjusting the picture
         ColorMatrix cm = new ColorMatrix();

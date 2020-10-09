@@ -10,7 +10,8 @@
 
         android:id="@+id/spinnerAdapterTextView"
         android:textSize="22sp"
-        android:textColor="#000000"
+        android:textColor="@color/cardview_dark_background"
+        android:layout_margin="8dp"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

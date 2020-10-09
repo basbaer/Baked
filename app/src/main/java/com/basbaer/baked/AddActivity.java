@@ -47,8 +47,11 @@ public class AddActivity extends AppCompatActivity {
     protected static String category;
     protected static String color;
     Spinner activitySpinner;
+    ArrayAdapter activitySpinnerAdapter;
     Spinner categorySpinner;
+    ArrayAdapter adapterCategorySpinner;
     GridView colorPickerGridView;
+
 
     //list for the drop down Spinner
     List<String> previousActivtiesList;
@@ -97,15 +100,15 @@ public class AddActivity extends AppCompatActivity {
         activitySpinner = activityAddBinding.activitySpinner;
 
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter adapter = new ArrayAdapter<>(this,R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, previousActivtiesList);
+        activitySpinnerAdapter = new ArrayAdapter<>(this,R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, previousActivtiesList);
 
         // Specify the layout to use when the list of choices appears
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter.setDropDownViewResource(R.layout.spinner_activity_layout);
+        activitySpinnerAdapter.setDropDownViewResource(R.layout.spinner_activity_layout);
         // Apply the adapter to the spinner
-        activitySpinner.setAdapter(adapter);
+        activitySpinner.setAdapter(activitySpinnerAdapter);
 
-        //setting the prevouis selection
+        //setting the previous selection
         int positionOfLastSelectedActivity = sharedPreferences.getInt("positionOfPreviousSelectedActivity", -1);
 
         if(positionOfLastSelectedActivity != -1){
@@ -118,7 +121,7 @@ public class AddActivity extends AppCompatActivity {
         previousCategoryList = TrackedActivity.getDifferentCategories();
 
         categorySpinner = activityAddBinding.categorySpinner;
-        ArrayAdapter adapterCategorySpinner = new ArrayAdapter(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, previousCategoryList);
+        adapterCategorySpinner = new ArrayAdapter(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, previousCategoryList);
         adapterCategorySpinner.setDropDownViewResource(R.layout.spinner_activity_layout);
         categorySpinner.setAdapter(adapterCategorySpinner);
 
@@ -140,9 +143,6 @@ public class AddActivity extends AppCompatActivity {
                 Log.i("Activity", activity);
 
 
-
-
-
                 //sets the category automatically if a activity was selected, that already existed
                 String category = TrackedActivity.getCategory(activity);
 
@@ -155,13 +155,16 @@ public class AddActivity extends AppCompatActivity {
                 }
 
                 //selects the color automatically if a activity was selected, that already existed
-                String color = TrackedActivity.getColor(activity);
+                String previousSelectedColor = TrackedActivity.getColor(activity);
 
-                if(color != null){
 
-                    ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), color);
+                if(previousSelectedColor != null){
+
+                    ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), previousSelectedColor);
 
                     colorPickerGridView.setAdapter(colorPickerAdapter);
+
+                    color = previousSelectedColor;
 
                 }else{
                     Log.i("Color", "no color saved");
@@ -223,7 +226,9 @@ public class AddActivity extends AppCompatActivity {
 
             TrackedActivity i = new TrackedActivity(activity, activityType, date, color, getApplicationContext());
 
-            i.printDatabase();
+            i.insertInDb();
+
+            TrackedActivity.printDatabase();
 
             Intent intent = new Intent(this, MainActivity.class);
 
@@ -255,6 +260,8 @@ public class AddActivity extends AppCompatActivity {
             Calendar dateCalendar = Calendar.getInstance();
 
             dateCalendar.set(year, month-1, day);
+
+            Log.i("Date", String.valueOf(dateCalendar.getTime().getTime()));
 
             return dateCalendar.getTime().getTime();
 
@@ -393,8 +400,9 @@ public class AddActivity extends AppCompatActivity {
 
             previousActivtiesList.add(alertDialogEditTextActivity.getText().toString());
 
-            activitySpinner.setSelection(previousActivtiesList.size() - 1);
+            activitySpinnerAdapter.notifyDataSetChanged();
 
+            activitySpinner.setSelection(previousActivtiesList.size() - 1);
 
             alertDialogActivity.cancel();
 
@@ -403,6 +411,8 @@ public class AddActivity extends AppCompatActivity {
     public void alertDialogCategoryButtonClicked(View view){
 
         previousCategoryList.add(alertDialogEditTextCategory.getText().toString());
+
+        adapterCategorySpinner.notifyDataSetChanged();
 
         categorySpinner.setSelection(previousCategoryList.size() - 1);
 
