@@ -8,11 +8,13 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.cardview.widget.CardView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,7 +26,6 @@ class CalendarAdapter extends BaseAdapter {
     private HashMap<Integer, Calendar> datesHashMap;
     private final Context context;
     private TextView datesTextView;
-    private TextView firstActivityTextView;
     public static int weeksOfMonth;
 
 
@@ -62,16 +63,14 @@ class CalendarAdapter extends BaseAdapter {
         convertView = LayoutInflater.from(context).inflate(R.layout.custom_calendar_day, parent, false);
 
         LinearLayout daysCl = convertView.findViewById(R.id.daysCL);
-
-
         datesTextView = convertView.findViewById(R.id.daysTV);
-        firstActivityTextView = convertView.findViewById(R.id.firstActivityTV);
 
-
+        //the date that is currently created
         Calendar displayedDate = datesHashMap.get(position);
 
+        //test
 
-
+        //setting the week days
         if(position < 7){
 
             datesTextView.setText(displayedDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
@@ -80,13 +79,11 @@ class CalendarAdapter extends BaseAdapter {
             datesTextView.setTextColor(Color.parseColor("#222222"));
             datesTextView.setTextAppearance(R.style.TextAppearance_AppCompat_Body1);
             datesTextView.setTextSize(18f);
-            datesTextView.setPadding(5,5,5,0);
+            //datesTextView.setPadding(5,5,5,0);
 
 
         }else{
-
-
-
+            //setting the date of the month
             daysCl.setMinimumHeight(getLayoutHeigth(context));
 
             datesTextView.setText(String.valueOf(displayedDate.get(Calendar.DAY_OF_MONTH)));
@@ -94,16 +91,51 @@ class CalendarAdapter extends BaseAdapter {
             ArrayList<TrackedActivity> activitiesOfTheDay = TrackedActivity.getActivities(displayedDate);
 
 
-            if(activitiesOfTheDay.size() == 1){
 
-                datesTextView.setPadding(5,5,5,5);
+            //setting the entries of the day
+            if(activitiesOfTheDay.size() == 1) {
 
-                firstActivityTextView.setText(activitiesOfTheDay.get(0).getActivityName());
+                setUpFirstEntryOfTheDay(convertView, activitiesOfTheDay);
 
-                firstActivityTextView.setPadding(5,5,5, 30);
+            }else if(activitiesOfTheDay.size() == 2){
 
-                firstActivityTextView.setBackgroundColor(Color.parseColor(activitiesOfTheDay.get(0).getActivityColor()));
+                setUpFirstEntryOfTheDay(convertView, activitiesOfTheDay);
 
+                setUpSecondEntryOfTheDay(convertView, activitiesOfTheDay);
+
+
+            }else if(activitiesOfTheDay.size() == 3){
+
+                setUpFirstEntryOfTheDay(convertView, activitiesOfTheDay);
+
+                setUpSecondEntryOfTheDay(convertView, activitiesOfTheDay);
+
+                setUpThirdEntryOfTheDay(convertView, activitiesOfTheDay);
+
+            }else if(activitiesOfTheDay.size() == 4){
+
+                setUpFirstEntryOfTheDay(convertView, activitiesOfTheDay);
+
+                setUpSecondEntryOfTheDay(convertView, activitiesOfTheDay);
+
+                setUpThirdEntryOfTheDay(convertView, activitiesOfTheDay);
+
+                setUpForthEntryOfTheDay(convertView, activitiesOfTheDay);
+
+            }else if(activitiesOfTheDay.size() > 4){
+
+                setUpFirstEntryOfTheDay(convertView, activitiesOfTheDay);
+
+                setUpSecondEntryOfTheDay(convertView, activitiesOfTheDay);
+
+                setUpThirdEntryOfTheDay(convertView, activitiesOfTheDay);
+
+                setUpMoreThanFourEntryOfTheDay(convertView);
+
+            }
+
+
+                /*
                 final String firstActivityOfTheDay = activitiesOfTheDay.get(0).getActivityName();
 
                 //onClick Listener for the activities
@@ -121,7 +153,9 @@ class CalendarAdapter extends BaseAdapter {
                     }
                 });
 
-            }
+                 */
+
+
 
 
 
@@ -162,7 +196,7 @@ class CalendarAdapter extends BaseAdapter {
 
         int height = metrics.heightPixels;
 
-        height =- 50;
+        height -= 50;
 
         //getting the weeks of the month
         if(weeksOfMonth == 0){
@@ -171,5 +205,82 @@ class CalendarAdapter extends BaseAdapter {
         }
 
         return height/(weeksOfMonth+1);
+    }
+
+    private static void setUpFirstEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay){
+
+
+        CardView cardView_1 = convertView.findViewById(R.id.cardView_Adapter_1);
+
+        cardView_1.setCardBackgroundColor(Color.parseColor(activitiesOfTheDay.get(0).getActivityColor()));
+
+        cardView_1.setVisibility(View.VISIBLE);
+
+        TextView textView_1 = convertView.findViewById(R.id.ActivityTV_1);
+
+        textView_1.setText(activitiesOfTheDay.get(0).getActivityName());
+
+    }
+
+    private static void setUpSecondEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay){
+
+
+        CardView cardView_2 = convertView.findViewById(R.id.cardView_Adapter_2);
+
+        cardView_2.setCardBackgroundColor(Color.parseColor(activitiesOfTheDay.get(1).getActivityColor()));
+
+        cardView_2.setVisibility(View.VISIBLE);
+
+        TextView textView_2 = convertView.findViewById(R.id.ActivityTV_2);
+
+        textView_2.setText(activitiesOfTheDay.get(1).getActivityName());
+
+    }
+
+    private static void setUpThirdEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay){
+
+        CardView cardView_3 = convertView.findViewById(R.id.cardView_Adapter_3);
+
+        cardView_3.setCardBackgroundColor(Color.parseColor(activitiesOfTheDay.get(2).getActivityColor()));
+
+        cardView_3.setVisibility(View.VISIBLE);
+
+        TextView textView_3 = convertView.findViewById(R.id.ActivityTV_3);
+
+        textView_3.setText(activitiesOfTheDay.get(2).getActivityName());
+
+    }
+
+    private static void setUpForthEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay){
+
+        CardView cardView_4 = convertView.findViewById(R.id.cardView_Adapter_4);
+
+        cardView_4.setCardBackgroundColor(Color.parseColor(activitiesOfTheDay.get(3).getActivityColor()));
+
+        cardView_4.setVisibility(View.VISIBLE);
+
+        TextView textView_4 = convertView.findViewById(R.id.ActivityTV_4);
+
+        textView_4.setText(activitiesOfTheDay.get(3).getActivityName());
+
+    }
+
+    private static void setUpMoreThanFourEntryOfTheDay(View convertView){
+
+        CardView cardView_4 = convertView.findViewById(R.id.cardView_Adapter_4);
+
+        cardView_4.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
+
+
+        cardView_4.setVisibility(View.VISIBLE);
+
+        TextView textView_4 = convertView.findViewById(R.id.ActivityTV_4);
+
+        textView_4.setText("  .  .  .  ");
+
+        textView_4.setPadding(0,0,0,0);
+
+
+
     }
 }

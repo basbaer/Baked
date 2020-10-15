@@ -1,3 +1,36 @@
 <resources>
     <string name="app_name">Baked</string>
+
+    <!-- Main Activity-->
+    <string name="add_button">add new entry</string>
+    <string name="background_Main_Activity">background Main Activity</string>
+
+    <!-- Strings in Overview Activity -->
+    <string name="done_amount_done">Total amount done</string>
+    <string name="word_activity">Activity:</string>
+    <string name="word_unknown">unknown</string>
+    <string name="word_last_done">Last done</string>
+    <string name="word_times_done_this_month">Times done this month</string>
+    <string name="word_times_done_this_year">Times done this year</string>
+    <string name="word_done_in_last">Done in last </string>
+    <string name="standard_amount_of_preselected_days">7</string>
+    <string name="background_activity_overview">Background Activity overview</string>
+    <string name="hint_for_number"></string>
+    <string name="title_activity_test_">Test_Activity</string>
+
+
+    <!-- Menu -->
+    <string name="word_settings">Settings</string>
+
+    <!-- Add Activit-->
+    <string name="word_date">Date</string>
+    <string name="word_change_date">Change date Button</string>
+    <string name="word_activity_1">Activity</string>
+    <string name="word_change_Activity">Change Activity</string>
+    <string name="word_Category">Category</string>
+    <string name="word_change_Category">Change Category</string>
+    <string name="word_Color">Color</string>
+    <string name="word_Add_Activity">Add Activity</string>
+
+
 </resources>

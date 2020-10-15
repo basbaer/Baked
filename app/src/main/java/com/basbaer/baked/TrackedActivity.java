@@ -19,14 +19,14 @@ public class TrackedActivity {
     private static SQLiteDatabase database;
     private static int idIndex;
     private static int activityIndex;
-    private static int activityTypeIndex;
+    private static int categoryIndex;
     private static int exactDateIndex;
     private static int dateDayIndex;
     private static int dateMonthIndex;
     private static int dateYearIndex;
     private static int colorIndex;
     private String activity;
-    private String activityType;
+    private String category;
     private long exactDate;
     private int dateDay;
     private int dateMonth;
@@ -37,7 +37,7 @@ public class TrackedActivity {
     protected static SharedPreferences sharedPreferences;
 
 
-    public TrackedActivity(String activity, String activityType, long date, String color, Context context) {
+    public TrackedActivity(String activity, String category, long date, String color, Context context) {
 
 
         if (database == null) {
@@ -51,7 +51,7 @@ public class TrackedActivity {
         givenDateCalendar.setTime(new Date(date));
 
         this.activity = activity;
-        this.activityType = activityType;
+        this.category = category;
         this.exactDate = date;
         this.dateDay = givenDateCalendar.get(Calendar.DAY_OF_MONTH);
         this.dateMonth = givenDateCalendar.get(Calendar.MONTH);
@@ -68,10 +68,10 @@ public class TrackedActivity {
     public void insertInDb(){
 
         String sql = "INSERT INTO activities ("
-                + "activity, activityType, exactDate, dateDay, dateMonth, dateYear, color"
+                + "activity, category, exactDate, dateDay, dateMonth, dateYear, color"
                 + ") VALUES ('"
                 + this.activity + "', '"
-                + this.activityType + "', "
+                + this.category + "', "
                 + this.exactDate + ", "
                 + this.dateDay + ", "
                 + this.dateMonth + ", "
@@ -91,7 +91,7 @@ public class TrackedActivity {
             String createTableSqlCode = "CREATE TABLE IF NOT EXISTS activities ("
                     + "id INTEGER PRIMARY KEY, "
                     + "activity VARCHAR, "
-                    + "activityType VARCHAR, "
+                    + "category VARCHAR, "
                     + "exactDate INTEGER, "
                     + "dateDay INTEGER, "
                     + "dateMonth INTEGER, "
@@ -104,7 +104,7 @@ public class TrackedActivity {
 
             idIndex = c.getColumnIndex("id");
             activityIndex = c.getColumnIndex("activity");
-            activityTypeIndex = c.getColumnIndex("activityType");
+            categoryIndex = c.getColumnIndex("category");
             exactDateIndex = c.getColumnIndex("exactDate");
             dateDayIndex = c.getColumnIndex("dateDay");
             dateMonthIndex = c.getColumnIndex("dateMonth");
@@ -145,7 +145,7 @@ public class TrackedActivity {
         while(moreEntries){
 
             //create a new TrackedActivity
-            TrackedActivity i = new TrackedActivity(c.getString(activityIndex), c.getString(activityTypeIndex), c.getLong(exactDateIndex), c.getString(colorIndex), mcontext);
+            TrackedActivity i = new TrackedActivity(c.getString(activityIndex), c.getString(categoryIndex), c.getLong(exactDateIndex), c.getString(colorIndex), mcontext);
 
             arrayListActivies.add(i);
 
@@ -176,7 +176,7 @@ public class TrackedActivity {
                     + "  activity: "
                     + c.getString(activityIndex)
                     + "  activityType: "
-                    + c.getString(activityTypeIndex)
+                    + c.getString(categoryIndex)
                     + "  date: "
                     + c.getLong(exactDateIndex)
                     + "  dateDay: "
@@ -261,7 +261,7 @@ public class TrackedActivity {
 
         while(moreEntries){
 
-            String nameOfCategory = c.getString(activityTypeIndex);
+            String nameOfCategory = c.getString(categoryIndex);
 
             if(!list.contains(nameOfCategory)){
 
@@ -310,7 +310,7 @@ public class TrackedActivity {
 
         if(c.moveToFirst()){
 
-            return c.getString(activityTypeIndex);
+            return c.getString(categoryIndex);
 
         }else{
             return null;
@@ -336,6 +336,32 @@ public class TrackedActivity {
         }else{
             return null;
         }
+
+
+    }
+
+    public static ArrayList<String> getActivitiesOfCategory(String category){
+
+        String sql = "SELECT * FROM activities WHERE "
+                + "category = '"
+                + category
+                + "'";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        ArrayList<String> activitiesAL = new ArrayList<>();
+
+        boolean moreEntries = c.moveToFirst();
+
+        if(moreEntries){
+
+            activitiesAL.add(c.getString(activityIndex));
+
+            c.moveToNext();
+
+        }
+
+        return activitiesAL;
 
 
     }

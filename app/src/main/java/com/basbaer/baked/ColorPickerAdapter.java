@@ -14,21 +14,20 @@ import androidx.cardview.widget.CardView;
 public class ColorPickerAdapter extends BaseAdapter {
 
     private Context context;
-    private String selectedColor;
 
     //implementing an constructor
     public ColorPickerAdapter(Context context){
         super();
 
         this.context = context;
-        this.selectedColor = null;
+        ColorHandler.currentlySelectedColor = null;
     }
 
     public ColorPickerAdapter(Context context, String selectedColor){
         super();
 
         this.context = context;
-        this.selectedColor = selectedColor;
+        ColorHandler.currentlySelectedColor = selectedColor;
 
 
     }
@@ -63,7 +62,7 @@ public class ColorPickerAdapter extends BaseAdapter {
         final String currentColor = ColorHandler.getColorsArrayList().get(position);
 
         //sets the color as selected
-        if(selectedColor != null && selectedColor.equals(currentColor)) {
+        if(ColorHandler.currentlySelectedColor != null && ColorHandler.currentlySelectedColor.equals(currentColor)) {
 
             outerCardView.setCardBackgroundColor(Color.parseColor("#000000"));
 
@@ -80,9 +79,13 @@ public class ColorPickerAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
+                //sets the selected color as the color for creating a new activity
                 AddActivity.color = currentColor;
 
-                outerCardView.setCardBackgroundColor(Color.parseColor("#000000"));
+
+                //sets the tapped color as selected
+                //outerCardView.setCardBackgroundColor(Color.parseColor("#000000"));
+                AddActivity.colorPickerAdapter = new ColorPickerAdapter(context, currentColor);
 
 
 

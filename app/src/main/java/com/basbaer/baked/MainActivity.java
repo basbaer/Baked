@@ -2,7 +2,9 @@ package com.basbaer.baked;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MotionEventCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.basbaer.baked.databinding.ActivityMainBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 import java.util.Calendar;
@@ -25,6 +28,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+
 
     ActivityMainBinding activityMainBinding;
 
@@ -46,14 +50,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = activityMainBinding.getRoot();
         setContentView(view);
-
 
 
         //Initializing the variables
@@ -105,7 +108,26 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        //adding the Add-Button
+        FloatingActionButton fab = activityMainBinding.fab;
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Intent intent = new Intent(getApplicationContext(), AddActivity.class);
+
+                long dateInSeconds = Calendar.getInstance().getTime().getTime();
+
+                intent.putExtra("date", dateInSeconds);
+
+                startActivity(intent);
+
+
+
+            }
+        });
 
 
         //checks if a swipe to left or right is done
@@ -113,11 +135,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-
                 Log.d("TouchEvent", event.toString());
+
+
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
                     startingPointOfTouch = event.getX();
+
+                    v.performClick();
 
                 }
 
@@ -129,7 +154,9 @@ public class MainActivity extends AppCompatActivity {
                     detectIfSwipeIsDone(startingPointOfTouch, endPointOfTouch);
                 }
 
-                return false;
+                v.performClick();
+
+                return true;
             }
         });
 
@@ -137,7 +164,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     }
+
 
 
     public void updateCalendar(Calendar calendar) {

@@ -29,6 +29,7 @@ import com.basbaer.baked.databinding.AlertDialogLayoutActivityBinding;
 import com.basbaer.baked.databinding.AlertDialogLayoutCategoryBinding;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +47,7 @@ public class AddActivity extends AppCompatActivity {
     protected static String activity;
     protected static String category;
     protected static String color;
+    protected static ColorPickerAdapter colorPickerAdapter;
     Spinner activitySpinner;
     ArrayAdapter activitySpinnerAdapter;
     Spinner categorySpinner;
@@ -121,7 +123,7 @@ public class AddActivity extends AppCompatActivity {
         previousCategoryList = TrackedActivity.getDifferentCategories();
 
         categorySpinner = activityAddBinding.categorySpinner;
-        adapterCategorySpinner = new ArrayAdapter(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, previousCategoryList);
+        adapterCategorySpinner = new ArrayAdapter<>(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, previousCategoryList);
         adapterCategorySpinner.setDropDownViewResource(R.layout.spinner_activity_layout);
         categorySpinner.setAdapter(adapterCategorySpinner);
 
@@ -140,7 +142,7 @@ public class AddActivity extends AppCompatActivity {
 
                 activity = parent.getItemAtPosition(position).toString();
 
-                Log.i("Activity", activity);
+                Log.i("SelectedActivity", activity);
 
 
                 //sets the category automatically if a activity was selected, that already existed
@@ -160,10 +162,11 @@ public class AddActivity extends AppCompatActivity {
 
                 if(previousSelectedColor != null){
 
-                    ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), previousSelectedColor);
+                    colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), previousSelectedColor);
 
                     colorPickerGridView.setAdapter(colorPickerAdapter);
 
+                    //since the user does not select a color, the previous selected color is set automatically
                     color = previousSelectedColor;
 
                 }else{
@@ -196,6 +199,12 @@ public class AddActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 category = parent.getItemAtPosition(position).toString();
+
+                //only shows activities of this category in the activity Spinner
+                ArrayList<String> activitiesAL = TrackedActivity.getActivitiesOfCategory(category);
+
+                activitySpinnerAdapter = new ArrayAdapter<>(getApplicationContext(),R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, activitiesAL);
+
             }
 
             @Override

@@ -27,6 +27,10 @@ public class ColorHandler {
     private static String magenta_red = "#FA037B";
     private static String yellow_green = "#C3FC00";
 
+    //needed for the selection of the color
+    public static String currentlySelectedColor;
+
+
 
 
     //in the sharedPreferences could later be saves by the user be saved
@@ -76,6 +80,7 @@ public class ColorHandler {
 
 
     }
+
 
 
 }
