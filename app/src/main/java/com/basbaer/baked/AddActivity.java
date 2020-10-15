@@ -9,19 +9,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.drm.DrmStore;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.basbaer.baked.databinding.ActivityAddBinding;
@@ -47,6 +44,7 @@ public class AddActivity extends AppCompatActivity {
     protected static String activity;
     protected static String category;
     protected static String color;
+    protected static String previousSelectedColor;
     protected static ColorPickerAdapter colorPickerAdapter;
     Spinner activitySpinner;
     ArrayAdapter activitySpinnerAdapter;
@@ -56,8 +54,8 @@ public class AddActivity extends AppCompatActivity {
 
 
     //list for the drop down Spinner
-    List<String> previousActivtiesList;
-    List<String> previousCategoryList;
+    List<String> activtiesList;
+    List<String> categoryList;
 
 
     AlertDialog alertDialogActivity = null;
@@ -95,14 +93,15 @@ public class AddActivity extends AppCompatActivity {
         dateEditText.setText(dateString);
 
         //get all Activities
-        previousActivtiesList = TrackedActivity.getDifferentActivties();
+        //activtiesList = TrackedActivity.getDifferentActivties();
+        activtiesList = new ArrayList<>();
 
 
         //set the spinner for the Activity
         activitySpinner = activityAddBinding.activitySpinner;
 
         // Create an ArrayAdapter using the string array and a default spinner layout
-        activitySpinnerAdapter = new ArrayAdapter<>(this,R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, previousActivtiesList);
+        activitySpinnerAdapter = new ArrayAdapter<>(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, activtiesList);
 
         // Specify the layout to use when the list of choices appears
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -113,27 +112,26 @@ public class AddActivity extends AppCompatActivity {
         //setting the previous selection
         int positionOfLastSelectedActivity = sharedPreferences.getInt("positionOfPreviousSelectedActivity", -1);
 
-        if(positionOfLastSelectedActivity != -1){
+        if (positionOfLastSelectedActivity != -1) {
 
             activitySpinner.setSelection(positionOfLastSelectedActivity);
 
         }
 
 
-        previousCategoryList = TrackedActivity.getDifferentCategories();
+        categoryList = TrackedActivity.getDifferentCategories();
 
         categorySpinner = activityAddBinding.categorySpinner;
-        adapterCategorySpinner = new ArrayAdapter<>(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, previousCategoryList);
+        adapterCategorySpinner = new ArrayAdapter<>(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, categoryList);
         adapterCategorySpinner.setDropDownViewResource(R.layout.spinner_activity_layout);
         categorySpinner.setAdapter(adapterCategorySpinner);
 
         int positionOfLastSelectedCategory = sharedPreferences.getInt("positionOfPreviousSelectedCategory", -1);
-        if(positionOfLastSelectedCategory != -1){
+        if (positionOfLastSelectedCategory != -1) {
 
             categorySpinner.setSelection(positionOfLastSelectedCategory);
 
         }
-
 
 
         activitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -146,6 +144,7 @@ public class AddActivity extends AppCompatActivity {
 
 
                 //sets the category automatically if a activity was selected, that already existed
+                /*
                 String category = TrackedActivity.getCategory(activity);
 
                 if(category != null){
@@ -155,25 +154,18 @@ public class AddActivity extends AppCompatActivity {
                 }else{
                     Log.i("ActivityType", "no type saved");
                 }
+                */
+
 
                 //selects the color automatically if a activity was selected, that already existed
-                String previousSelectedColor = TrackedActivity.getColor(activity);
+                previousSelectedColor = TrackedActivity.getColor(activity);
 
+                colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), previousSelectedColor);
 
-                if(previousSelectedColor != null){
+                colorPickerGridView.setAdapter(colorPickerAdapter);
 
-                    colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), previousSelectedColor);
-
-                    colorPickerGridView.setAdapter(colorPickerAdapter);
-
-                    //since the user does not select a color, the previous selected color is set automatically
-                    color = previousSelectedColor;
-
-                }else{
-                    Log.i("Color", "no color saved");
-                }
-
-
+                //since the user does not select a color, the previous selected color is set automatically
+                color = previousSelectedColor;
 
 
             }
@@ -187,23 +179,21 @@ public class AddActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
-
-
-
-
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 category = parent.getItemAtPosition(position).toString();
 
                 //only shows activities of this category in the activity Spinner
-                ArrayList<String> activitiesAL = TrackedActivity.getActivitiesOfCategory(category);
+                List<String> activities = TrackedActivity.getActivitiesOfCategory(category);
+                activtiesList.clear();
 
-                activitySpinnerAdapter = new ArrayAdapter<>(getApplicationContext(),R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, activitiesAL);
+                for (String i : activities) {
+                    activtiesList.add(i);
+
+                }
+
+                activitySpinnerAdapter.notifyDataSetChanged();
 
             }
 
@@ -214,22 +204,13 @@ public class AddActivity extends AppCompatActivity {
         });
 
 
-
-        //setting up the ColorPickerGridView
-
-        //implement an Adapter
-        ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(this);
-
-        colorPickerGridView.setAdapter(colorPickerAdapter);
-
-
-
     }
 
     public void addActivity(View view) {
 
         long date = getDate();
-        String activityType = getCategory();;
+        String activityType = getCategory();
+        ;
 
         if (date != -1L && activity != null && color != null) {
 
@@ -252,7 +233,6 @@ public class AddActivity extends AppCompatActivity {
     }
 
 
-
     private long getDate() {
         //converting the date
 
@@ -268,7 +248,7 @@ public class AddActivity extends AppCompatActivity {
 
             Calendar dateCalendar = Calendar.getInstance();
 
-            dateCalendar.set(year, month-1, day);
+            dateCalendar.set(year, month - 1, day);
 
             Log.i("Date", String.valueOf(dateCalendar.getTime().getTime()));
 
@@ -284,7 +264,7 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-    protected static void changeDate(Calendar calendar){
+    protected static void changeDate(Calendar calendar) {
 
         Date displaydate = calendar.getTime();
 
@@ -295,11 +275,7 @@ public class AddActivity extends AppCompatActivity {
     }
 
 
-
-
-
     private String getCategory() {
-
 
 
         if (category != null && !category.isEmpty()) {
@@ -340,7 +316,7 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
-    public void onImageButtonDateClicked(View view){
+    public void onImageButtonDateClicked(View view) {
 
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "datePicker");
@@ -348,7 +324,7 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-    public void onImageButtonActivityClicked(View view){
+    public void onImageButtonActivityClicked(View view) {
 
         //creating the AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
@@ -376,7 +352,7 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-    public void onImageButtonCategoryClicked(View view){
+    public void onImageButtonCategoryClicked(View view) {
 
         //creating the AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
@@ -401,37 +377,35 @@ public class AddActivity extends AppCompatActivity {
         alertDialogCategory.show();
 
 
+    }
+
+    public void alertDialogButtonClicked(View view) {
+
+
+        activtiesList.add(alertDialogEditTextActivity.getText().toString());
+
+        activitySpinnerAdapter.notifyDataSetChanged();
+
+        activitySpinner.setSelection(activtiesList.size() - 1);
+
+        alertDialogActivity.cancel();
 
     }
 
-    public void alertDialogButtonClicked(View view){
+    public void alertDialogCategoryButtonClicked(View view) {
 
-
-            previousActivtiesList.add(alertDialogEditTextActivity.getText().toString());
-
-            activitySpinnerAdapter.notifyDataSetChanged();
-
-            activitySpinner.setSelection(previousActivtiesList.size() - 1);
-
-            alertDialogActivity.cancel();
-
-    }
-
-    public void alertDialogCategoryButtonClicked(View view){
-
-        previousCategoryList.add(alertDialogEditTextCategory.getText().toString());
+        categoryList.add(alertDialogEditTextCategory.getText().toString());
 
         adapterCategorySpinner.notifyDataSetChanged();
 
-        categorySpinner.setSelection(previousCategoryList.size() - 1);
-
+        categorySpinner.setSelection(categoryList.size() - 1);
 
         alertDialogCategory.cancel();
 
     }
 
 
-    private int getPositionOfCategory(String activity){
+    private int getPositionOfCategory(String activity) {
 
         String category = TrackedActivity.getCategory(activity);
 
@@ -440,8 +414,8 @@ public class AddActivity extends AppCompatActivity {
 
         //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
         //so it can be put as a starting selection
-        for(int i = 0; i < previousCategoryList.size(); i++){
-            if(previousCategoryList.get(i).equals(category)){
+        for (int i = 0; i < categoryList.size(); i++) {
+            if (categoryList.get(i).equals(category)) {
                 pos = i;
 
             }
@@ -450,9 +424,6 @@ public class AddActivity extends AppCompatActivity {
         return pos;
 
     }
-
-
-
 
 
 }

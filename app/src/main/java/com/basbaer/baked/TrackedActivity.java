@@ -353,11 +353,11 @@ public class TrackedActivity {
 
         boolean moreEntries = c.moveToFirst();
 
-        if(moreEntries){
+        while(moreEntries){
 
             activitiesAL.add(c.getString(activityIndex));
 
-            c.moveToNext();
+            moreEntries = c.moveToNext();
 
         }
 

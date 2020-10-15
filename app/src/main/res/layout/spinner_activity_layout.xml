@@ -9,8 +9,8 @@
         android:layout_height="wrap_content"
 
         android:id="@+id/spinnerAdapterTextView"
-        android:textSize="22sp"
-        android:textColor="@color/cardview_dark_background"
+        android:textSize="26sp"
+        android:textColor="@color/list_Add_Activity"
         android:layout_margin="8dp"
 
         app:layout_constraintStart_toStartOf="parent"

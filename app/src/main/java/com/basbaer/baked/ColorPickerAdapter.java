@@ -66,6 +66,10 @@ public class ColorPickerAdapter extends BaseAdapter {
 
             outerCardView.setCardBackgroundColor(Color.parseColor("#000000"));
 
+        }else{
+
+            outerCardView.setCardBackgroundColor(Color.parseColor("#AAAAAA"));
+
         }
 
 
@@ -84,10 +88,13 @@ public class ColorPickerAdapter extends BaseAdapter {
 
 
                 //sets the tapped color as selected
-                //outerCardView.setCardBackgroundColor(Color.parseColor("#000000"));
-                AddActivity.colorPickerAdapter = new ColorPickerAdapter(context, currentColor);
+                outerCardView.setCardBackgroundColor(Color.parseColor("#000000"));
 
+                //changes the currently selected color in the color handler
+                ColorHandler.currentlySelectedColor = currentColor;
 
+                AddActivity.previousSelectedColor = currentColor;
+                AddActivity.colorPickerAdapter.notifyDataSetChanged();
 
                 Log.i("TappedColor", ColorHandler.getColorsArrayList().get(position));
 

@@ -6,4 +6,10 @@
 
     <!-- Overview activity -->
     <color name="colorSubtext">#424242</color>
+
+    <!-- Add Activity -->
+    <color name="list_Add_Activity">#000000</color>
+
+    <!-- Color Picker -->
+    <color name="outer_card_view">#AAAAAA</color>
 </resources>

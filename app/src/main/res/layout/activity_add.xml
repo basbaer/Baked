@@ -8,181 +8,187 @@
     android:padding="8dp"
     tools:context=".AddActivity">
 
-    <GridLayout
-        android:id="@+id/GriyLayoutAddActivity"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9"/>
+
+
+    <TextView
+        android:id="@+id/textViewDate"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/word_date"
+        android:textSize="26sp"
+        android:textColor="@color/list_Add_Activity"
+        android:paddingBottom="8dp"
 
-        app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
-        >
-
-        <TextView
-            android:id="@+id/textViewDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 
-            android:layout_row="0"
-            android:layout_column="0"
+    <EditText
+        android:id="@+id/editTextDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:autofillHints="@string/word_date"
+        android:hint="@string/word_date"
 
-            android:text="@string/word_date"
-            android:textSize="26sp"/>
+        android:inputType="date"
+        android:fontFamily="sans-serif"
 
+        android:textSize="23sp"
 
-        <EditText
-            android:autofillHints="@string/word_date"
-            android:hint="@string/word_date"
-            android:id="@+id/editTextDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="0"
-            android:layout_column="1"
+        app:layout_constraintBaseline_toBaselineOf="@id/textViewDate"
 
-            android:textSize="23sp"
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical_1"
+        app:layout_constraintTop_toTopOf="@id/textViewDate"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical_2"/>
 
+    <ImageButton
+        android:id="@+id/dateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
-            android:inputType="date"
-            android:minWidth="225dp" />
-
-        <ImageButton
-            android:contentDescription="@string/word_change_date"
-            android:id="@+id/dateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:src="@drawable/ic_date_range_black_24dp"
-
-            android:onClick="onImageButtonDateClicked"
+        android:contentDescription="@string/word_change_date"
 
 
-
-            android:layout_row="0"
-            android:layout_column="2" />
-
-        <TextView
-            android:id="@+id/textViewActivityType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_row="1"
-            android:layout_column="0"
-            android:layout_marginEnd="10dp"
-
-            android:text="@string/word_Category"
-            android:textSize="26sp"/>
-
-        <Spinner
-            android:id="@+id/categorySpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_row="1"
-            android:layout_column="1"
-
-            android:minHeight="35dp"
-
-            android:minWidth="225dp"
+        android:onClick="onImageButtonDateClicked"
+        android:src="@drawable/ic_date_range_black_24dp"
 
 
-            />
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical_2"
+        app:layout_constraintTop_toTopOf="@id/textViewDate" />
 
-        <ImageButton
-            android:contentDescription="@string/word_change_Category"
-            android:id="@+id/addCategoryImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_row="1"
-            android:layout_column="2"
-
-            android:onClick="onImageButtonCategoryClicked"
-
-            android:src="@drawable/ic_black_add"/>
+    <TextView
+        android:id="@+id/textViewActivityType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
 
 
-        <TextView
-            android:id="@+id/textViewActivity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:text="@string/word_Category"
+        android:textSize="26sp"
+        android:textColor="@color/list_Add_Activity"
 
-            android:layout_row="2"
-            android:layout_column="0"
-            android:text="@string/word_activity_1"
-            android:layout_marginEnd="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewDate"
+        />
 
-            android:textSize="26sp"
-            app:layout_constraintHorizontal_weight="1"/>
-
-        <Spinner
-            android:id="@+id/activitySpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_row="2"
-            android:layout_column="1"
-
-            android:minHeight="35dp"
-
-            android:minWidth="225dp"
+    <Spinner
+        android:id="@+id/categorySpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
 
 
-            />
-
-        <ImageButton
-            android:contentDescription="@string/word_change_Activity"
-            android:id="@+id/addActivityImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_row="2"
-            android:layout_column="2"
-
-            android:onClick="onImageButtonActivityClicked"
-
-            android:src="@drawable/ic_black_add"/>
+        android:minHeight="35dp"
 
 
-
-        <TextView
-            android:id="@+id/colorTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_row="3"
-            android:layout_column="0"
-            android:text="@string/word_Color"
-
-            android:textSize="26sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-
-            />
+        app:layout_constraintTop_toTopOf="@id/textViewActivityType"
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical_1"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical_2"
 
 
+        />
+
+    <ImageButton
+        android:id="@+id/addCategoryImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/word_change_Category"
+
+        android:onClick="onImageButtonCategoryClicked"
+
+        android:src="@drawable/ic_black_add"
+
+        app:layout_constraintTop_toTopOf="@id/textViewActivityType"
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical_2"/>
 
 
-    </GridLayout>
+    <TextView
+        android:id="@+id/textViewActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+
+        android:text="@string/word_activity_1"
+        android:textColor="@color/list_Add_Activity"
+        android:textSize="26sp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewActivityType"/>
+
+    <Spinner
+        android:id="@+id/activitySpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:minHeight="35dp"
+
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical_1"
+        app:layout_constraintTop_toTopOf="@id/textViewActivity"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical_2"
+
+        />
+
+    <ImageButton
+        android:id="@+id/addActivityImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/word_change_Activity"
+
+        android:onClick="onImageButtonActivityClicked"
+
+        android:src="@drawable/ic_black_add"
+
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical_2"
+        app:layout_constraintTop_toTopOf="@id/textViewActivity"/>
+
+
+    <TextView
+        android:id="@+id/colorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+
+        android:text="@string/word_Color"
+        android:textSize="26sp"
+        android:textColor="@color/list_Add_Activity"
+
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewActivity"
+
+        />
+
 
     <GridView
         android:id="@+id/colorGridView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+
+
         android:numColumns="5"
 
-
-        app:layout_constraintVertical_bias="0.0"
-
-        android:minWidth="170dp"
         android:textSize="22sp"
+        app:layout_constraintBottom_toTopOf="parent"
 
-        app:layout_constraintTop_toBottomOf="@id/GriyLayoutAddActivity"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/colorTextView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/addActivityButton"

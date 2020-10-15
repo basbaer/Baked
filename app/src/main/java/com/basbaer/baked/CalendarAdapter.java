@@ -68,7 +68,6 @@ class CalendarAdapter extends BaseAdapter {
         //the date that is currently created
         Calendar displayedDate = datesHashMap.get(position);
 
-        //test
 
         //setting the week days
         if(position < 7){
