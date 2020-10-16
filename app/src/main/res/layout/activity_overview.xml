@@ -306,6 +306,16 @@
 
          />
 
+    <Button
+        android:id="@+id/backToCalendarButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+
+        android:text="@string/back_to_calendar"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 

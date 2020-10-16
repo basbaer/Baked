@@ -17,6 +17,7 @@
     <string name="background_activity_overview">Background Activity overview</string>
     <string name="hint_for_number"></string>
     <string name="title_activity_test_">Test_Activity</string>
+    <string name="back_to_calendar">Back To Calendar</string>
 
 
     <!-- Menu -->

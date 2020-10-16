@@ -8,10 +8,8 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -73,7 +71,7 @@ class CalendarAdapter extends BaseAdapter {
         datesTextView = currentConvertView.findViewById(R.id.daysTV);
 
         //the date that is currently created
-        Calendar displayedDate = datesHashMap.get(position);
+        final Calendar displayedDate = datesHashMap.get(position);
 
 
         //setting the week days
@@ -94,7 +92,7 @@ class CalendarAdapter extends BaseAdapter {
 
             datesTextView.setText(String.valueOf(displayedDate.get(Calendar.DAY_OF_MONTH)));
 
-            activitiesOfTheDay = TrackedActivity.getActivities(displayedDate);
+            activitiesOfTheDay = TrackedActivity.getActivitiesOfTheDay(displayedDate);
 
             if(!activitiesOfTheDay.isEmpty()){
                 //there is definetly min 1 entry
@@ -138,7 +136,10 @@ class CalendarAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
 
-                    if(activitiesOfTheDay.size() < 2) {
+                    ArrayList<TrackedActivity> activities = TrackedActivity.getActivitiesOfTheDay(displayedDate);
+
+
+                    if(activities.size() < 2) {
 
                         Intent intentToAddActivity = new Intent(context, AddActivity.class);
 
@@ -151,44 +152,17 @@ class CalendarAdapter extends BaseAdapter {
                     }else{
 
                         //intent to day overview
+                        Intent intentToDayOverview = new Intent(context, DayOverview.class);
+
+                        intentToDayOverview.putExtra("date", displayedDate.getTime().getTime());
+
+                        context.startActivity(intentToDayOverview);
 
                     }
                 }
             });
 
 
-
-
-
-
-            /*
-            //intent to the day overview
-            final String firstActivityOfTheDay;
-
-            if (!activitiesOfTheDay.isEmpty()) {
-
-                firstActivityOfTheDay = activitiesOfTheDay.get(0).getActivityName();
-            }
-
-            //onClick Listener for the activities
-            daysCl.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Intent intentToActivityOverview = new Intent(context, ActivityOverview.class);
-
-
-                    //intentToActivityOverview.putExtra("activity", firstActivityOfTheDay);
-
-
-                    context.startActivity(intentToActivityOverview);
-
-
-                }
-            });
-
-
-             */
 
         }
 

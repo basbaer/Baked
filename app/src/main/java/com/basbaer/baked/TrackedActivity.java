@@ -127,7 +127,17 @@ public class TrackedActivity {
         return this.color;
     }
 
-    public static ArrayList<TrackedActivity> getActivities(Calendar calendar) {
+    public Calendar getCalendarDate(){
+
+        Calendar c = Calendar.getInstance();
+
+        c.setTime(new Date(this.exactDate));
+
+        return c;
+
+    }
+
+    public static ArrayList<TrackedActivity> getActivitiesOfTheDay(Calendar calendar) {
 
         ArrayList<TrackedActivity> arrayListActivies = new ArrayList<>();
 
@@ -207,7 +217,7 @@ public class TrackedActivity {
 
     }
 
-    public static List<String> getDifferentActivties(){
+    public static List<String> getAllActivties(){
 
         List<String> list = new ArrayList<>();
         Cursor c = database.rawQuery("SELECT * FROM activities", null);
