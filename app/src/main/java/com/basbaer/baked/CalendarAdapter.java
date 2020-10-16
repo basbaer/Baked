@@ -29,8 +29,7 @@ class CalendarAdapter extends BaseAdapter {
     public static int weeksOfMonth;
 
 
-
-    public CalendarAdapter(Context context, HashMap<Integer, Calendar> datesAL){
+    public CalendarAdapter(Context context, HashMap<Integer, Calendar> datesAL) {
         super();
 
         this.context = context;
@@ -70,7 +69,7 @@ class CalendarAdapter extends BaseAdapter {
 
 
         //setting the week days
-        if(position < 7){
+        if (position < 7) {
 
             datesTextView.setText(displayedDate.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
 
@@ -81,7 +80,7 @@ class CalendarAdapter extends BaseAdapter {
             //datesTextView.setPadding(5,5,5,0);
 
 
-        }else{
+        } else {
             //setting the date of the month
             daysCl.setMinimumHeight(getLayoutHeigth(context));
 
@@ -90,20 +89,19 @@ class CalendarAdapter extends BaseAdapter {
             ArrayList<TrackedActivity> activitiesOfTheDay = TrackedActivity.getActivities(displayedDate);
 
 
-
             //setting the entries of the day
-            if(activitiesOfTheDay.size() == 1) {
+            if (activitiesOfTheDay.size() == 1) {
 
                 setUpFirstEntryOfTheDay(convertView, activitiesOfTheDay);
 
-            }else if(activitiesOfTheDay.size() == 2){
+            } else if (activitiesOfTheDay.size() == 2) {
 
                 setUpFirstEntryOfTheDay(convertView, activitiesOfTheDay);
 
                 setUpSecondEntryOfTheDay(convertView, activitiesOfTheDay);
 
 
-            }else if(activitiesOfTheDay.size() == 3){
+            } else if (activitiesOfTheDay.size() == 3) {
 
                 setUpFirstEntryOfTheDay(convertView, activitiesOfTheDay);
 
@@ -111,7 +109,7 @@ class CalendarAdapter extends BaseAdapter {
 
                 setUpThirdEntryOfTheDay(convertView, activitiesOfTheDay);
 
-            }else if(activitiesOfTheDay.size() == 4){
+            } else if (activitiesOfTheDay.size() == 4) {
 
                 setUpFirstEntryOfTheDay(convertView, activitiesOfTheDay);
 
@@ -121,7 +119,7 @@ class CalendarAdapter extends BaseAdapter {
 
                 setUpForthEntryOfTheDay(convertView, activitiesOfTheDay);
 
-            }else if(activitiesOfTheDay.size() > 4){
+            } else if (activitiesOfTheDay.size() > 4) {
 
                 setUpFirstEntryOfTheDay(convertView, activitiesOfTheDay);
 
@@ -133,62 +131,85 @@ class CalendarAdapter extends BaseAdapter {
 
             }
 
+            daysCl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                /*
-                final String firstActivityOfTheDay = activitiesOfTheDay.get(0).getActivityName();
+                    Intent intentToAddActivity = new Intent(context, AddActivity.class);
 
-                //onClick Listener for the activities
-                firstActivityTextView.setOnClickListener(new View.OnClickListener() {
+                    long dateInSeconds = datesHashMap.get(position).getTime().getTime();
+
+                    intentToAddActivity.putExtra("date", dateInSeconds);
+
+                    context.startActivity(intentToAddActivity);
+                }
+            });
+
+
+            //intent to the AddActivity
+            if (!activitiesOfTheDay.isEmpty()) {
+                TextView textView_entry_1 = convertView.findViewById(R.id.ActivityTV_1);
+
+                final String firstActivity = activitiesOfTheDay.get(0).getActivityName();
+
+                textView_entry_1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
                         Intent intentToActivityOverview = new Intent(context, ActivityOverview.class);
 
-                        intentToActivityOverview.putExtra("activity", firstActivityOfTheDay);
+
+                        intentToActivityOverview.putExtra("activity", firstActivity);
+
 
                         context.startActivity(intentToActivityOverview);
+
 
 
                     }
                 });
 
-                 */
+            }
 
 
 
+            /*
+            //intent to the day overview
+            final String firstActivityOfTheDay;
 
+            if (!activitiesOfTheDay.isEmpty()) {
+
+                firstActivityOfTheDay = activitiesOfTheDay.get(0).getActivityName();
+            }
+
+            //onClick Listener for the activities
+            daysCl.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intentToActivityOverview = new Intent(context, ActivityOverview.class);
+
+
+                    //intentToActivityOverview.putExtra("activity", firstActivityOfTheDay);
+
+
+                    context.startActivity(intentToActivityOverview);
+
+
+                }
+            });
+
+
+             */
 
         }
-
-
-
-
-        datesTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(context, AddActivity.class);
-
-                long dateInSeconds = datesHashMap.get(position).getTime().getTime();
-
-                intent.putExtra("date", dateInSeconds);
-
-
-
-                context.startActivity(intent);
-
-
-            }
-        });
-
-
 
 
         return convertView;
     }
 
 
-    private static int getLayoutHeigth(Context context){
+    private static int getLayoutHeigth(Context context) {
 
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -198,15 +219,15 @@ class CalendarAdapter extends BaseAdapter {
         height -= 50;
 
         //getting the weeks of the month
-        if(weeksOfMonth == 0){
+        if (weeksOfMonth == 0) {
             weeksOfMonth = 6;
 
         }
 
-        return height/(weeksOfMonth+1);
+        return height / (weeksOfMonth + 1);
     }
 
-    private static void setUpFirstEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay){
+    private static void setUpFirstEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay) {
 
 
         CardView cardView_1 = convertView.findViewById(R.id.cardView_Adapter_1);
@@ -221,7 +242,7 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-    private static void setUpSecondEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay){
+    private static void setUpSecondEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay) {
 
 
         CardView cardView_2 = convertView.findViewById(R.id.cardView_Adapter_2);
@@ -236,7 +257,7 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-    private static void setUpThirdEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay){
+    private static void setUpThirdEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay) {
 
         CardView cardView_3 = convertView.findViewById(R.id.cardView_Adapter_3);
 
@@ -250,7 +271,7 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-    private static void setUpForthEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay){
+    private static void setUpForthEntryOfTheDay(View convertView, ArrayList<TrackedActivity> activitiesOfTheDay) {
 
         CardView cardView_4 = convertView.findViewById(R.id.cardView_Adapter_4);
 
@@ -264,7 +285,7 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-    private static void setUpMoreThanFourEntryOfTheDay(View convertView){
+    private static void setUpMoreThanFourEntryOfTheDay(View convertView) {
 
         CardView cardView_4 = convertView.findViewById(R.id.cardView_Adapter_4);
 
@@ -277,8 +298,7 @@ class CalendarAdapter extends BaseAdapter {
 
         textView_4.setText("  .  .  .  ");
 
-        textView_4.setPadding(0,0,0,0);
-
+        textView_4.setPadding(0, 0, 0, 0);
 
 
     }
