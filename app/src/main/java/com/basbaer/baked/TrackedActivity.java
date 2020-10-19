@@ -1,5 +1,6 @@
 package com.basbaer.baked;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -25,6 +26,7 @@ public class TrackedActivity {
     private static int dateMonthIndex;
     private static int dateYearIndex;
     private static int colorIndex;
+    private long id;
     private String activity;
     private String category;
     private long exactDate;
@@ -57,6 +59,7 @@ public class TrackedActivity {
         this.dateMonth = givenDateCalendar.get(Calendar.MONTH);
         this.dateYear = givenDateCalendar.get(Calendar.YEAR);
         this.color = color;
+        this.id = -1;
         mcontext = context;
 
 
@@ -67,18 +70,19 @@ public class TrackedActivity {
 
     public void insertInDb(){
 
-        String sql = "INSERT INTO activities ("
-                + "activity, category, exactDate, dateDay, dateMonth, dateYear, color"
-                + ") VALUES ('"
-                + this.activity + "', '"
-                + this.category + "', "
-                + this.exactDate + ", "
-                + this.dateDay + ", "
-                + this.dateMonth + ", "
-                + this.dateYear + ", '"
-                + color + "')";
+        ContentValues values = new ContentValues();
 
-        database.execSQL(sql);
+        values.put("activity", this.activity);
+        values.put("category", this.category);
+        values.put("exactDate", this.exactDate);
+        values.put("dateDay", this.dateDay);
+        values.put("dateMonth", this.dateMonth);
+        values.put("dateYear", this.dateYear);
+        values.put("color", this.color);
+
+        this.id = database.insert("activities", null, values);
+
+
 
     }
 
@@ -134,6 +138,29 @@ public class TrackedActivity {
         c.setTime(new Date(this.exactDate));
 
         return c;
+
+    }
+
+    private long getId(){
+
+        if(this.id == -1){
+
+            String sql = "SELECT * FROM activities WHERE "
+                    + "exactDate = "
+                    + this.exactDate;
+
+            Cursor c = database.rawQuery(sql, null);
+
+            if(c.moveToFirst()){
+
+                this.id = c.getLong(idIndex);
+
+            }
+
+
+        }
+
+        return this.id;
 
     }
 
@@ -214,6 +241,16 @@ public class TrackedActivity {
 
         database.execSQL("DELETE FROM activities");
 
+
+    }
+
+    public static void deleteEntry(TrackedActivity trackedActivity){
+
+        String sql = "DELETE FROM activities WHERE "
+                + "id = "
+                + trackedActivity.getId();
+
+        database.execSQL(sql);
 
     }
 

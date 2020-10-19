@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -103,6 +104,9 @@ class CalendarAdapter extends BaseAdapter {
                     //intent to the AddActivity (if there is more than one entry, first a dayOverview opens)
                     onClickListenerForFirstActivity(context);
 
+                    //onLongClickListenerForDeleting
+                    onLongClickListenerForFirstActivity(context);
+
                 }else if(activitiesOfTheDay.size() > 1){
 
 
@@ -131,6 +135,7 @@ class CalendarAdapter extends BaseAdapter {
 
 
 
+            /*
 
             daysCl.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -161,6 +166,8 @@ class CalendarAdapter extends BaseAdapter {
                     }
                 }
             });
+
+             */
 
 
 
@@ -290,4 +297,31 @@ class CalendarAdapter extends BaseAdapter {
 
 
     }
+
+
+    private static void onLongClickListenerForFirstActivity(Context context){
+
+        final Context mContext = context;
+
+        TextView textView_entry_1 = currentConvertView.findViewById(R.id.ActivityTV_1);
+
+        final TrackedActivity ta = activitiesOfTheDay.get(0);
+
+        textView_entry_1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                TrackedActivity.deleteEntry(ta);
+
+                MainActivity.calendarAdapter.notifyDataSetChanged();
+
+                return false;
+            }
+        });
+
+
+
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.basbaer.baked;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GestureDetectorCompat;
 import androidx.core.view.MotionEventCompat;
 
 import android.annotation.SuppressLint;
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     ActivityMainBinding activityMainBinding;
+
+    private SwipeGestureDetector swipeGestureDetector;
+    private GestureDetectorCompat gestureDetectorCompat;
 
     //Grid View for all the Dates
     GridView calendarGV;
@@ -129,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        setUpSwipeGestureDetector();
+
 
         //checks if a swipe to left or right is done
         calendarGV.setOnTouchListener(new View.OnTouchListener() {
@@ -137,24 +143,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("TouchEvent", event.toString());
 
+                gestureDetectorCompat.onTouchEvent(event);
 
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-                    startingPointOfTouch = event.getX();
-
-                    v.performClick();
-
-                }
-
-
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-
-                    endPointOfTouch = event.getX();
-
-                    detectIfSwipeIsDone(startingPointOfTouch, endPointOfTouch);
-                }
-
-                v.performClick();
 
                 return true;
             }
@@ -164,6 +154,37 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+    }
+
+
+
+    private void setUpSwipeGestureDetector(){
+
+        swipeGestureDetector = new SwipeGestureDetector(new SwipeActions() {
+            @Override
+            public void onSwipeLeft() {
+                leftSwipe();
+            }
+
+            @Override
+            public void onSwipeRight() {
+                rightSwipe();
+            }
+
+            @Override
+            public void onSwipeUp() {
+
+            }
+
+            @Override
+            public void onSwipeDown() {
+
+            }
+        });
+
+        gestureDetectorCompat = new GestureDetectorCompat(getApplicationContext(), swipeGestureDetector);
 
 
     }
