@@ -6,4 +6,5 @@ public interface SwipeActions {
     void onSwipeRight();
     void onSwipeUp();
     void onSwipeDown();
+    void onClick();
 }

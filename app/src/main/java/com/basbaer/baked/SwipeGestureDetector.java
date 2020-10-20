@@ -28,6 +28,7 @@ public class SwipeGestureDetector implements GestureDetector.OnGestureListener {
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
+        swipeActions.onClick();
         return false;
     }
 

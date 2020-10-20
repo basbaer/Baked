@@ -1,10 +1,12 @@
 package com.basbaer.baked;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.view.GestureDetectorCompat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +31,11 @@ class CalendarAdapter extends BaseAdapter {
     public static int weeksOfMonth;
     private static ArrayList<TrackedActivity> activitiesOfTheDay;
     private static View currentConvertView;
+
+    private SwipeGestureDetector swipeGestureDetector;
+    private GestureDetectorCompat gestureDetectorCompat;
+
+    private int lastAction;
 
 
     public CalendarAdapter(Context context, HashMap<Integer, Calendar> datesAL) {
@@ -55,20 +63,21 @@ class CalendarAdapter extends BaseAdapter {
         return 0;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
 
         //inflates the View with the custom_calendar_day.xml
-        if(convertView == null) {
+        if (convertView == null) {
             currentConvertView = LayoutInflater.from(context).inflate(R.layout.custom_calendar_day, parent, false);
 
             convertView = currentConvertView;
-        }else{
+        } else {
             currentConvertView = convertView;
         }
 
-        LinearLayout daysCl = currentConvertView.findViewById(R.id.daysCL);
+        final LinearLayout daysCl = currentConvertView.findViewById(R.id.daysCL);
         datesTextView = currentConvertView.findViewById(R.id.daysTV);
 
         //the date that is currently created
@@ -86,7 +95,6 @@ class CalendarAdapter extends BaseAdapter {
             datesTextView.setTextSize(18f);
 
 
-
         } else {
             //setting the date of the month
             daysCl.setMinimumHeight(getLayoutHeigth(context));
@@ -95,11 +103,11 @@ class CalendarAdapter extends BaseAdapter {
 
             activitiesOfTheDay = TrackedActivity.getActivitiesOfTheDay(displayedDate);
 
-            if(!activitiesOfTheDay.isEmpty()){
+            if (!activitiesOfTheDay.isEmpty()) {
                 //there is definetly min 1 entry
                 setUpFirstEntryOfTheDay();
 
-                if(activitiesOfTheDay.size() == 1) {
+                if (activitiesOfTheDay.size() == 1) {
 
                     //intent to the AddActivity (if there is more than one entry, first a dayOverview opens)
                     onClickListenerForFirstActivity(context);
@@ -107,20 +115,20 @@ class CalendarAdapter extends BaseAdapter {
                     //onLongClickListenerForDeleting
                     onLongClickListenerForFirstActivity(context);
 
-                }else if(activitiesOfTheDay.size() > 1){
+                } else if (activitiesOfTheDay.size() > 1) {
 
 
                     setUpSecondEntryOfTheDay();
 
-                    if(activitiesOfTheDay.size() > 2){
+                    if (activitiesOfTheDay.size() > 2) {
 
                         setUpThirdEntryOfTheDay();
 
-                        if(activitiesOfTheDay.size() == 4){
+                        if (activitiesOfTheDay.size() == 4) {
 
                             setUpForthEntryOfTheDay();
 
-                        }else if(activitiesOfTheDay.size() > 4){
+                        } else if (activitiesOfTheDay.size() > 4) {
 
                             setUpMoreThanFourEntryOfTheDay();
 
@@ -133,49 +141,61 @@ class CalendarAdapter extends BaseAdapter {
 
             }
 
+            //setUpSwipeGestureDetector(displayedDate, position);
 
 
-            /*
 
-            daysCl.setOnClickListener(new View.OnClickListener() {
+
+
+            daysCl.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onClick(View v) {
+                public boolean onTouch(View v, MotionEvent event) {
 
-                    ArrayList<TrackedActivity> activities = TrackedActivity.getActivitiesOfTheDay(displayedDate);
+                    //saves this date to the MainActivity, so the MainActivity is able to send it to the
+                    //performClickX() method in case, there is no swipe done
+                    MainActivity.clickedDay = new CalendarDay(displayedDate, datesHashMap, context, position);
 
-
-                    if(activities.size() < 2) {
-
-                        Intent intentToAddActivity = new Intent(context, AddActivity.class);
-
-                        long dateInSeconds = datesHashMap.get(position).getTime().getTime();
-
-                        intentToAddActivity.putExtra("date", dateInSeconds);
-
-                        context.startActivity(intentToAddActivity);
-
-                    }else{
-
-                        //intent to day overview
-                        Intent intentToDayOverview = new Intent(context, DayOverview.class);
-
-                        intentToDayOverview.putExtra("date", displayedDate.getTime().getTime());
-
-                        context.startActivity(intentToDayOverview);
-
-                    }
+                    return false;
                 }
             });
 
-             */
-
-
-
         }
-
 
         return convertView;
     }
+
+    //method is called from MainActivity and does, what normally the onClickListener would do
+    //onClickListener ist not setUp, since it cosumes the DOWN_EVENT and it's not possible for
+    //the GridView to know if a probably a swipe is done
+    public static void performClickX(CalendarDay calendarDay){
+
+
+        ArrayList<TrackedActivity> activities = TrackedActivity.getActivitiesOfTheDay(calendarDay.displayedDate);
+
+
+        if (activities.size() < 2) {
+
+            Intent intentToAddActivity = new Intent(calendarDay.context, AddActivity.class);
+
+            long dateInSeconds = calendarDay.datesHashMap.get(calendarDay.position).getTime().getTime();
+
+            intentToAddActivity.putExtra("date", dateInSeconds);
+
+            calendarDay.context.startActivity(intentToAddActivity);
+
+        } else {
+
+            //intent to day overview
+            Intent intentToDayOverview = new Intent(calendarDay.context, DayOverview.class);
+
+            intentToDayOverview.putExtra("date", calendarDay.displayedDate.getTime().getTime());
+
+            calendarDay.context.startActivity(intentToDayOverview);
+
+        }
+
+    }
+
 
 
     private static int getLayoutHeigth(Context context) {
@@ -272,7 +292,7 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-    private static void onClickListenerForFirstActivity(Context context){
+    private static void onClickListenerForFirstActivity(Context context) {
 
         final Context mContext = context;
 
@@ -299,7 +319,7 @@ class CalendarAdapter extends BaseAdapter {
     }
 
 
-    private static void onLongClickListenerForFirstActivity(Context context){
+    private static void onLongClickListenerForFirstActivity(Context context) {
 
         final Context mContext = context;
 
@@ -318,7 +338,6 @@ class CalendarAdapter extends BaseAdapter {
                 return false;
             }
         });
-
 
 
     }

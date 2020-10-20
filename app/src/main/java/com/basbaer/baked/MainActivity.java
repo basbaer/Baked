@@ -36,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     private SwipeGestureDetector swipeGestureDetector;
     private GestureDetectorCompat gestureDetectorCompat;
 
+    //the last day a ACTION_DOWN was done on
+    public static CalendarDay clickedDay;
+
     //Grid View for all the Dates
     GridView calendarGV;
 
@@ -141,26 +144,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                Log.d("TouchEvent", event.toString());
-
                 gestureDetectorCompat.onTouchEvent(event);
-
 
                 return true;
             }
         });
 
 
-
-
-
-
-
     }
 
 
 
-    private void setUpSwipeGestureDetector(){
+    public void setUpSwipeGestureDetector(){
 
         swipeGestureDetector = new SwipeGestureDetector(new SwipeActions() {
             @Override
@@ -182,6 +177,17 @@ public class MainActivity extends AppCompatActivity {
             public void onSwipeDown() {
 
             }
+
+            @Override
+            public void onClick() {
+
+                if(clickedDay != null){
+                    //if a click is done, the CalendarAdapter get's informed
+                    //clickedDay is the last Day a ACTION_DOWN was done on
+                    CalendarAdapter.performClickX(clickedDay);
+                }
+
+            }
         });
 
         gestureDetectorCompat = new GestureDetectorCompat(getApplicationContext(), swipeGestureDetector);
@@ -190,15 +196,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     public void updateCalendar(Calendar calendar) {
-
-
 
         //setting up the calendar
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
 
-        Log.i("dateMonth", String.valueOf(calendar.get(Calendar.MONTH)));
 
         getSupportActionBar().setTitle(calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
                 + " "
@@ -302,29 +304,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return allDisplayedDatesAL;
-
-    }
-
-
-    private void detectIfSwipeIsDone(float start, float end) {
-
-        //leftswipe
-        if (start > end + 400) {
-
-            Log.i("leftSwipe", "Done");
-
-            startingPointOfTouch = 0;
-            endPointOfTouch = 0;
-
-            leftSwipe();
-        } else if (end > start + 400) {
-            Log.i("rightSwipe", "Done");
-
-            startingPointOfTouch = 0;
-            endPointOfTouch = 0;
-
-            rightSwipe();
-        }
 
     }
 
