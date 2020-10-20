@@ -47,11 +47,6 @@ public class MainActivity extends AppCompatActivity {
     protected static CalendarAdapter calendarAdapter;
 
 
-
-    //needed for checking if a swipe is done
-    float startingPointOfTouch = 0;
-    float endPointOfTouch = 0;
-
     //Variable that represents the current displayed month
     public static Calendar displayedMonthCalendar;
 
@@ -64,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = activityMainBinding.getRoot();
         setContentView(view);
+
+        if(TrackedActivity.currentMonthHashMap == null) {
+            TrackedActivity.currentMonthHashMap = new HashMap<>();
+        }
 
 
         //Initializing the variables

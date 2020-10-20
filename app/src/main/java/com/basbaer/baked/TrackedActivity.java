@@ -6,11 +6,13 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -35,6 +37,8 @@ public class TrackedActivity {
     private int dateYear;
     private String color;
     private static Context mcontext;
+
+    public static HashMap<Long, View> currentMonthHashMap;
 
     protected static SharedPreferences sharedPreferences;
 
@@ -63,12 +67,9 @@ public class TrackedActivity {
         mcontext = context;
 
 
-
-
-
     }
 
-    public void insertInDb(){
+    public void insertInDb() {
 
         ContentValues values = new ContentValues();
 
@@ -81,7 +82,6 @@ public class TrackedActivity {
         values.put("color", this.color);
 
         this.id = database.insert("activities", null, values);
-
 
 
     }
@@ -122,16 +122,16 @@ public class TrackedActivity {
 
     }
 
-    public String getActivityName(){
+    public String getActivityName() {
 
         return this.activity;
     }
 
-    public String getActivityColor(){
+    public String getActivityColor() {
         return this.color;
     }
 
-    public Calendar getCalendarDate(){
+    public Calendar getCalendarDate() {
 
         Calendar c = Calendar.getInstance();
 
@@ -141,9 +141,9 @@ public class TrackedActivity {
 
     }
 
-    private long getId(){
+    public long getId() {
 
-        if(this.id == -1){
+        if (this.id == -1) {
 
             String sql = "SELECT * FROM activities WHERE "
                     + "exactDate = "
@@ -151,7 +151,7 @@ public class TrackedActivity {
 
             Cursor c = database.rawQuery(sql, null);
 
-            if(c.moveToFirst()){
+            if (c.moveToFirst()) {
 
                 this.id = c.getLong(idIndex);
 
@@ -179,7 +179,7 @@ public class TrackedActivity {
 
         boolean moreEntries = c.moveToFirst();
 
-        while(moreEntries){
+        while (moreEntries) {
 
             //create a new TrackedActivity
             TrackedActivity i = new TrackedActivity(c.getString(activityIndex), c.getString(categoryIndex), c.getLong(exactDateIndex), c.getString(colorIndex), mcontext);
@@ -191,7 +191,6 @@ public class TrackedActivity {
         }
 
         return arrayListActivies;
-
 
 
     }
@@ -236,7 +235,6 @@ public class TrackedActivity {
     }
 
 
-
     public static void clearDatabase() {
 
         database.execSQL("DELETE FROM activities");
@@ -244,7 +242,7 @@ public class TrackedActivity {
 
     }
 
-    public static void deleteEntry(TrackedActivity trackedActivity){
+    public static void deleteEntry(TrackedActivity trackedActivity) {
 
         String sql = "DELETE FROM activities WHERE "
                 + "id = "
@@ -254,18 +252,18 @@ public class TrackedActivity {
 
     }
 
-    public static List<String> getAllActivties(){
+    public static List<String> getAllActivties() {
 
         List<String> list = new ArrayList<>();
         Cursor c = database.rawQuery("SELECT * FROM activities", null);
 
         boolean moreEntries = c.moveToFirst();
 
-        while(moreEntries){
+        while (moreEntries) {
 
             String nameOfActivity = c.getString(activityIndex);
 
-            if(!list.contains(nameOfActivity)){
+            if (!list.contains(nameOfActivity)) {
 
                 list.add(nameOfActivity);
 
@@ -284,8 +282,8 @@ public class TrackedActivity {
 
         //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
         //so it can be put as a starting selection
-        for(int i = 0; i < list.size(); i++){
-            if(list.get(i).equals(AddActivity.sharedPreferences.getString("activity", null))){
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(AddActivity.sharedPreferences.getString("activity", null))) {
                 pos = i;
 
             }
@@ -296,21 +294,21 @@ public class TrackedActivity {
         return list;
 
 
-
     }
 
-    public static List<String> getDifferentCategories(){
+    public static List<String> getDifferentCategories() {
 
         List<String> list = new ArrayList<>();
         Cursor c = database.rawQuery("SELECT * FROM activities", null);
 
         boolean moreEntries = c.moveToFirst();
 
-        while(moreEntries){
+        while (moreEntries) {
 
             String nameOfCategory = c.getString(categoryIndex);
 
-            if(!list.contains(nameOfCategory)){
+
+            if (!list.contains(nameOfCategory)) {
 
                 list.add(nameOfCategory);
 
@@ -332,8 +330,8 @@ public class TrackedActivity {
 
         //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
         //so it can be put as a starting selection
-        for(int i = 0; i < list.size(); i++){
-            if(list.get(i).equals(category)){
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(category)) {
                 pos = i;
 
             }
@@ -346,7 +344,7 @@ public class TrackedActivity {
     }
 
 
-    public static String getCategory(String activity){
+    public static String getCategory(String activity) {
 
         String sql = "SELECT * FROM activities WHERE "
                 + "activity = '"
@@ -355,19 +353,18 @@ public class TrackedActivity {
 
         Cursor c = database.rawQuery(sql, null);
 
-        if(c.moveToFirst()){
+        if (c.moveToFirst()) {
 
             return c.getString(categoryIndex);
 
-        }else{
+        } else {
             return null;
         }
 
 
-
     }
 
-    public static String getColor(String activity){
+    public static String getColor(String activity) {
 
         String sql = "SELECT * FROM activities WHERE "
                 + "activity = '"
@@ -376,18 +373,18 @@ public class TrackedActivity {
 
         Cursor c = database.rawQuery(sql, null);
 
-        if(c.moveToFirst()){
+        if (c.moveToFirst()) {
 
             return c.getString(colorIndex);
 
-        }else{
+        } else {
             return null;
         }
 
 
     }
 
-    public static ArrayList<String> getActivitiesOfCategory(String category){
+    public static ArrayList<String> getActivitiesOfCategory(String category) {
 
         String sql = "SELECT * FROM activities WHERE "
                 + "category = '"
@@ -400,9 +397,14 @@ public class TrackedActivity {
 
         boolean moreEntries = c.moveToFirst();
 
-        while(moreEntries){
+        while (moreEntries) {
 
-            activitiesAL.add(c.getString(activityIndex));
+            if (!activitiesAL.contains(c.getString(activityIndex))) {
+
+
+                activitiesAL.add(c.getString(activityIndex));
+
+            }
 
             moreEntries = c.moveToNext();
 
@@ -413,7 +415,7 @@ public class TrackedActivity {
 
     }
 
-    public static int getTotalAmountActivityWasDone(String activity){
+    public static int getTotalAmountActivityWasDone(String activity) {
 
         String sql = "SELECT * FROM activities WHERE "
                 + "activity = '"
@@ -426,7 +428,7 @@ public class TrackedActivity {
 
     }
 
-    public static Date dateActivityWasLastDone(String activity){
+    public static Date dateActivityWasLastDone(String activity) {
 
         //gets all entries of this activity out of the database
         String sql = "SELECT * FROM activities WHERE "
@@ -442,10 +444,10 @@ public class TrackedActivity {
         Date currentDate = new Date();
         long currentDateLong = currentDate.getTime();
 
-        while (moreEntries){
+        while (moreEntries) {
             //sets the one with highest exactDate value (which is a long variable and represents the ms gone since 1970) as latest activity
             //but if there is an already an activity in the future, it does not take it into account
-            if(c.getLong(exactDateIndex) > latestActivity && c.getLong(exactDateIndex) < currentDateLong){
+            if (c.getLong(exactDateIndex) > latestActivity && c.getLong(exactDateIndex) < currentDateLong) {
 
                 latestActivity = c.getLong(exactDateIndex);
 
@@ -455,9 +457,9 @@ public class TrackedActivity {
 
         }
 
-        if(latestActivity == 0){
+        if (latestActivity == 0) {
             return null;
-        }else{
+        } else {
             return new Date(latestActivity);
         }
 
@@ -465,7 +467,7 @@ public class TrackedActivity {
     }
 
 
-    public static int getTimesDoneThisMonth(String activity){
+    public static int getTimesDoneThisMonth(String activity) {
 
         //gets all entries of this activity out of the database
         String sql = "SELECT * FROM activities WHERE "
@@ -492,9 +494,9 @@ public class TrackedActivity {
 
         int timesDoneThisMonth = 0;
 
-        while(moreEntries){
+        while (moreEntries) {
 
-            if(c.getLong(exactDateIndex) < currentDateLong && c.getLong(exactDateIndex) > firstOfMonthDate){
+            if (c.getLong(exactDateIndex) < currentDateLong && c.getLong(exactDateIndex) > firstOfMonthDate) {
 
                 timesDoneThisMonth++;
 
@@ -508,7 +510,7 @@ public class TrackedActivity {
 
     }
 
-    public static int getTimesDoneThisYear(String activity){
+    public static int getTimesDoneThisYear(String activity) {
 
         //gets all entries of this activity out of the database
         String sql = "SELECT * FROM activities WHERE "
@@ -535,9 +537,9 @@ public class TrackedActivity {
 
         int timesDoneThisMonth = 0;
 
-        while(moreEntries){
+        while (moreEntries) {
 
-            if(c.getLong(exactDateIndex) < currentDateLong && c.getLong(exactDateIndex) > firstOfYearLong){
+            if (c.getLong(exactDateIndex) < currentDateLong && c.getLong(exactDateIndex) > firstOfYearLong) {
 
                 timesDoneThisMonth++;
 
@@ -551,7 +553,7 @@ public class TrackedActivity {
 
     }
 
-    public static int getAmountofDayGoneSince(String activity, long date){
+    public static int getAmountofDayGoneSince(String activity, long date) {
 
         //gets all entries of this activity out of the database
         String sql = "SELECT * FROM activities WHERE "
@@ -567,11 +569,11 @@ public class TrackedActivity {
 
         int amountInPeriod = 0;
 
-        while(moreEntries){
+        while (moreEntries) {
 
             long dateOfCurrentActivity = c.getLong(exactDateIndex);
 
-            if(dateOfCurrentActivity < currentDateLong && dateOfCurrentActivity > date){
+            if (dateOfCurrentActivity < currentDateLong && dateOfCurrentActivity > date) {
 
                 amountInPeriod++;
             }

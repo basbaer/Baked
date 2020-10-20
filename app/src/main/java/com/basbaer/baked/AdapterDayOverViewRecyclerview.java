@@ -1,6 +1,8 @@
 package com.basbaer.baked;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -42,11 +44,13 @@ public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<Adapter
 
     private ArrayList<TrackedActivity> activitiesAL;
     private Context context;
+    private Calendar tappedCalendar;
 
-    public AdapterDayOverViewRecyclerview(Context context, ArrayList<TrackedActivity> activitiesAL){
+    public AdapterDayOverViewRecyclerview(Context context, ArrayList<TrackedActivity> activitiesAL, Calendar tappedCalendar){
 
         this.activitiesAL = activitiesAL;
         this.context = context;
+        this.tappedCalendar = tappedCalendar;
 
     }
 
@@ -63,7 +67,7 @@ public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<Adapter
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
         holder.cardView.setCardBackgroundColor(Color.parseColor(activitiesAL.get(position).getActivityColor()));
 
@@ -93,6 +97,38 @@ public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<Adapter
 
                 context.startActivity(intentToActivityOverview);
 
+            }
+        });
+
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+
+            TrackedActivity ta = activitiesAL.get(position);
+
+
+            @Override
+            public boolean onLongClick(View v) {
+
+                new AlertDialog.Builder(context)
+                        .setIcon(android.R.drawable.ic_delete)
+                        .setTitle("Deleting")
+                        .setMessage("Do you really want to delete this entry?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                TrackedActivity.deleteEntry(ta);
+                                holder.cardView.setVisibility(View.GONE);
+
+                                View v = TrackedActivity.currentMonthHashMap.get(activitiesAL.get(position).getId());
+
+                                v.setVisibility(View.GONE);
+
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+
+                return false;
             }
         });
 

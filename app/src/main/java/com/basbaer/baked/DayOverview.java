@@ -55,7 +55,8 @@ public class DayOverview extends AppCompatActivity {
             //gets all activities of the day
             activitiesAL = TrackedActivity.getActivitiesOfTheDay(tappedDayCalendar);
 
-            adapterForMainRecyclerView = new AdapterDayOverViewRecyclerview(this, activitiesAL);
+            adapterForMainRecyclerView = new AdapterDayOverViewRecyclerview(this, activitiesAL, tappedDayCalendar);
+
             mainRecyclerView.setAdapter(adapterForMainRecyclerView);
 
 

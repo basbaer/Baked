@@ -2,7 +2,9 @@ package com.basbaer.baked;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
@@ -16,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
-import androidx.core.view.GestureDetectorCompat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,17 +26,14 @@ import java.util.Locale;
 
 class CalendarAdapter extends BaseAdapter {
 
-    private HashMap<Integer, Calendar> datesHashMap;
+    private  HashMap<Integer, Calendar> datesHashMap;
     private final Context context;
     private TextView datesTextView;
     public static int weeksOfMonth;
     private static ArrayList<TrackedActivity> activitiesOfTheDay;
     private static View currentConvertView;
 
-    private SwipeGestureDetector swipeGestureDetector;
-    private GestureDetectorCompat gestureDetectorCompat;
 
-    private int lastAction;
 
 
     public CalendarAdapter(Context context, HashMap<Integer, Calendar> datesAL) {
@@ -43,6 +41,8 @@ class CalendarAdapter extends BaseAdapter {
 
         this.context = context;
         this.datesHashMap = datesAL;
+
+        TrackedActivity.currentMonthHashMap.clear();
 
 
     }
@@ -130,7 +130,7 @@ class CalendarAdapter extends BaseAdapter {
 
                         } else if (activitiesOfTheDay.size() > 4) {
 
-                            setUpMoreThanFourEntryOfTheDay();
+                            setUpMoreThanFourEntryOfTheDay(position);
 
                         }
 
@@ -140,12 +140,6 @@ class CalendarAdapter extends BaseAdapter {
 
 
             }
-
-            //setUpSwipeGestureDetector(displayedDate, position);
-
-
-
-
 
             daysCl.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -196,8 +190,6 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-
-
     private static int getLayoutHeigth(Context context) {
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -229,6 +221,8 @@ class CalendarAdapter extends BaseAdapter {
 
         textView_1.setText(activitiesOfTheDay.get(0).getActivityName());
 
+        TrackedActivity.currentMonthHashMap.put(activitiesOfTheDay.get(0).getId(), cardView_1);
+
     }
 
     private static void setUpSecondEntryOfTheDay() {
@@ -244,6 +238,8 @@ class CalendarAdapter extends BaseAdapter {
 
         textView_2.setText(activitiesOfTheDay.get(1).getActivityName());
 
+        TrackedActivity.currentMonthHashMap.put(activitiesOfTheDay.get(1).getId(), cardView_2);
+
     }
 
     private static void setUpThirdEntryOfTheDay() {
@@ -257,6 +253,8 @@ class CalendarAdapter extends BaseAdapter {
         TextView textView_3 = currentConvertView.findViewById(R.id.ActivityTV_3);
 
         textView_3.setText(activitiesOfTheDay.get(2).getActivityName());
+
+        TrackedActivity.currentMonthHashMap.put(activitiesOfTheDay.get(2).getId(), cardView_3);
 
     }
 
@@ -272,9 +270,11 @@ class CalendarAdapter extends BaseAdapter {
 
         textView_4.setText(activitiesOfTheDay.get(3).getActivityName());
 
+        TrackedActivity.currentMonthHashMap.put(activitiesOfTheDay.get(3).getId(), cardView_4);
+
     }
 
-    private static void setUpMoreThanFourEntryOfTheDay() {
+    private static void setUpMoreThanFourEntryOfTheDay(int position) {
 
         CardView cardView_4 = currentConvertView.findViewById(R.id.cardView_Adapter_4);
 
@@ -288,6 +288,8 @@ class CalendarAdapter extends BaseAdapter {
         textView_4.setText("  .  .  .  ");
 
         textView_4.setPadding(0, 0, 0, 0);
+
+        TrackedActivity.currentMonthHashMap.put(activitiesOfTheDay.get(position).getId(), cardView_4);
 
 
     }
@@ -319,11 +321,11 @@ class CalendarAdapter extends BaseAdapter {
     }
 
 
-    private static void onLongClickListenerForFirstActivity(Context context) {
+    private void onLongClickListenerForFirstActivity(final Context context) {
 
         final Context mContext = context;
 
-        TextView textView_entry_1 = currentConvertView.findViewById(R.id.ActivityTV_1);
+        final TextView textView_entry_1 = currentConvertView.findViewById(R.id.ActivityTV_1);
 
         final TrackedActivity ta = activitiesOfTheDay.get(0);
 
@@ -331,13 +333,36 @@ class CalendarAdapter extends BaseAdapter {
             @Override
             public boolean onLongClick(View v) {
 
-                TrackedActivity.deleteEntry(ta);
+                new AlertDialog.Builder(context)
+                        .setIcon(android.R.drawable.ic_delete)
+                        .setTitle("Deleting")
+                        .setMessage("Do you really want to delete this entry?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                TrackedActivity.deleteEntry(ta);
+                                textView_entry_1.setVisibility(View.GONE);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+
+
 
                 MainActivity.calendarAdapter.notifyDataSetChanged();
 
                 return false;
             }
         });
+
+
+    }
+
+    public static void deleteEntry(Calendar tappedCalendar, int position){
+
+        ArrayList<TrackedActivity> trackedActivity = TrackedActivity.getActivitiesOfTheDay(tappedCalendar);
+
+        trackedActivity.remove(position);
 
 
     }

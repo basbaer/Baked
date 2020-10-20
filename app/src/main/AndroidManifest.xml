@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".DayOverview"></activity>
-        <activity android:name=".Test_activity" />
         <activity android:name=".ActivityOverview" />
         <activity android:name=".AddActivity" />
         <activity android:name=".MainActivity">

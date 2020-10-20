@@ -382,23 +382,38 @@ public class AddActivity extends AppCompatActivity {
     public void alertDialogButtonClicked(View view) {
 
 
-        activtiesList.add(alertDialogEditTextActivity.getText().toString());
+        if(!activtiesList.contains(alertDialogEditTextActivity.getText().toString())) {
+            activtiesList.add(alertDialogEditTextActivity.getText().toString());
+            activitySpinner.setSelection(activtiesList.size() - 1);
+        }else{
+
+            activitySpinner.setSelection(activtiesList.indexOf(alertDialogEditTextActivity.getText().toString()));
+
+        }
 
         activitySpinnerAdapter.notifyDataSetChanged();
 
-        activitySpinner.setSelection(activtiesList.size() - 1);
+
 
         alertDialogActivity.cancel();
 
     }
 
     public void alertDialogCategoryButtonClicked(View view) {
+        if(!categoryList.contains(alertDialogEditTextCategory.getText().toString())) {
 
-        categoryList.add(alertDialogEditTextCategory.getText().toString());
+            categoryList.add(alertDialogEditTextCategory.getText().toString());
+
+            categorySpinner.setSelection(categoryList.size() - 1);
+        }else{
+
+            categorySpinner.setSelection(categoryList.indexOf(alertDialogEditTextCategory.getText().toString()));
+
+        }
 
         adapterCategorySpinner.notifyDataSetChanged();
 
-        categorySpinner.setSelection(categoryList.size() - 1);
+
 
         alertDialogCategory.cancel();
 
