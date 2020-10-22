@@ -85,7 +85,7 @@ public class AddActivity extends AppCompatActivity {
 
         colorPickerGridView = activityAddBinding.colorGridView;
         dateEditText = activityAddBinding.editTextDate;
-        sharedPreferences = this.getSharedPreferences("com.basbaer.baked", Context.MODE_PRIVATE);
+
 
 
         String dateString = new SimpleDateFormat("dd.MM.yyyy").format(new Date(dateLong));
@@ -106,6 +106,7 @@ public class AddActivity extends AppCompatActivity {
         // Specify the layout to use when the list of choices appears
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         activitySpinnerAdapter.setDropDownViewResource(R.layout.spinner_activity_layout);
+
         // Apply the adapter to the spinner
         activitySpinner.setAdapter(activitySpinnerAdapter);
 
@@ -119,7 +120,12 @@ public class AddActivity extends AppCompatActivity {
         }
 
 
-        categoryList = TrackedActivity.getDifferentCategories();
+        categoryList = new ArrayList<>();
+
+        for(int i = 1; i < mCategories.allCategories.size(); i++){
+            categoryList.add(mCategories.allCategories.get(i).getName());
+        }
+
 
         categorySpinner = activityAddBinding.categorySpinner;
         adapterCategorySpinner = new ArrayAdapter<>(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, categoryList);
@@ -139,22 +145,6 @@ public class AddActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 activity = parent.getItemAtPosition(position).toString();
-
-                Log.i("SelectedActivity", activity);
-
-
-                //sets the category automatically if a activity was selected, that already existed
-                /*
-                String category = TrackedActivity.getCategory(activity);
-
-                if(category != null){
-
-                    categorySpinner.setSelection(getPositionOfCategory(activity));
-
-                }else{
-                    Log.i("ActivityType", "no type saved");
-                }
-                */
 
 
                 //selects the color automatically if a activity was selected, that already existed
@@ -203,22 +193,33 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
+        colorPickerAdapter = new ColorPickerAdapter(getApplicationContext());
+
+        colorPickerGridView.setAdapter(colorPickerAdapter);
+
 
     }
+
+
+
+
 
     public void addActivity(View view) {
 
         long date = getDate();
-        String activityType = getCategory();
-        ;
+        String category = getCategory();
+
 
         if (date != -1L && activity != null && color != null) {
 
-            TrackedActivity i = new TrackedActivity(activity, activityType, date, color, getApplicationContext());
+            TrackedActivity i = new TrackedActivity(activity, category, date, color, getApplicationContext());
 
             i.insertInDb();
 
             TrackedActivity.printDatabase();
+
+            //add category to category list
+            mCategories.allCategories.add(new mCategories(category, true));
 
             Intent intent = new Intent(this, MainActivity.class);
 

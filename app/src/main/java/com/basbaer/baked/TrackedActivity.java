@@ -11,18 +11,20 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class TrackedActivity {
+public class TrackedActivity{
 
     private static SQLiteDatabase database;
     private static int idIndex;
     private static int activityIndex;
     private static int categoryIndex;
+    private static int isCheckedIndex;
     private static int exactDateIndex;
     private static int dateDayIndex;
     private static int dateMonthIndex;
@@ -31,6 +33,8 @@ public class TrackedActivity {
     private long id;
     private String activity;
     private String category;
+    //1 for true, 0 for false
+    private int isChecked;
     private long exactDate;
     private int dateDay;
     private int dateMonth;
@@ -40,7 +44,6 @@ public class TrackedActivity {
 
     public static HashMap<Long, View> currentMonthHashMap;
 
-    protected static SharedPreferences sharedPreferences;
 
 
     public TrackedActivity(String activity, String category, long date, String color, Context context) {
@@ -58,6 +61,7 @@ public class TrackedActivity {
 
         this.activity = activity;
         this.category = category;
+        this.isChecked = 1;
         this.exactDate = date;
         this.dateDay = givenDateCalendar.get(Calendar.DAY_OF_MONTH);
         this.dateMonth = givenDateCalendar.get(Calendar.MONTH);
@@ -75,6 +79,7 @@ public class TrackedActivity {
 
         values.put("activity", this.activity);
         values.put("category", this.category);
+        values.put("isChecked", this.isChecked);
         values.put("exactDate", this.exactDate);
         values.put("dateDay", this.dateDay);
         values.put("dateMonth", this.dateMonth);
@@ -96,6 +101,7 @@ public class TrackedActivity {
                     + "id INTEGER PRIMARY KEY, "
                     + "activity VARCHAR, "
                     + "category VARCHAR, "
+                    + "isChecked INTEGER, "
                     + "exactDate INTEGER, "
                     + "dateDay INTEGER, "
                     + "dateMonth INTEGER, "
@@ -109,6 +115,7 @@ public class TrackedActivity {
             idIndex = c.getColumnIndex("id");
             activityIndex = c.getColumnIndex("activity");
             categoryIndex = c.getColumnIndex("category");
+            isCheckedIndex = c.getColumnIndex("isChecked");
             exactDateIndex = c.getColumnIndex("exactDate");
             dateDayIndex = c.getColumnIndex("dateDay");
             dateMonthIndex = c.getColumnIndex("dateMonth");
@@ -296,9 +303,9 @@ public class TrackedActivity {
 
     }
 
-    public static List<String> getDifferentCategories() {
+    public static ArrayList<mCategories> getDifferentCategories() {
 
-        List<String> list = new ArrayList<>();
+        ArrayList<mCategories> list = new ArrayList<>();
         Cursor c = database.rawQuery("SELECT * FROM activities", null);
 
         boolean moreEntries = c.moveToFirst();
@@ -310,7 +317,17 @@ public class TrackedActivity {
 
             if (!list.contains(nameOfCategory)) {
 
-                list.add(nameOfCategory);
+                //converts the saved integer in boolean
+                boolean isChecked;
+                int isCheckedInt = c.getInt(isCheckedIndex);
+
+                if(isCheckedInt == 0){
+                    isChecked = false;
+                }else{
+                    isChecked = true;
+                }
+
+                list.add(new mCategories(nameOfCategory, isChecked));
 
 
             }
@@ -320,10 +337,16 @@ public class TrackedActivity {
 
         }
 
-        //sort the list
-        Collections.sort(list);
+        //sort the list alphabetically
+        Collections.sort(list, new Comparator<mCategories>() {
+            @Override
+            public int compare(mCategories o1, mCategories o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
-        String category = getCategory(AddActivity.sharedPreferences.getString("activity", null));
+
+        String lastSelectedActivity = getCategory(AddActivity.sharedPreferences.getString("activity", null));
 
 
         int pos = -1;
@@ -331,7 +354,7 @@ public class TrackedActivity {
         //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
         //so it can be put as a starting selection
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(category)) {
+            if (list.get(i).equals(lastSelectedActivity)) {
                 pos = i;
 
             }
@@ -340,6 +363,26 @@ public class TrackedActivity {
         AddActivity.sharedPreferences.edit().putInt("positionOfPreviousSelectedCategory", pos).apply();
 
         return list;
+
+    }
+
+    public static void updateIsChecked(String category, boolean isChecked){
+
+        int isCheckedInt;
+        if(isChecked){
+            isCheckedInt = 1;
+        }else{
+            isCheckedInt = 0;
+        }
+
+        String sql = "UPDATE activities SET "
+                + "isChecked = "
+                + isCheckedInt
+                + "WHERE "
+                + "category = '"
+                + category
+                + "'";
+
 
     }
 
@@ -585,6 +628,8 @@ public class TrackedActivity {
         return amountInPeriod;
 
     }
+
+
 }
 
 

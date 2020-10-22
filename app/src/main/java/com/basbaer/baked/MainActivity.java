@@ -1,28 +1,31 @@
 package com.basbaer.baked;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
-import androidx.core.view.MotionEventCompat;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.LightingColorFilter;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.basbaer.baked.databinding.ActivityMainBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
     //the last day a ACTION_DOWN was done on
     public static CalendarDay clickedDay;
 
+
+
+    AlertDialog_RecyclerView alertDialog_selectCategories;
+    Adapter_RecyclerView_AlertDialog adapter_recyclerView_alertDialog;
+
     //Grid View for all the Dates
     GridView calendarGV;
 
@@ -51,6 +59,18 @@ public class MainActivity extends AppCompatActivity {
     public static Calendar displayedMonthCalendar;
 
 
+    //links the menu to the activity
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+
+        menuInflater.inflate(R.menu.main_activity_menu, menu);
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -59,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = activityMainBinding.getRoot();
         setContentView(view);
+
+
+        AddActivity.sharedPreferences = this.getSharedPreferences("com.basbaer.baked", Context.MODE_PRIVATE);
 
         if(TrackedActivity.currentMonthHashMap == null) {
             TrackedActivity.currentMonthHashMap = new HashMap<>();
@@ -149,10 +172,53 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //updating the categories list before passing it to adapter
+        mCategories.updateCategoriesList(this);
+
+
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.filter_categories:
+                buildAlertDialog();
+        }
 
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+    private void buildAlertDialog(){
+
+        adapter_recyclerView_alertDialog = new Adapter_RecyclerView_AlertDialog();
+
+        alertDialog_selectCategories = new AlertDialog_RecyclerView(MainActivity.this, adapter_recyclerView_alertDialog);
+
+        alertDialog_selectCategories.setCancelable(true);
+
+
+        alertDialog_selectCategories.show();
+    }
+
+    public void onCheckBoxClicked(View v){
+        boolean checked = ((CheckBox) v).isChecked();
+
+        for(mCategories category : mCategories.allCategories){
+
+            if(((CheckBox) v).getText().toString().equals(category.getName())){
+                Log.i("Checkbox", category.getName());
+                category.setChecked(checked);
+            }
+
+        }
+
+
+    }
 
     public void setUpSwipeGestureDetector(){
 
