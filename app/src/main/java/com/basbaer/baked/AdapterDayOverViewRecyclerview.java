@@ -71,13 +71,17 @@ public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<Adapter
 
         holder.cardView.setCardBackgroundColor(Color.parseColor(activitiesAL.get(position).getActivityColor()));
 
-        SimpleDateFormat s = new SimpleDateFormat("h:mm a");
+        //SimpleDateFormat s = new SimpleDateFormat("h:mm a");
 
 
 
         Date c = activitiesAL.get(position).getCalendarDate().getTime();
 
-        String printTime = s.format(c);
+        String date_string = DateFormat.getDateInstance().format(c);
+
+        //String printTime = s.format(c);
+
+        String printTime = context.getString(R.string.added_to_calendar) + date_string;
 
         holder.dateTextView.setText(printTime);
 
@@ -128,7 +132,7 @@ public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<Adapter
                         .show();
 
 
-                return false;
+                return true;
             }
         });
 

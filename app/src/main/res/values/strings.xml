@@ -19,6 +19,9 @@
     <string name="title_activity_test_">Test_Activity</string>
     <string name="back_to_calendar">Back To Calendar</string>
 
+   <!-- Strings in DayOverview Activity -->
+    <string name="added_to_calendar">Added to calendar: </string>
+
 
     <!-- Menu -->
     <string name="word_settings">Settings</string>

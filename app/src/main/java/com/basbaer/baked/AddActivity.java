@@ -178,10 +178,7 @@ public class AddActivity extends AppCompatActivity {
                 List<String> activities = TrackedActivity.getActivitiesOfCategory(category);
                 activtiesList.clear();
 
-                for (String i : activities) {
-                    activtiesList.add(i);
-
-                }
+                activtiesList.addAll(activities);
 
                 activitySpinnerAdapter.notifyDataSetChanged();
 

@@ -21,6 +21,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class TrackedActivity{
 
     private static SQLiteDatabase database;
+    private static final String ACTIVITIES_DB = "activities";
     private static int idIndex;
     private static int activityIndex;
     private static int categoryIndex;
@@ -306,7 +307,8 @@ public class TrackedActivity{
     public static ArrayList<mCategories> getDifferentCategories() {
 
         ArrayList<mCategories> list = new ArrayList<>();
-        Cursor c = database.rawQuery("SELECT * FROM activities", null);
+        Cursor c = database.rawQuery("SELECT * FROM activities GROUP BY category", null);
+
 
         boolean moreEntries = c.moveToFirst();
 
@@ -315,7 +317,19 @@ public class TrackedActivity{
             String nameOfCategory = c.getString(categoryIndex);
 
 
-            if (!list.contains(nameOfCategory)) {
+
+            boolean isInList = false;
+
+            for(int i = 0; i < list.size(); i++){
+
+                if(list.get(i).getName().equals(nameOfCategory)){
+                    isInList = true;
+                }
+
+            }
+
+
+            if (!isInList) {
 
                 //converts the saved integer in boolean
                 boolean isChecked;
@@ -445,6 +459,7 @@ public class TrackedActivity{
             if (!activitiesAL.contains(c.getString(activityIndex))) {
 
 
+
                 activitiesAL.add(c.getString(activityIndex));
 
             }
@@ -570,7 +585,7 @@ public class TrackedActivity{
         Calendar firstOfYearCalendar = Calendar.getInstance();
         //setting the calendar to the very first second of the year
         firstOfYearCalendar.set(firstOfYearCalendar.get(Calendar.YEAR),
-                firstOfYearCalendar.getActualMinimum(Calendar.YEAR),
+                firstOfYearCalendar.getActualMinimum(Calendar.MONTH),
                 firstOfYearCalendar.getActualMinimum(Calendar.DAY_OF_MONTH),
                 firstOfYearCalendar.getActualMinimum(Calendar.HOUR_OF_DAY),
                 firstOfYearCalendar.getActualMinimum(Calendar.MINUTE),
@@ -578,13 +593,13 @@ public class TrackedActivity{
 
         long firstOfYearLong = firstOfYearCalendar.getTime().getTime();
 
-        int timesDoneThisMonth = 0;
+        int timesDoneThisYear = 0;
 
         while (moreEntries) {
 
             if (c.getLong(exactDateIndex) < currentDateLong && c.getLong(exactDateIndex) > firstOfYearLong) {
 
-                timesDoneThisMonth++;
+                timesDoneThisYear++;
 
             }
 
@@ -592,7 +607,7 @@ public class TrackedActivity{
 
         }
 
-        return timesDoneThisMonth;
+        return timesDoneThisYear;
 
     }
 
