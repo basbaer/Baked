@@ -59,7 +59,11 @@ public class MainActivity extends AppCompatActivity {
     public static Calendar displayedMonthCalendar;
 
 
-    //links the menu to the activity
+    /***
+     * links the menu to the activity
+     * @param menu: menu in Action Bar
+     * @return return of super method
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -81,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(view);
 
 
+        //---------------------------------------------------------------------------------
+        //setting up variables
+
+
+
         AddActivity.sharedPreferences = this.getSharedPreferences("com.basbaer.baked", Context.MODE_PRIVATE);
 
         if(TrackedActivity.currentMonthHashMap == null) {
@@ -98,6 +107,12 @@ public class MainActivity extends AppCompatActivity {
         //delete everything
         //TrackedActivity.clearDatabase();
 
+
+        //-----------------------------------------------------------------------------
+        //Setting up the background
+
+
+
         //adjusting the picture
         ColorMatrix cm = new ColorMatrix();
 
@@ -110,32 +125,18 @@ public class MainActivity extends AppCompatActivity {
 
         background.setColorFilter(new ColorMatrixColorFilter(cm));
 
-
-        //get's the current month
-        if (displayedMonthCalendar == null) {
-            displayedMonthCalendar = Calendar.getInstance();
-            displayedMonthCalendar.set(Calendar.DAY_OF_MONTH, 1);
-        }
+        //-----------------------------------------------------------------------------
+        //setting up the calendar
 
 
         Intent intent = getIntent();
 
-        long date = intent.getLongExtra("date", -1);
-
-        if (date == -1) {
-
-            updateCalendar(Calendar.getInstance());
-
-        } else {
-            Calendar activeCalendar = Calendar.getInstance();
-
-            activeCalendar.setTime(new Date(date));
+        setUpCalendar(intent);
 
 
-            updateCalendar(activeCalendar);
-        }
 
-
+        //----------------------------------------------------------------------------
+        //Setting up of views
 
         //adding the Add-Button
         FloatingActionButton fab = activityMainBinding.fab;
@@ -172,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         //updating the categories list before passing it to adapter
         mCategories.updateCategoriesList(this);
 
@@ -179,6 +182,67 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    //-------------------------------------------------------------------------------------
+    //Calendar
+
+    /**
+     * Sets up up the current month as a calendar
+     * @param intent: intent (-1 if there is no intent from an other activity
+     */
+    private void setUpCalendar(Intent intent){
+        //get's the current month
+        if (displayedMonthCalendar == null) {
+            displayedMonthCalendar = Calendar.getInstance();
+            displayedMonthCalendar.set(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        long date = intent.getLongExtra("date", -1);
+
+        if (date == -1) {
+
+            updateCalendar(Calendar.getInstance());
+
+        } else {
+            Calendar activeCalendar = Calendar.getInstance();
+
+            activeCalendar.setTime(new Date(date));
+
+
+            updateCalendar(activeCalendar);
+        }
+
+
+    }
+
+    /**
+     * Updates the calendar view in MainActivity
+     * @param calendar: Calendar of month and year which should be displayed
+     */
+    public void updateCalendar(Calendar calendar) {
+
+        //setting up the calendar
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+
+
+        getSupportActionBar().setTitle(calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
+                + " "
+                + calendar.get(Calendar.YEAR));
+
+
+        calendarAdapter = new CalendarAdapter(this, getDatesToBeDisplayed((Calendar) calendar.clone()));
+
+
+        calendarGV.setAdapter(calendarAdapter);
+
+
+    }
+
+    /***
+     * Handles what happens when a menu item is tapped
+     * @param item: MenuItem which is tapped
+     * @return return of super method
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
@@ -192,7 +256,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    /***
+     * Builds the AlertDialog if the filter-item of the menu in the action bar is tapped
+     */
     private void buildAlertDialog(){
 
         adapter_recyclerView_alertDialog = new Adapter_RecyclerView_AlertDialog();
@@ -204,6 +270,8 @@ public class MainActivity extends AppCompatActivity {
 
         alertDialog_selectCategories.show();
     }
+
+
 
     public void onCheckBoxClicked(View v){
         boolean checked = ((CheckBox) v).isChecked();
@@ -217,9 +285,17 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        updateCalendar(Calendar.getInstance());
+
 
     }
 
+    //---------------------------------------------------------------------------------------------
+    //Gestures
+
+    /**
+     * Detects if a swipe to the right or left is done and updates the calendar
+     */
     public void setUpSwipeGestureDetector(){
 
         swipeGestureDetector = new SwipeGestureDetector(new SwipeActions() {
@@ -261,25 +337,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void updateCalendar(Calendar calendar) {
 
-        //setting up the calendar
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);
-
-
-        getSupportActionBar().setTitle(calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
-                + " "
-                + calendar.get(Calendar.YEAR));
-
-
-        calendarAdapter = new CalendarAdapter(this, getDatesToBeDisplayed((Calendar) calendar.clone()));
-
-
-
-        calendarGV.setAdapter(calendarAdapter);
-
-
-    }
 
     private HashMap<Integer, Calendar> getDatesToBeDisplayed(Calendar calendar) {
         //HashMap where the key says if it's for the weekdays in the first line(key = 0 - 6) or for the

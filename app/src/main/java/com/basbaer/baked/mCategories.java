@@ -62,7 +62,7 @@ public class mCategories {
     public void setChecked(boolean checked) {
         isChecked = checked;
         if(this.getName().equals("All")){
-            sharedPreferences.edit().putBoolean("isAllChecked", isChecked);
+            sharedPreferences.edit().putBoolean("isAllChecked", isChecked).apply();
         }else {
             TrackedActivity.updateIsChecked(this.getName(), checked);
         }

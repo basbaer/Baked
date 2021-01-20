@@ -22,6 +22,9 @@ public class TrackedActivity{
 
     private static SQLiteDatabase database;
     private static final String ACTIVITIES_DB = "activities";
+
+    //--------------------------------------------------------------------------------------
+    //Indices of db
     private static int idIndex;
     private static int activityIndex;
     private static int categoryIndex;
@@ -31,6 +34,20 @@ public class TrackedActivity{
     private static int dateMonthIndex;
     private static int dateYearIndex;
     private static int colorIndex;
+
+    //-----------------------------------------------------------------------------------
+    //Coloum names
+    private static final String ACTIVITY = "activity";
+    private static final String CATEGORY = "category";
+    private static final String ISCHECKED = "isChecked";
+    private static final String EXACTDATE = "exactDate";
+    private static final String DATEDAY = "dateDay";
+    private static final String DATEMONTH = "dateMonth";
+    private static final String DATEYEAR = "dateYear";
+    private static final String COLOR = "color";
+
+
+    //-----------------------------------------------------------------------------------
     private long id;
     private String activity;
     private String category;
@@ -92,6 +109,10 @@ public class TrackedActivity{
 
     }
 
+    /**
+     * create / opens the db
+     * @param context: context of activity
+     */
     public static void createDB(Context context) {
 
         try {
@@ -100,28 +121,28 @@ public class TrackedActivity{
 
             String createTableSqlCode = "CREATE TABLE IF NOT EXISTS activities ("
                     + "id INTEGER PRIMARY KEY, "
-                    + "activity VARCHAR, "
-                    + "category VARCHAR, "
-                    + "isChecked INTEGER, "
-                    + "exactDate INTEGER, "
-                    + "dateDay INTEGER, "
-                    + "dateMonth INTEGER, "
-                    + "dateYear INTEGER, "
-                    + "color VARCHAR)";
+                    + ACTIVITY + " VARCHAR, "
+                    + CATEGORY + " VARCHAR, "
+                    + ISCHECKED + " INTEGER, "
+                    + EXACTDATE + " INTEGER, "
+                    + DATEDAY + " INTEGER, "
+                    + DATEMONTH + " INTEGER, "
+                    + DATEYEAR + " INTEGER, "
+                    + COLOR + " VARCHAR)";
 
             database.execSQL(createTableSqlCode);
 
             Cursor c = database.rawQuery("SELECT * FROM activities", null);
 
             idIndex = c.getColumnIndex("id");
-            activityIndex = c.getColumnIndex("activity");
-            categoryIndex = c.getColumnIndex("category");
-            isCheckedIndex = c.getColumnIndex("isChecked");
-            exactDateIndex = c.getColumnIndex("exactDate");
-            dateDayIndex = c.getColumnIndex("dateDay");
-            dateMonthIndex = c.getColumnIndex("dateMonth");
-            dateYearIndex = c.getColumnIndex("dateYear");
-            colorIndex = c.getColumnIndex("color");
+            activityIndex = c.getColumnIndex(ACTIVITY);
+            categoryIndex = c.getColumnIndex(CATEGORY);
+            isCheckedIndex = c.getColumnIndex(ISCHECKED);
+            exactDateIndex = c.getColumnIndex(EXACTDATE);
+            dateDayIndex = c.getColumnIndex(DATEDAY);
+            dateMonthIndex = c.getColumnIndex(DATEMONTH);
+            dateYearIndex = c.getColumnIndex(DATEYEAR);
+            colorIndex = c.getColumnIndex(COLOR);
 
 
         } catch (Exception e) {
@@ -129,6 +150,10 @@ public class TrackedActivity{
         }
 
     }
+
+    //-----------------------------------------------------------------------------------
+    //getter
+
 
     public String getActivityName() {
 
@@ -177,11 +202,13 @@ public class TrackedActivity{
         ArrayList<TrackedActivity> arrayListActivies = new ArrayList<>();
 
         String sql = "SELECT * FROM activities WHERE "
-                + "dateDay = " + calendar.get(Calendar.DAY_OF_MONTH)
+                + DATEDAY + " = " + calendar.get(Calendar.DAY_OF_MONTH)
                 + " AND "
-                + "dateMonth = " + calendar.get(Calendar.MONTH)
+                + DATEMONTH + " = " + calendar.get(Calendar.MONTH)
                 + " AND "
-                + "dateYear = " + calendar.get(Calendar.YEAR);
+                + DATEYEAR + " = " + calendar.get(Calendar.YEAR)
+                + " AND "
+                + ISCHECKED + " = 1";
 
         Cursor c = database.rawQuery(sql, null);
 
@@ -197,6 +224,8 @@ public class TrackedActivity{
             moreEntries = c.moveToNext();
 
         }
+
+        c.close();
 
         return arrayListActivies;
 
@@ -392,10 +421,14 @@ public class TrackedActivity{
         String sql = "UPDATE activities SET "
                 + "isChecked = "
                 + isCheckedInt
-                + "WHERE "
+                + " WHERE "
                 + "category = '"
                 + category
                 + "'";
+
+        database.execSQL(sql);
+
+        //refresh calendar
 
 
     }
