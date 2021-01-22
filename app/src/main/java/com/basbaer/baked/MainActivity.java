@@ -272,13 +272,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Setting up filter function
+     * @param v: Checkbox of filter view
+     */
     public void onCheckBoxClicked(View v){
-        boolean checked = ((CheckBox) v).isChecked();
+
+        CheckBox checkbox = (CheckBox) v;
+
+        boolean checked = checkbox.isChecked();
+
+        if(checkbox.getText().toString().equals(getString(R.string.all))){
+            TrackedActivity.setIsCheckedForAll(checked);
+            mCategories.sharedPreferences.edit().putBoolean("isAllChecked", checked).apply();
+
+            mCategories.updateCategoriesList(this);
+
+            adapter_recyclerView_alertDialog.notifyDataSetChanged();
+
+
+
+
+        }
+
+
 
         for(mCategories category : mCategories.allCategories){
 
-            if(((CheckBox) v).getText().toString().equals(category.getName())){
+            if(checkbox.getText().toString().equals(category.getName())){
                 Log.i("Checkbox", category.getName());
                 category.setChecked(checked);
             }

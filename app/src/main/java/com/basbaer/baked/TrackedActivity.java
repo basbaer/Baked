@@ -428,7 +428,21 @@ public class TrackedActivity{
 
         database.execSQL(sql);
 
-        //refresh calendar
+
+    }
+
+    public static void setIsCheckedForAll(boolean isChecked){
+
+        int isChecked_int = 0;
+
+        if(isChecked){
+            isChecked_int = 1;
+        }
+
+        database.execSQL("UPDATE " + ACTIVITIES_DB
+                + " SET " + ISCHECKED
+                + " = " + String.valueOf(isChecked_int));
+
 
 
     }

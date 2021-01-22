@@ -1,1 +1,1 @@
-filter function
+Deselect the "All" when a other categorie is deselected

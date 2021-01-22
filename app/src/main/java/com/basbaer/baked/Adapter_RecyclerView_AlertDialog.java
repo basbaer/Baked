@@ -53,6 +53,8 @@ public class Adapter_RecyclerView_AlertDialog extends RecyclerView.Adapter<Adapt
 
         holder.checkBox.setChecked(mCategories.allCategories.get(position).isChecked());
 
+
+
     }
 
     @Override

@@ -26,6 +26,7 @@
     <!-- Menu -->
     <string name="word_settings">Settings</string>
     <string name="filter">Filter</string>
+    <string name="all">All</string>
 
     <!-- Add Activit-->
     <string name="word_date">Date</string>
