@@ -282,31 +282,52 @@ public class MainActivity extends AppCompatActivity {
 
         boolean checked = checkbox.isChecked();
 
-        if(checkbox.getText().toString().equals(getString(R.string.all))){
-            TrackedActivity.setIsCheckedForAll(checked);
-            mCategories.sharedPreferences.edit().putBoolean("isAllChecked", checked).apply();
 
-            mCategories.updateCategoriesList(this);
-
-            adapter_recyclerView_alertDialog.notifyDataSetChanged();
+        int amountSelected = 0;
 
 
+        for (mCategories category : mCategories.allCategories) {
+
+            if(checkbox.getText().toString().equals(getString(R.string.all))) {
+
+                TrackedActivity.setIsCheckedForAll(checked);
+                mCategories.sharedPreferences.edit().putBoolean(mCategories.ISALLCHECKED, checked).apply();
+
+                mCategories.updateCategoriesList(this);
+
+                amountSelected = -1;
+
+                break;
+            }
 
 
-        }
-
-
-
-        for(mCategories category : mCategories.allCategories){
-
-            if(checkbox.getText().toString().equals(category.getName())){
+            if (checkbox.getText().toString().equals(category.getName())) {
                 Log.i("Checkbox", category.getName());
                 category.setChecked(checked);
             }
 
+            if(category.isChecked()){
+                amountSelected++;
+            }
+
+
         }
 
+        //-1 since the "all" categorie does not count for this
+        if(amountSelected != -1 &&
+                amountSelected != mCategories.allCategories.size() &&
+                mCategories.sharedPreferences.getBoolean(mCategories.ISALLCHECKED, true)) {
+            //it means minimum one checkbox is not checked
+            mCategories.sharedPreferences.edit().putBoolean(mCategories.ISALLCHECKED, false).apply();
+        }else if(amountSelected == mCategories.allCategories.size()-1 && !mCategories.sharedPreferences.getBoolean(mCategories.ISALLCHECKED, false)){
+            mCategories.sharedPreferences.edit().putBoolean(mCategories.ISALLCHECKED, true).apply();
+        }
+
+        mCategories.updateCategoriesList(this);
+
         updateCalendar(Calendar.getInstance());
+
+        adapter_recyclerView_alertDialog.notifyDataSetChanged();
 
 
     }

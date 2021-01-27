@@ -13,6 +13,7 @@ public class mCategories {
     public static ArrayList<mCategories> allCategories;
 
     //keeps track if the 'All' is checked
+    public static final String ISALLCHECKED = "isAllChecked";
     public static SharedPreferences sharedPreferences;
 
     private int id;
@@ -30,7 +31,7 @@ public class mCategories {
         allCategories = new ArrayList<>();
         sharedPreferences = context.getSharedPreferences("com.basbaer.baked", Context.MODE_PRIVATE);
 
-        allCategories.add(new mCategories(context.getString(R.string.all), sharedPreferences.getBoolean("isAllChecked", false)));
+        allCategories.add(new mCategories(context.getString(R.string.all), sharedPreferences.getBoolean(ISALLCHECKED, false)));
 
         ArrayList<mCategories> categories = TrackedActivity.getDifferentCategories();
 
