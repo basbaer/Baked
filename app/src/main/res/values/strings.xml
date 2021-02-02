@@ -15,10 +15,16 @@
     <string name="word_done_in_last">Done in last </string>
     <string name="standard_amount_of_preselected_days">7</string>
     <string name="background_activity_overview">Background Activity overview</string>
-    <string name="hint_for_number"></string>
     <string name="title_activity_test_">Test_Activity</string>
     <string name="back_to_calendar">Back To Calendar</string>
 
+    <string name="monday">Mon</string>
+    <string name="tuesday">Tue</string>
+    <string name="wednesday">Wed</string>
+    <string name="Thursday">Thu</string>
+    <string name="Friday">Fri</string>
+    <string name="Saturday">Sat</string>
+    <string name="Sunday">Sun</string>
    <!-- Strings in DayOverview Activity -->
     <string name="added_to_calendar">Added to calendar: </string>
 

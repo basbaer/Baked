@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 public class mCategories {
 
@@ -17,12 +16,18 @@ public class mCategories {
     public static SharedPreferences sharedPreferences;
 
     private int id;
-    private String name;
+    private final String name;
     private boolean isChecked;
+    private ArrayList<TrackedActivity> actvities_array;
 
-    public mCategories(String name, boolean isChecked) {
+    public mCategories(int id, String name, boolean isChecked) {
+        this.id = id;
         this.name = name;
         this.isChecked = isChecked;
+        if(id != -1){
+            this.actvities_array = TrackedActivity.getActivitiesOfCategory(id);
+        }
+
     }
 
 
@@ -31,7 +36,9 @@ public class mCategories {
         allCategories = new ArrayList<>();
         sharedPreferences = context.getSharedPreferences("com.basbaer.baked", Context.MODE_PRIVATE);
 
-        allCategories.add(new mCategories(context.getString(R.string.all), sharedPreferences.getBoolean(ISALLCHECKED, false)));
+        //first entry is the "All" entry
+
+        allCategories.add(new mCategories(-1, context.getString(R.string.all), sharedPreferences.getBoolean(ISALLCHECKED, false)));
 
         ArrayList<mCategories> categories = TrackedActivity.getDifferentCategories();
 
@@ -64,8 +71,20 @@ public class mCategories {
     public void setChecked(boolean checked) {
         isChecked = checked;
 
-        TrackedActivity.updateIsChecked(this.getName(), checked);
+        TrackedActivity.setIsChecked(this.getName(), checked);
+
+    }
+
+    public ArrayList<TrackedActivity> getActvities_array(){
+
+        this.actvities_array = TrackedActivity.getActivitiesOfCategory(this.id);
+
+        return this.actvities_array;
+    }
 
 
+    @Override
+    public String toString(){
+        return this.name;
     }
 }

@@ -55,7 +55,7 @@ public class AddActivity extends AppCompatActivity {
 
     //list for the drop down Spinner
     List<String> activtiesList;
-    List<String> categoryList;
+    List<mCategories> categoryList;
 
 
     AlertDialog alertDialogActivity = null;
@@ -92,6 +92,30 @@ public class AddActivity extends AppCompatActivity {
 
         dateEditText.setText(dateString);
 
+        //-------------------------------------------------------------------------------------
+        //Setting up Category-Spinner
+
+        categoryList = new ArrayList<>();
+
+        categoryList.addAll(mCategories.allCategories);
+
+
+        categorySpinner = activityAddBinding.categorySpinner;
+        adapterCategorySpinner = new ArrayAdapter<>(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, categoryList);
+        adapterCategorySpinner.setDropDownViewResource(R.layout.spinner_activity_layout);
+        categorySpinner.setAdapter(adapterCategorySpinner);
+
+        int positionOfLastSelectedCategory = sharedPreferences.getInt("positionOfPreviousSelectedCategory", -1);
+        if (positionOfLastSelectedCategory != -1) {
+
+            categorySpinner.setSelection(positionOfLastSelectedCategory);
+
+        }
+
+
+
+
+
         //get all Activities
         //activtiesList = TrackedActivity.getDifferentActivties();
         activtiesList = new ArrayList<>();
@@ -120,24 +144,7 @@ public class AddActivity extends AppCompatActivity {
         }
 
 
-        categoryList = new ArrayList<>();
 
-        for(int i = 1; i < mCategories.allCategories.size(); i++){
-            categoryList.add(mCategories.allCategories.get(i).getName());
-        }
-
-
-        categorySpinner = activityAddBinding.categorySpinner;
-        adapterCategorySpinner = new ArrayAdapter<>(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, categoryList);
-        adapterCategorySpinner.setDropDownViewResource(R.layout.spinner_activity_layout);
-        categorySpinner.setAdapter(adapterCategorySpinner);
-
-        int positionOfLastSelectedCategory = sharedPreferences.getInt("positionOfPreviousSelectedCategory", -1);
-        if (positionOfLastSelectedCategory != -1) {
-
-            categorySpinner.setSelection(positionOfLastSelectedCategory);
-
-        }
 
 
         activitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -211,12 +218,12 @@ public class AddActivity extends AppCompatActivity {
 
             TrackedActivity i = new TrackedActivity(activity, category, date, color, getApplicationContext());
 
-            i.insertInDb();
+
 
             TrackedActivity.printDatabase();
 
             //add category to category list
-            mCategories.allCategories.add(new mCategories(category, true));
+            mCategories.allCategories.add(new mCategories(-1, category, true));
 
             Intent intent = new Intent(this, MainActivity.class);
 
@@ -239,9 +246,9 @@ public class AddActivity extends AppCompatActivity {
 
         if (date.length() == 10) {
 
-            int day = Integer.valueOf(date.substring(0, 2));
-            int month = Integer.valueOf(date.substring(3, 5));
-            int year = Integer.valueOf(date.substring(6, 10));
+            int day = Integer.parseInt(date.substring(0, 2));
+            int month = Integer.parseInt(date.substring(3, 5));
+            int year = Integer.parseInt(date.substring(6, 10));
 
 
             Calendar dateCalendar = Calendar.getInstance();

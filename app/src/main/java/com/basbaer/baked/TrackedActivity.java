@@ -2,7 +2,6 @@ package com.basbaer.baked;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -28,6 +27,7 @@ public class TrackedActivity{
     private static int idIndex;
     private static int activityIndex;
     private static int categoryIndex;
+    private static int categroyIdIndex;
     private static int isCheckedIndex;
     private static int exactDateIndex;
     private static int dateDayIndex;
@@ -37,8 +37,10 @@ public class TrackedActivity{
 
     //-----------------------------------------------------------------------------------
     //Coloum names
+    private static final String ID = "id";
     private static final String ACTIVITY = "activity";
     private static final String CATEGORY = "category";
+    private static final String CATEGORYID = "categroyId";
     private static final String ISCHECKED = "isChecked";
     private static final String EXACTDATE = "exactDate";
     private static final String DATEDAY = "dateDay";
@@ -49,8 +51,10 @@ public class TrackedActivity{
 
     //-----------------------------------------------------------------------------------
     private long id;
+
     private String activity;
     private String category;
+    private int categoryId;
     //1 for true, 0 for false
     private int isChecked;
     private long exactDate;
@@ -61,15 +65,25 @@ public class TrackedActivity{
     private static Context mcontext;
 
     public static HashMap<Long, View> currentMonthHashMap;
+    private static int categoryIdCounter;
 
 
-
+    /***
+     * Constructor
+     * @param activity : name of activity
+     * @param category : name of category
+     * @param date : date in ms since epoch
+     * @param color : name of color
+     * @param context : context of activity
+     */
     public TrackedActivity(String activity, String category, long date, String color, Context context) {
 
 
         if (database == null) {
             createDB(context);
         }
+
+        updateCategoryCounter();
 
         Log.i("TrackedActivity", "long value: " + date);
 
@@ -79,6 +93,7 @@ public class TrackedActivity{
 
         this.activity = activity;
         this.category = category;
+        this.categoryId = categoryIdCounter;
         this.isChecked = 1;
         this.exactDate = date;
         this.dateDay = givenDateCalendar.get(Calendar.DAY_OF_MONTH);
@@ -88,21 +103,67 @@ public class TrackedActivity{
         this.id = -1;
         mcontext = context;
 
+        categoryIdCounter++;
+
+
+        this.insertInDb();
+
+
+
+
+
 
     }
 
-    public void insertInDb() {
+    /***
+     * Creates TrackActivity Object from db
+     * @param activityId : id of the activity
+     */
+    private TrackedActivity(int activityId){
+        if (database == null) {
+            createDB(mcontext);
+        }
+
+        String sql = "SELECT * FROM " + ACTIVITIES_DB + " WHERE "
+                + ID + " = " + activityId;
+
+        Cursor c = database.rawQuery(sql, null);
+
+
+
+        if(c.moveToFirst()){
+            this.activity = c.getString(activityId);
+            this.category = c.getString(categoryIndex);
+            this.categoryId = c.getInt(categroyIdIndex);
+            this.isChecked = c.getInt(isCheckedIndex);
+            this.exactDate = c.getLong(exactDateIndex);
+            this.dateDay = c.getInt(dateDayIndex);
+            this.dateMonth = c.getInt(dateMonthIndex);
+            this.dateYear = c.getInt(dateYearIndex);
+            this.color = c.getString(colorIndex);
+            this.id = c.getInt(idIndex);
+
+
+        }
+
+
+
+
+    }
+
+    private void insertInDb() {
 
         ContentValues values = new ContentValues();
 
-        values.put("activity", this.activity);
-        values.put("category", this.category);
-        values.put("isChecked", this.isChecked);
-        values.put("exactDate", this.exactDate);
-        values.put("dateDay", this.dateDay);
-        values.put("dateMonth", this.dateMonth);
-        values.put("dateYear", this.dateYear);
-        values.put("color", this.color);
+        values.put(ACTIVITY, this.activity);
+        values.put(CATEGORY, this.category);
+        values.put(CATEGORYID, this.categoryId);
+        values.put(ISCHECKED, this.isChecked);
+        values.put(EXACTDATE, this.exactDate);
+        values.put(DATEDAY, this.dateDay);
+        values.put(DATEMONTH, this.dateMonth);
+        values.put(DATEYEAR, this.dateYear);
+        values.put(COLOR, this.color);
 
         this.id = database.insert("activities", null, values);
 
@@ -123,6 +184,7 @@ public class TrackedActivity{
                     + "id INTEGER PRIMARY KEY, "
                     + ACTIVITY + " VARCHAR, "
                     + CATEGORY + " VARCHAR, "
+                    + CATEGORYID + " INTEGER, "
                     + ISCHECKED + " INTEGER, "
                     + EXACTDATE + " INTEGER, "
                     + DATEDAY + " INTEGER, "
@@ -137,6 +199,7 @@ public class TrackedActivity{
             idIndex = c.getColumnIndex("id");
             activityIndex = c.getColumnIndex(ACTIVITY);
             categoryIndex = c.getColumnIndex(CATEGORY);
+            categroyIdIndex = c.getColumnIndex(CATEGORYID);
             isCheckedIndex = c.getColumnIndex(ISCHECKED);
             exactDateIndex = c.getColumnIndex(EXACTDATE);
             dateDayIndex = c.getColumnIndex(DATEDAY);
@@ -149,6 +212,13 @@ public class TrackedActivity{
             e.printStackTrace();
         }
 
+    }
+
+    //------------------------------------------------------------------------------------
+    //Overriding Methods
+    @Override
+    public String toString(){
+        return this.activity;
     }
 
     //-----------------------------------------------------------------------------------
@@ -232,6 +302,269 @@ public class TrackedActivity{
 
     }
 
+    public static List<String> getAllActivties() {
+
+        List<String> list = new ArrayList<>();
+        Cursor c = database.rawQuery("SELECT * FROM activities", null);
+
+        boolean moreEntries = c.moveToFirst();
+
+        while (moreEntries) {
+
+            String nameOfActivity = c.getString(activityIndex);
+
+            if (!list.contains(nameOfActivity)) {
+
+                list.add(nameOfActivity);
+
+
+            }
+
+            moreEntries = c.moveToNext();
+
+
+        }
+
+        //sort the list
+        Collections.sort(list);
+
+        int pos = -1;
+
+        //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
+        //so it can be put as a starting selection
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(AddActivity.sharedPreferences.getString("activity", null))) {
+                pos = i;
+
+            }
+        }
+
+        AddActivity.sharedPreferences.edit().putInt("positionOfPreviousSelectedActivity", pos).apply();
+
+        return list;
+
+
+    }
+
+    public static ArrayList<mCategories> getDifferentCategories() {
+
+        ArrayList<mCategories> list = new ArrayList<>();
+        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " GROUP BY " + CATEGORY, null);
+
+
+        boolean moreEntries = c.moveToFirst();
+
+        while (moreEntries) {
+
+            String nameOfCategory = c.getString(categoryIndex);
+            int id = c.getInt(categroyIdIndex);
+
+
+
+            boolean isInList = false;
+
+            for(int i = 0; i < list.size(); i++){
+
+                if(list.get(i).getName().equals(nameOfCategory)){
+                    isInList = true;
+                }
+
+            }
+
+
+            if (!isInList) {
+
+                //converts the saved integer in boolean
+                boolean isChecked;
+                int isCheckedInt = c.getInt(isCheckedIndex);
+
+                isChecked = isCheckedInt != 0;
+
+                list.add(new mCategories(id, nameOfCategory, isChecked));
+
+
+            }
+
+            moreEntries = c.moveToNext();
+
+
+        }
+
+        c.close();
+
+        //sort the list alphabetically
+        Collections.sort(list, new Comparator<mCategories>() {
+            @Override
+            public int compare(mCategories o1, mCategories o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+
+        String lastSelectedActivity = getCategory(AddActivity.sharedPreferences.getString("activity", null));
+
+
+        int pos = -1;
+
+        //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
+        //so it can be put as a starting selection
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(lastSelectedActivity)) {
+                pos = i;
+
+            }
+        }
+
+        AddActivity.sharedPreferences.edit().putInt("positionOfPreviousSelectedCategory", pos).apply();
+
+        return list;
+
+    }
+
+    public static String getCategory(String activity) {
+
+        String sql = "SELECT * FROM activities WHERE "
+                + "activity = '"
+                + activity
+                + "' LIMIT 1";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        if (c.moveToFirst()) {
+
+            return c.getString(categoryIndex);
+
+        } else {
+            return null;
+        }
+
+
+    }
+
+    public static String getColor(String activity) {
+
+        String sql = "SELECT * FROM activities WHERE "
+                + "activity = '"
+                + activity
+                + "' LIMIT 1";
+
+        Cursor c = database.rawQuery(sql, null);
+
+        if (c.moveToFirst()) {
+
+            return c.getString(colorIndex);
+
+        } else {
+            return null;
+        }
+
+
+    }
+
+    public static ArrayList<String> getActivitiesOfCategory(String category) {
+
+        String sql = "SELECT * FROM " + ACTIVITIES_DB + " WHERE "
+                + CATEGORY + " = '"
+                + category
+                + "' GROUP BY "
+                + ACTIVITY;
+
+        Cursor c = database.rawQuery(sql, null);
+
+        ArrayList<String> activitiesAL = new ArrayList<>();
+
+        boolean moreEntries = c.moveToFirst();
+
+        while (moreEntries) {
+
+
+            activitiesAL.add(c.getString(activityIndex));
+
+
+            moreEntries = c.moveToNext();
+
+        }
+
+        c.close();
+
+        return activitiesAL;
+
+
+    }
+
+    public static ArrayList<TrackedActivity> getActivitiesOfCategory(int categoryId) {
+
+        String sql = "SELECT * FROM " + ACTIVITIES_DB + " WHERE "
+                + CATEGORYID + " = "
+                + categoryId;
+
+        Cursor c = database.rawQuery(sql, null);
+
+        ArrayList<TrackedActivity> activitiesAL = new ArrayList<>();
+
+        boolean moreEntries = c.moveToFirst();
+
+        while (moreEntries) {
+
+            activitiesAL.add(new TrackedActivity(c.getInt(idIndex)));
+
+            moreEntries = c.moveToNext();
+
+        }
+
+        c.close();
+
+        return activitiesAL;
+
+
+    }
+
+
+    //-----------------------------------------------------------------------------------
+    //setter
+    public static void setIsChecked(String category, boolean isChecked){
+
+        int isCheckedInt;
+        if(isChecked){
+            isCheckedInt = 1;
+        }else{
+            isCheckedInt = 0;
+        }
+
+        String sql = "UPDATE activities SET "
+                + "isChecked = "
+                + isCheckedInt
+                + " WHERE "
+                + "category = '"
+                + category
+                + "'";
+
+        database.execSQL(sql);
+
+
+    }
+
+    public static void setIsCheckedForAll(boolean isChecked){
+
+        int isChecked_int = 0;
+
+        if(isChecked){
+            isChecked_int = 1;
+        }
+
+        database.execSQL("UPDATE " + ACTIVITIES_DB
+                + " SET " + ISCHECKED
+                + " = " + String.valueOf(isChecked_int));
+
+
+
+    }
+
+
+
+    //----------------------------------------------------------------------------------
+    //Database stuff
+
 
     public static void printDatabase() {
 
@@ -289,245 +622,38 @@ public class TrackedActivity{
 
     }
 
-    public static List<String> getAllActivties() {
 
-        List<String> list = new ArrayList<>();
-        Cursor c = database.rawQuery("SELECT * FROM activities", null);
+    private static long updateCategoryCounter(){
 
-        boolean moreEntries = c.moveToFirst();
-
-        while (moreEntries) {
-
-            String nameOfActivity = c.getString(activityIndex);
-
-            if (!list.contains(nameOfActivity)) {
-
-                list.add(nameOfActivity);
-
-
-            }
-
-            moreEntries = c.moveToNext();
-
-
-        }
-
-        //sort the list
-        Collections.sort(list);
-
-        int pos = -1;
-
-        //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
-        //so it can be put as a starting selection
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(AddActivity.sharedPreferences.getString("activity", null))) {
-                pos = i;
-
-            }
-        }
-
-        AddActivity.sharedPreferences.edit().putInt("positionOfPreviousSelectedActivity", pos).apply();
-
-        return list;
-
-
-    }
-
-    public static ArrayList<mCategories> getDifferentCategories() {
-
-        ArrayList<mCategories> list = new ArrayList<>();
-        Cursor c = database.rawQuery("SELECT * FROM activities GROUP BY category", null);
-
-
-        boolean moreEntries = c.moveToFirst();
-
-        while (moreEntries) {
-
-            String nameOfCategory = c.getString(categoryIndex);
-
-
-
-            boolean isInList = false;
-
-            for(int i = 0; i < list.size(); i++){
-
-                if(list.get(i).getName().equals(nameOfCategory)){
-                    isInList = true;
-                }
-
-            }
-
-
-            if (!isInList) {
-
-                //converts the saved integer in boolean
-                boolean isChecked;
-                int isCheckedInt = c.getInt(isCheckedIndex);
-
-                if(isCheckedInt == 0){
-                    isChecked = false;
-                }else{
-                    isChecked = true;
-                }
-
-                list.add(new mCategories(nameOfCategory, isChecked));
-
-
-            }
-
-            moreEntries = c.moveToNext();
-
-
-        }
-
-        //sort the list alphabetically
-        Collections.sort(list, new Comparator<mCategories>() {
-            @Override
-            public int compare(mCategories o1, mCategories o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-
-
-        String lastSelectedActivity = getCategory(AddActivity.sharedPreferences.getString("activity", null));
-
-
-        int pos = -1;
-
-        //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
-        //so it can be put as a starting selection
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(lastSelectedActivity)) {
-                pos = i;
-
-            }
-        }
-
-        AddActivity.sharedPreferences.edit().putInt("positionOfPreviousSelectedCategory", pos).apply();
-
-        return list;
-
-    }
-
-    public static void updateIsChecked(String category, boolean isChecked){
-
-        int isCheckedInt;
-        if(isChecked){
-            isCheckedInt = 1;
-        }else{
-            isCheckedInt = 0;
-        }
-
-        String sql = "UPDATE activities SET "
-                + "isChecked = "
-                + isCheckedInt
-                + " WHERE "
-                + "category = '"
-                + category
-                + "'";
-
-        database.execSQL(sql);
-
-
-    }
-
-    public static void setIsCheckedForAll(boolean isChecked){
-
-        int isChecked_int = 0;
-
-        if(isChecked){
-            isChecked_int = 1;
-        }
-
-        database.execSQL("UPDATE " + ACTIVITIES_DB
-                + " SET " + ISCHECKED
-                + " = " + String.valueOf(isChecked_int));
-
-
-
-    }
-
-
-    public static String getCategory(String activity) {
-
-        String sql = "SELECT * FROM activities WHERE "
-                + "activity = '"
-                + activity
-                + "' LIMIT 1";
+        String sql = "SELECT MAX(" + CATEGORYID + ") FROM " + ACTIVITIES_DB;
 
         Cursor c = database.rawQuery(sql, null);
 
-        if (c.moveToFirst()) {
+        int count = -1;
 
-            return c.getString(categoryIndex);
+        if (c.moveToFirst()){
 
-        } else {
-            return null;
-        }
-
-
-    }
-
-    public static String getColor(String activity) {
-
-        String sql = "SELECT * FROM activities WHERE "
-                + "activity = '"
-                + activity
-                + "' LIMIT 1";
-
-        Cursor c = database.rawQuery(sql, null);
-
-        if (c.moveToFirst()) {
-
-            return c.getString(colorIndex);
-
-        } else {
-            return null;
-        }
-
-
-    }
-
-    public static ArrayList<String> getActivitiesOfCategory(String category) {
-
-        String sql = "SELECT * FROM activities WHERE "
-                + "category = '"
-                + category
-                + "'";
-
-        Cursor c = database.rawQuery(sql, null);
-
-        ArrayList<String> activitiesAL = new ArrayList<>();
-
-        boolean moreEntries = c.moveToFirst();
-
-        while (moreEntries) {
-
-            if (!activitiesAL.contains(c.getString(activityIndex))) {
-
-
-
-                activitiesAL.add(c.getString(activityIndex));
-
-            }
-
-            moreEntries = c.moveToNext();
+            count = c.getInt(categroyIdIndex);
 
         }
 
-        return activitiesAL;
+        c.close();
 
+        return count+1;
 
     }
+
 
     public static int getTotalAmountActivityWasDone(String activity) {
 
-        String sql = "SELECT * FROM activities WHERE "
-                + "activity = '"
+        String sql = "SELECT * FROM " + ACTIVITIES_DB + " WHERE "
+                + ACTIVITY + " = '"
                 + activity
                 + "'";
 
         Cursor c = database.rawQuery(sql, null);
+
+        c.close();
 
         return c.getCount();
 
