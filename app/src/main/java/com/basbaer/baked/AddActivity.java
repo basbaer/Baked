@@ -6,7 +6,6 @@ import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,32 +24,55 @@ import com.basbaer.baked.databinding.ActivityAddBinding;
 import com.basbaer.baked.databinding.AlertDialogLayoutActivityBinding;
 import com.basbaer.baked.databinding.AlertDialogLayoutCategoryBinding;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class AddActivity extends AppCompatActivity {
 
+    //---------------------------------------------------------------------------------------
+    //Strings
+    private static final String PREVIOUSSELECTEDCATEGORY = "positionOfPreviousSelectedCategory";
+
+
+    //--------------------------------------------------------------------------------------------
+    //binding
     ActivityAddBinding activityAddBinding;
     AlertDialogLayoutActivityBinding alertDialogLayoutActivityBinding;
     AlertDialogLayoutCategoryBinding alertDialogLayoutCategoryBinding;
 
+    //----------------------------------------------------------------------------------------
+    //features (spinners, button, etc.)
+    Spinner activitySpinner;
+    ArrayAdapter<String> activitySpinnerAdapter;
+    Spinner categorySpinner;
+    ArrayAdapter<mCategories> adapterCategorySpinner;
+    GridView colorPickerGridView;
+
+    AlertDialog alertDialogActivity = null;
+    EditText alertDialogEditTextActivity;
+
+    AlertDialog alertDialogCategory = null;
+    EditText alertDialogEditTextCategory;
+
+    ColorPickerAdapter colorPickerAdapter;
+    EditText dateEditText;
+
+
+    //--------------------------------------------------------------------------------------
+    //variables
+
     //saves which activiy and category was previously selected
     public static SharedPreferences sharedPreferences;
 
-    protected static EditText dateEditText;
-    protected static String activity;
-    protected static String category;
+
+    protected static String activity_name;
+    protected static String category_name;
     protected static String color;
     protected static String previousSelectedColor;
-    protected static ColorPickerAdapter colorPickerAdapter;
-    Spinner activitySpinner;
-    ArrayAdapter activitySpinnerAdapter;
-    Spinner categorySpinner;
-    ArrayAdapter adapterCategorySpinner;
-    GridView colorPickerGridView;
 
 
     //list for the drop down Spinner
@@ -58,11 +80,7 @@ public class AddActivity extends AppCompatActivity {
     List<mCategories> categoryList;
 
 
-    AlertDialog alertDialogActivity = null;
-    EditText alertDialogEditTextActivity;
 
-    AlertDialog alertDialogCategory = null;
-    EditText alertDialogEditTextCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,25 +89,26 @@ public class AddActivity extends AppCompatActivity {
         View view = activityAddBinding.getRoot();
         setContentView(view);
 
+        //----------------------------------------------------------------------------------
+        //setting up features
         alertDialogLayoutActivityBinding = AlertDialogLayoutActivityBinding.inflate(getLayoutInflater());
         alertDialogLayoutCategoryBinding = AlertDialogLayoutCategoryBinding.inflate(getLayoutInflater());
         //EditText, where the users types what is requested (e.g. a group name)
         alertDialogEditTextActivity = alertDialogLayoutActivityBinding.activityName;
         alertDialogEditTextCategory = alertDialogLayoutCategoryBinding.categoryName;
-
-        getSupportActionBar().setTitle("Add your Activity");
-
-        Intent inputIntent = getIntent();
-
-        long dateLong = inputIntent.getLongExtra("date", -1L);
-
         colorPickerGridView = activityAddBinding.colorGridView;
         dateEditText = activityAddBinding.editTextDate;
 
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Add your Activity");
+
+        //--------------------------------------------------------------------------------
 
 
-        String dateString = new SimpleDateFormat("dd.MM.yyyy").format(new Date(dateLong));
+        Intent inputIntent = getIntent();
 
+        //setting the date
+        long dateLong = inputIntent.getLongExtra("date", -1L);
+        String dateString = DateFormat.getDateInstance().format(new Date(dateLong));
         dateEditText.setText(dateString);
 
         //-------------------------------------------------------------------------------------
@@ -97,6 +116,8 @@ public class AddActivity extends AppCompatActivity {
 
         categoryList = new ArrayList<>();
 
+        //??
+        //könnte hier auch in den Spinner direkt die mCategories.allCategories reingeben
         categoryList.addAll(mCategories.allCategories);
 
 
@@ -105,15 +126,18 @@ public class AddActivity extends AppCompatActivity {
         adapterCategorySpinner.setDropDownViewResource(R.layout.spinner_activity_layout);
         categorySpinner.setAdapter(adapterCategorySpinner);
 
-        int positionOfLastSelectedCategory = sharedPreferences.getInt("positionOfPreviousSelectedCategory", -1);
+        //setting up the previousSelectedCategory
+        int positionOfLastSelectedCategory = sharedPreferences.getInt(PREVIOUSSELECTEDCATEGORY, -1);
         if (positionOfLastSelectedCategory != -1) {
 
             categorySpinner.setSelection(positionOfLastSelectedCategory);
 
+
         }
 
 
-
+        //--------------------------------------------------------------------------------------
+        //Setting up Activity-Spinner
 
 
         //get all Activities
@@ -146,16 +170,40 @@ public class AddActivity extends AppCompatActivity {
 
 
 
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                category_name = parent.getItemAtPosition(position).toString();
+
+                //only shows activities of this category in the activity Spinner
+                List<String> activities = TrackedActivity.getActivitiesOfCategory(category_name);
+                activtiesList.clear();
+
+                activtiesList.addAll(activities);
+
+                activitySpinnerAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+
+
 
         activitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                activity = parent.getItemAtPosition(position).toString();
+                activity_name = parent.getItemAtPosition(position).toString();
 
 
                 //selects the color automatically if a activity was selected, that already existed
-                previousSelectedColor = TrackedActivity.getColor(activity);
+                previousSelectedColor = TrackedActivity.getColor(activity_name);
 
                 colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), previousSelectedColor);
 
@@ -176,26 +224,7 @@ public class AddActivity extends AppCompatActivity {
         });
 
 
-        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                category = parent.getItemAtPosition(position).toString();
 
-                //only shows activities of this category in the activity Spinner
-                List<String> activities = TrackedActivity.getActivitiesOfCategory(category);
-                activtiesList.clear();
-
-                activtiesList.addAll(activities);
-
-                activitySpinnerAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         colorPickerAdapter = new ColorPickerAdapter(getApplicationContext());
 
@@ -205,18 +234,19 @@ public class AddActivity extends AppCompatActivity {
     }
 
 
-
-
-
+    /***
+     *
+     * @param view: Button which adds the activity
+     */
     public void addActivity(View view) {
 
         long date = getDate();
         String category = getCategory();
 
 
-        if (date != -1L && activity != null && color != null) {
+        if (date != -1L && activity_name != null && color != null) {
 
-            TrackedActivity i = new TrackedActivity(activity, category, date, color, getApplicationContext());
+            TrackedActivity i = new TrackedActivity(activity_name, category, date, color, getApplicationContext());
 
 
 
@@ -229,7 +259,7 @@ public class AddActivity extends AppCompatActivity {
 
             intent.putExtra("date", date);
 
-            sharedPreferences.edit().putString("activity", activity).apply();
+            sharedPreferences.edit().putString("activity", activity_name).apply();
 
             startActivity(intent);
 
@@ -240,7 +270,6 @@ public class AddActivity extends AppCompatActivity {
 
     private long getDate() {
         //converting the date
-
 
         String date = dateEditText.getText().toString();
 
@@ -269,23 +298,31 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-    protected static void changeDate(Calendar calendar) {
+    /***
+     * Formats the Date and set it as text for the DateEditText
+     * @param calendar instance of the date to be displayed
+     */
+    protected void changeDate(Calendar calendar) {
 
-        Date displaydate = calendar.getTime();
+        Date displaydDate = calendar.getTime();
 
-        String date = new SimpleDateFormat("dd.MM.yyyy").format(displaydate);
+        String date = DateFormat.getDateInstance().format(displaydDate);
 
         dateEditText.setText(date);
 
     }
 
 
+    /***
+     * Gets the category_name which is currently set
+     * @return name of the category or "unknown" if the EditText is empty
+     */
     private String getCategory() {
 
 
-        if (category != null && !category.isEmpty()) {
+        if (category_name != null && !category_name.isEmpty()) {
 
-            return category;
+            return category_name;
 
         } else {
 

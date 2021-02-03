@@ -1,1 +1,1 @@
-Deselect the "All" when a other categorie is deselected
+- Categorie list direkter zugriff oder über variable in addActivity
