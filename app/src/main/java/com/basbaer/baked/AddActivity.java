@@ -1,5 +1,6 @@
 package com.basbaer.baked;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -8,6 +9,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +64,8 @@ public class AddActivity extends AppCompatActivity {
     ColorPickerAdapter colorPickerAdapter;
     EditText dateEditText;
 
+    DatePickerDialog.OnDateSetListener onDateSetListener;
+
 
     //--------------------------------------------------------------------------------------
     //variables
@@ -73,6 +78,7 @@ public class AddActivity extends AppCompatActivity {
     protected static String category_name;
     protected static String color;
     protected static String previousSelectedColor;
+    protected static long dateLong;
 
 
     //list for the drop down Spinner
@@ -99,6 +105,22 @@ public class AddActivity extends AppCompatActivity {
         colorPickerGridView = activityAddBinding.colorGridView;
         dateEditText = activityAddBinding.editTextDate;
 
+        onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, dayOfMonth);
+
+                Date displaydDate = calendar.getTime();
+
+                String date = DateFormat.getDateInstance().format(displaydDate);
+
+                dateEditText.setText(date);
+
+            }
+        };
+
         Objects.requireNonNull(getSupportActionBar()).setTitle("Add your Activity");
 
         //--------------------------------------------------------------------------------
@@ -107,7 +129,7 @@ public class AddActivity extends AppCompatActivity {
         Intent inputIntent = getIntent();
 
         //setting the date
-        long dateLong = inputIntent.getLongExtra("date", -1L);
+        dateLong = inputIntent.getLongExtra("date", -1L);
         String dateString = DateFormat.getDateInstance().format(new Date(dateLong));
         dateEditText.setText(dateString);
 
@@ -118,7 +140,7 @@ public class AddActivity extends AppCompatActivity {
 
         //??
         //könnte hier auch in den Spinner direkt die mCategories.allCategories reingeben
-        categoryList.addAll(mCategories.allCategories);
+        categoryList.addAll(mCategories.selectableCategoriesList);
 
 
         categorySpinner = activityAddBinding.categorySpinner;
@@ -207,6 +229,7 @@ public class AddActivity extends AppCompatActivity {
 
                 colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), previousSelectedColor);
 
+
                 colorPickerGridView.setAdapter(colorPickerAdapter);
 
                 //since the user does not select a color, the previous selected color is set automatically
@@ -268,6 +291,10 @@ public class AddActivity extends AppCompatActivity {
     }
 
 
+    /***
+     * converts the date from the dateEditText-field into a long since epoch
+     * @return : ms since epoch
+     */
     private long getDate() {
         //converting the date
 
@@ -304,11 +331,7 @@ public class AddActivity extends AppCompatActivity {
      */
     protected void changeDate(Calendar calendar) {
 
-        Date displaydDate = calendar.getTime();
 
-        String date = DateFormat.getDateInstance().format(displaydDate);
-
-        dateEditText.setText(date);
 
     }
 
@@ -332,39 +355,21 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-
-    public static class DatePickerFragment extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(year, month, day);
-
-            AddActivity.changeDate((Calendar) calendar.clone());
-
-        }
-    }
-
     public void onImageButtonDateClicked(View view) {
 
-        DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "datePicker");
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date(dateLong));
 
+        DatePickerDialog datePickerDialog = new DatePickerDialog(AddActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                onDateSetListener, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
+
+        datePickerDialog.show();
 
     }
+
+
 
     public void onImageButtonActivityClicked(View view) {
 
@@ -444,7 +449,7 @@ public class AddActivity extends AppCompatActivity {
     public void alertDialogCategoryButtonClicked(View view) {
         if(!categoryList.contains(alertDialogEditTextCategory.getText().toString())) {
 
-            categoryList.add(alertDialogEditTextCategory.getText().toString());
+            categoryList.add(new mCategories(-1, alertDialogEditTextCategory.getText().toString(), true));
 
             categorySpinner.setSelection(categoryList.size() - 1);
         }else{

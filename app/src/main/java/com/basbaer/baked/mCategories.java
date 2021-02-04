@@ -10,6 +10,8 @@ import java.util.Comparator;
 public class mCategories {
 
     public static ArrayList<mCategories> allCategories;
+    //same as all categories but without "All"
+    public static ArrayList<mCategories> selectableCategoriesList;
 
     //keeps track if the 'All' is checked
     public static final String ISALLCHECKED = "isAllChecked";
@@ -19,6 +21,7 @@ public class mCategories {
     private final String name;
     private boolean isChecked;
     private ArrayList<TrackedActivity> actvities_array;
+
 
     public mCategories(int id, String name, boolean isChecked) {
         this.id = id;
@@ -34,6 +37,7 @@ public class mCategories {
     public static void updateCategoriesList(Context context){
 
         allCategories = new ArrayList<>();
+        selectableCategoriesList = new ArrayList<>();
         sharedPreferences = context.getSharedPreferences("com.basbaer.baked", Context.MODE_PRIVATE);
 
         //first entry is the "All" entry
@@ -43,6 +47,7 @@ public class mCategories {
         ArrayList<mCategories> categories = TrackedActivity.getDifferentCategories();
 
         allCategories.addAll(categories);
+        selectableCategoriesList.addAll(categories);
 
         //sort the list alphabetically
         Collections.sort(allCategories, new Comparator<mCategories>() {
@@ -57,6 +62,13 @@ public class mCategories {
     }
 
 
+    public ArrayList<mCategories> getAllSelectabelCategories(){
+
+        return selectableCategoriesList;
+
+
+
+    }
 
 
     public String getName() {

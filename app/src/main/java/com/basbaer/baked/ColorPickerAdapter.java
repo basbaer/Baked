@@ -54,11 +54,17 @@ public class ColorPickerAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        //get's the layout
-        View view = LayoutInflater.from(context).inflate(R.layout.color_picker_layout, parent, false);
+        if (convertView == null){
 
-        ImageView colorImageView = view.findViewById(R.id.colorIV);
-        final CardView outerCardView = view.findViewById(R.id.outerCardView);
+            LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            convertView = vi.inflate(R.layout.color_picker_layout, parent, false);
+
+        }
+
+
+        ImageView colorImageView = convertView.findViewById(R.id.colorIV);
+        final CardView outerCardView = convertView.findViewById(R.id.outerCardView);
         final String currentColor = ColorHandler.getColorsArrayList().get(position);
 
         //sets the color as selected
@@ -94,14 +100,14 @@ public class ColorPickerAdapter extends BaseAdapter {
                 ColorHandler.currentlySelectedColor = currentColor;
 
                 AddActivity.previousSelectedColor = currentColor;
-                AddActivity.colorPickerAdapter.notifyDataSetChanged();
+
 
                 Log.i("TappedColor", ColorHandler.getColorsArrayList().get(position));
 
             }
         });
 
-        return view;
+        return convertView;
     }
 
 
