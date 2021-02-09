@@ -38,15 +38,14 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
 
-    <EditText
+    <TextView
         android:id="@+id/editTextDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:autofillHints="@string/word_date"
-        android:hint="@string/word_date"
         android:layout_marginStart="5dp"
 
-        android:inputType="date"
+
         android:fontFamily="sans-serif"
 
         android:textSize="23sp"

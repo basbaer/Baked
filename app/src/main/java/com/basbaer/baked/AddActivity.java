@@ -21,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.basbaer.baked.databinding.ActivityAddBinding;
@@ -62,7 +63,7 @@ public class AddActivity extends AppCompatActivity {
     EditText alertDialogEditTextCategory;
 
     ColorPickerAdapter colorPickerAdapter;
-    EditText dateEditText;
+    TextView dateEditText;
 
     DatePickerDialog.OnDateSetListener onDateSetListener;
 
@@ -112,7 +113,11 @@ public class AddActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
 
+                dateLong = calendar.getTimeInMillis();
+
                 Date displaydDate = calendar.getTime();
+
+
 
                 String date = DateFormat.getDateInstance().format(displaydDate);
 
@@ -263,14 +268,13 @@ public class AddActivity extends AppCompatActivity {
      */
     public void addActivity(View view) {
 
-        long date = getDate();
+        long date = dateLong;
         String category = getCategory();
 
 
         if (date != -1L && activity_name != null && color != null) {
 
             TrackedActivity i = new TrackedActivity(activity_name, category, date, color, getApplicationContext());
-
 
 
             TrackedActivity.printDatabase();
@@ -290,50 +294,6 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-
-    /***
-     * converts the date from the dateEditText-field into a long since epoch
-     * @return : ms since epoch
-     */
-    private long getDate() {
-        //converting the date
-
-        String date = dateEditText.getText().toString();
-
-        if (date.length() == 10) {
-
-            int day = Integer.parseInt(date.substring(0, 2));
-            int month = Integer.parseInt(date.substring(3, 5));
-            int year = Integer.parseInt(date.substring(6, 10));
-
-
-            Calendar dateCalendar = Calendar.getInstance();
-
-            dateCalendar.set(year, month - 1, day);
-
-            Log.i("Date", String.valueOf(dateCalendar.getTime().getTime()));
-
-            return dateCalendar.getTime().getTime();
-
-        } else {
-            Toast.makeText(this, "Please add the date in format dd.mm.yyyy", Toast.LENGTH_SHORT).show();
-
-
-            return -1L;
-        }
-
-
-    }
-
-    /***
-     * Formats the Date and set it as text for the DateEditText
-     * @param calendar instance of the date to be displayed
-     */
-    protected void changeDate(Calendar calendar) {
-
-
-
-    }
 
 
     /***
@@ -447,14 +407,23 @@ public class AddActivity extends AppCompatActivity {
     }
 
     public void alertDialogCategoryButtonClicked(View view) {
-        if(!categoryList.contains(alertDialogEditTextCategory.getText().toString())) {
+
+        ArrayList<String> categoryNames = new ArrayList<>();
+
+        for(int i = 0; i < categoryList.size(); i++){
+            categoryNames.add(categoryList.get(i).getName());
+        }
+
+
+
+        if(categoryNames.contains(alertDialogEditTextCategory.getText().toString())) {
 
             categoryList.add(new mCategories(-1, alertDialogEditTextCategory.getText().toString(), true));
 
             categorySpinner.setSelection(categoryList.size() - 1);
         }else{
 
-            categorySpinner.setSelection(categoryList.indexOf(alertDialogEditTextCategory.getText().toString()));
+            categorySpinner.setSelection(categoryNames.indexOf(alertDialogEditTextCategory.getText().toString()));
 
         }
 
@@ -467,25 +436,6 @@ public class AddActivity extends AppCompatActivity {
     }
 
 
-    private int getPositionOfCategory(String activity) {
-
-        String category = TrackedActivity.getCategory(activity);
-
-
-        int pos = -1;
-
-        //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
-        //so it can be put as a starting selection
-        for (int i = 0; i < categoryList.size(); i++) {
-            if (categoryList.get(i).equals(category)) {
-                pos = i;
-
-            }
-        }
-
-        return pos;
-
-    }
 
 
 }

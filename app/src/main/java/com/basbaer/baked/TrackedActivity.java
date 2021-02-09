@@ -85,8 +85,6 @@ public class TrackedActivity{
 
         updateCategoryCounter();
 
-        Log.i("TrackedActivity", "long value: " + date);
-
         Calendar givenDateCalendar = Calendar.getInstance();
 
         givenDateCalendar.setTime(new Date(date));
@@ -107,10 +105,6 @@ public class TrackedActivity{
 
 
         this.insertInDb();
-
-
-
-
 
 
     }
