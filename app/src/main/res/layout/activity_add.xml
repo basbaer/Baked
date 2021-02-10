@@ -44,6 +44,7 @@
         android:layout_height="wrap_content"
         android:autofillHints="@string/word_date"
         android:layout_marginStart="5dp"
+        android:textColor="@color/list_Add_Activity"
 
 
         android:fontFamily="sans-serif"

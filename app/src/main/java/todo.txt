@@ -1,3 +1,2 @@
-- Categorie list direkter zugriff oder über variable in addActivity
+delete categories/activities from list
 
-get date from edit text view

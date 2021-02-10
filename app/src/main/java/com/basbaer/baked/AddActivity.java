@@ -1,18 +1,14 @@
 package com.basbaer.baked;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -53,7 +49,7 @@ public class AddActivity extends AppCompatActivity {
     Spinner activitySpinner;
     ArrayAdapter<String> activitySpinnerAdapter;
     Spinner categorySpinner;
-    ArrayAdapter<mCategories> adapterCategorySpinner;
+    ArrayAdapter<String> adapterCategorySpinner;
     GridView colorPickerGridView;
 
     AlertDialog alertDialogActivity = null;
@@ -84,7 +80,7 @@ public class AddActivity extends AppCompatActivity {
 
     //list for the drop down Spinner
     List<String> activtiesList;
-    List<mCategories> categoryList;
+    List<String> categoryNamesList;
 
 
 
@@ -141,15 +137,11 @@ public class AddActivity extends AppCompatActivity {
         //-------------------------------------------------------------------------------------
         //Setting up Category-Spinner
 
-        categoryList = new ArrayList<>();
-
-        //??
-        //könnte hier auch in den Spinner direkt die mCategories.allCategories reingeben
-        categoryList.addAll(mCategories.selectableCategoriesList);
+        categoryNamesList = mCategories.getCategoryNamesList();
 
 
         categorySpinner = activityAddBinding.categorySpinner;
-        adapterCategorySpinner = new ArrayAdapter<>(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, categoryList);
+        adapterCategorySpinner = new ArrayAdapter<>(this, R.layout.spinner_activity_layout, R.id.spinnerAdapterTextView, categoryNamesList);
         adapterCategorySpinner.setDropDownViewResource(R.layout.spinner_activity_layout);
         categorySpinner.setAdapter(adapterCategorySpinner);
 
@@ -275,6 +267,8 @@ public class AddActivity extends AppCompatActivity {
         if (date != -1L && activity_name != null && color != null) {
 
             TrackedActivity i = new TrackedActivity(activity_name, category, date, color, getApplicationContext());
+
+            i.insertInDb();
 
 
             TrackedActivity.printDatabase();
@@ -408,22 +402,19 @@ public class AddActivity extends AppCompatActivity {
 
     public void alertDialogCategoryButtonClicked(View view) {
 
-        ArrayList<String> categoryNames = new ArrayList<>();
 
-        for(int i = 0; i < categoryList.size(); i++){
-            categoryNames.add(categoryList.get(i).getName());
-        }
+        if(!categoryNamesList.contains(alertDialogEditTextCategory.getText().toString())) {
+
+            category_name = alertDialogEditTextCategory.getText().toString();
+
+            categoryNamesList.add(category_name);
+
+            categorySpinner.setSelection(categoryNamesList.size() - 1);
 
 
-
-        if(categoryNames.contains(alertDialogEditTextCategory.getText().toString())) {
-
-            categoryList.add(new mCategories(-1, alertDialogEditTextCategory.getText().toString(), true));
-
-            categorySpinner.setSelection(categoryList.size() - 1);
         }else{
 
-            categorySpinner.setSelection(categoryNames.indexOf(alertDialogEditTextCategory.getText().toString()));
+            categorySpinner.setSelection(categoryNamesList.indexOf(alertDialogEditTextCategory.getText().toString()));
 
         }
 

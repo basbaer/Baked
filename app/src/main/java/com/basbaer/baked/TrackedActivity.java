@@ -27,7 +27,7 @@ public class TrackedActivity{
     private static int idIndex;
     private static int activityIndex;
     private static int categoryIndex;
-    private static int categroyIdIndex;
+    private static int categoryIdIndex;
     private static int isCheckedIndex;
     private static int exactDateIndex;
     private static int dateDayIndex;
@@ -40,7 +40,7 @@ public class TrackedActivity{
     private static final String ID = "id";
     private static final String ACTIVITY = "activity";
     private static final String CATEGORY = "category";
-    private static final String CATEGORYID = "categroyId";
+    private static final String CATEGORYID = "categoryId";
     private static final String ISCHECKED = "isChecked";
     private static final String EXACTDATE = "exactDate";
     private static final String DATEDAY = "dateDay";
@@ -83,7 +83,7 @@ public class TrackedActivity{
             createDB(context);
         }
 
-        updateCategoryCounter();
+        categoryIdCounter = updateCategoryCounter();
 
         Calendar givenDateCalendar = Calendar.getInstance();
 
@@ -104,7 +104,7 @@ public class TrackedActivity{
         categoryIdCounter++;
 
 
-        this.insertInDb();
+
 
 
     }
@@ -128,7 +128,7 @@ public class TrackedActivity{
         if(c.moveToFirst()){
             this.activity = c.getString(activityId);
             this.category = c.getString(categoryIndex);
-            this.categoryId = c.getInt(categroyIdIndex);
+            this.categoryId = c.getInt(categoryIdIndex);
             this.isChecked = c.getInt(isCheckedIndex);
             this.exactDate = c.getLong(exactDateIndex);
             this.dateDay = c.getInt(dateDayIndex);
@@ -145,7 +145,7 @@ public class TrackedActivity{
 
     }
 
-    private void insertInDb() {
+    public void insertInDb() {
 
         ContentValues values = new ContentValues();
 
@@ -193,7 +193,7 @@ public class TrackedActivity{
             idIndex = c.getColumnIndex("id");
             activityIndex = c.getColumnIndex(ACTIVITY);
             categoryIndex = c.getColumnIndex(CATEGORY);
-            categroyIdIndex = c.getColumnIndex(CATEGORYID);
+            categoryIdIndex = c.getColumnIndex(CATEGORYID);
             isCheckedIndex = c.getColumnIndex(ISCHECKED);
             exactDateIndex = c.getColumnIndex(EXACTDATE);
             dateDayIndex = c.getColumnIndex(DATEDAY);
@@ -351,7 +351,7 @@ public class TrackedActivity{
         while (moreEntries) {
 
             String nameOfCategory = c.getString(categoryIndex);
-            int id = c.getInt(categroyIdIndex);
+            int id = c.getInt(categoryIdIndex);
 
 
 
@@ -617,7 +617,7 @@ public class TrackedActivity{
     }
 
 
-    private static long updateCategoryCounter(){
+    private static int updateCategoryCounter(){
 
         String sql = "SELECT MAX(" + CATEGORYID + ") FROM " + ACTIVITIES_DB;
 
@@ -625,9 +625,11 @@ public class TrackedActivity{
 
         int count = -1;
 
-        if (c.moveToFirst()){
+        int i = c.getCount();
 
-            count = c.getInt(categroyIdIndex);
+        if (c.getCount() > 0 && c.moveToFirst()){
+
+            count = c.getInt(0);
 
         }
 
@@ -647,9 +649,11 @@ public class TrackedActivity{
 
         Cursor c = database.rawQuery(sql, null);
 
+        int count = c.getCount();
+
         c.close();
 
-        return c.getCount();
+        return count;
 
     }
 

@@ -94,6 +94,16 @@ public class mCategories {
         return this.actvities_array;
     }
 
+    public static ArrayList<String> getCategoryNamesList(){
+        ArrayList<String> list = new ArrayList<>();
+        for(int i = 0; i < selectableCategoriesList.size(); i++){
+            list.add(selectableCategoriesList.get(i).getName());
+
+        }
+
+        return list;
+    }
+
 
     @Override
     public String toString(){
