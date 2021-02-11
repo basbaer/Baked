@@ -25,22 +25,21 @@ import com.basbaer.baked.databinding.ActivityMainBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
 
     ActivityMainBinding activityMainBinding;
 
-    private SwipeGestureDetector swipeGestureDetector;
     private GestureDetectorCompat gestureDetectorCompat;
 
     //the last day a ACTION_DOWN was done on
-    public static CalendarDay clickedDay;
+    public CalendarDay clickedDay;
 
 
 
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Calendar that gets displayed in the calendarGV
     //A calendar variable is always respresents one day with its corresponding information
-    protected static CalendarAdapter calendarAdapter;
+    protected CalendarAdapter calendarAdapter;
 
 
     //Variable that represents the current displayed month
@@ -225,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
 
 
-        getSupportActionBar().setTitle(calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
+        Objects.requireNonNull(getSupportActionBar()).setTitle(calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault())
                 + " "
                 + calendar.get(Calendar.YEAR));
 
@@ -245,10 +244,18 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.filter_categories:
-                buildAlertDialog();
+
+        if (item.getItemId() == R.id.filter_categories){
+            buildAlertDialog();
+
         }
+
+        if (item.getItemId() == R.id.menu_editCategoriesActivitiesList){
+            Intent intent = new Intent(getApplicationContext(), EditCategoriesActivitesList.class);
+
+            startActivity(intent);
+        }
+
 
 
 
@@ -340,7 +347,9 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setUpSwipeGestureDetector(){
 
-        swipeGestureDetector = new SwipeGestureDetector(new SwipeActions() {
+        //if a click is done, the CalendarAdapter get's informed
+        //clickedDay is the last Day a ACTION_DOWN was done on
+        SwipeGestureDetector swipeGestureDetector = new SwipeGestureDetector(new SwipeActions() {
             @Override
             public void onSwipeLeft() {
                 leftSwipe();
@@ -364,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick() {
 
-                if(clickedDay != null){
+                if (clickedDay != null) {
                     //if a click is done, the CalendarAdapter get's informed
                     //clickedDay is the last Day a ACTION_DOWN was done on
                     CalendarAdapter.performClickX(clickedDay);

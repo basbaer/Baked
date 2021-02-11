@@ -11,6 +11,9 @@
     <item android:title="@string/word_settings"
         android:id="@+id/menu_settings"/>
 
+    <item android:title="@string/edit_categories"
+        android:id="@+id/menu_editCategoriesActivitiesList"/>
+
 
 
 </menu>

@@ -50,7 +50,7 @@ public class TrackedActivity{
 
 
     //-----------------------------------------------------------------------------------
-    private long id;
+    private int id;
 
     private String activity;
     private String category;
@@ -159,7 +159,7 @@ public class TrackedActivity{
         values.put(DATEYEAR, this.dateYear);
         values.put(COLOR, this.color);
 
-        this.id = database.insert("activities", null, values);
+        this.id = (int) database.insert("activities", null, values);
 
 
     }
@@ -208,6 +208,22 @@ public class TrackedActivity{
 
     }
 
+    public static String getActivityNameById(int id){
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE ? = ? LIMIT 1", new String[]{ID, String.valueOf(id)});
+
+        String name = "";
+
+        if(c.moveToFirst()){
+
+            name = c.getString(activityIndex);
+
+        }
+
+        return name;
+
+    }
+
     //------------------------------------------------------------------------------------
     //Overriding Methods
     @Override
@@ -238,11 +254,11 @@ public class TrackedActivity{
 
     }
 
-    public long getId() {
+    public int getId() {
 
         if (this.id == -1) {
 
-            String sql = "SELECT * FROM activities WHERE "
+            String sql = "SELECT * FROM " + ACTIVITIES_DB + " WHERE "
                     + "exactDate = "
                     + this.exactDate;
 
@@ -250,7 +266,7 @@ public class TrackedActivity{
 
             if (c.moveToFirst()) {
 
-                this.id = c.getLong(idIndex);
+                this.id = c.getInt(idIndex);
 
             }
 
@@ -513,6 +529,46 @@ public class TrackedActivity{
 
     }
 
+    /**
+     *
+      * @param categoryId Id of the category
+     * @return list of TrackedActivities while from each Activity is only one instance as a representative
+     * in the list
+     */
+    public static ArrayList<TrackedActivity> getActivityInstancesOfCategory(int categoryId){
+
+        String sql = "SELECT * FROM " + ACTIVITIES_DB + " WHERE "
+                + CATEGORYID + " = "
+                + categoryId;
+
+        Cursor c = database.rawQuery(sql, null);
+
+        ArrayList<TrackedActivity> activitiesAL = new ArrayList<>();
+
+        ArrayList<String> tempActivityNames = new ArrayList<>();
+
+        boolean moreEntries = c.moveToFirst();
+
+        while (moreEntries) {
+
+
+            if(!tempActivityNames.contains(c.getString(activityIndex)))
+
+                tempActivityNames.add(c.getString(activityIndex));
+
+                activitiesAL.add(new TrackedActivity(c.getInt(idIndex)));
+
+            moreEntries = c.moveToNext();
+
+        }
+
+        c.close();
+
+
+
+        return activitiesAL;
+
+    }
 
     //-----------------------------------------------------------------------------------
     //setter

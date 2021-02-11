@@ -17,10 +17,12 @@ public class mCategories {
     public static final String ISALLCHECKED = "isAllChecked";
     public static SharedPreferences sharedPreferences;
 
-    private int id;
+    private final int id;
     private final String name;
     private boolean isChecked;
     private ArrayList<TrackedActivity> actvities_array;
+    //only one instance of each activity is saved here
+    private ArrayList<TrackedActivity> activitiesInstancesArray;
 
 
     public mCategories(int id, String name, boolean isChecked) {
@@ -29,6 +31,7 @@ public class mCategories {
         this.isChecked = isChecked;
         if(id != -1){
             this.actvities_array = TrackedActivity.getActivitiesOfCategory(id);
+            this.activitiesInstancesArray = TrackedActivity.getActivityInstancesOfCategory(id);
         }
 
     }
@@ -75,6 +78,8 @@ public class mCategories {
         return name;
     }
 
+    public int getId(){return id;}
+
     public boolean isChecked() {
         return isChecked;
     }
@@ -87,11 +92,23 @@ public class mCategories {
 
     }
 
-    public ArrayList<TrackedActivity> getActvities_array(){
+    /**
+     *
+     * @return ArrayList with all the activities of this categorey
+     */
+    public ArrayList<TrackedActivity> getAllActvities_array(){
 
         this.actvities_array = TrackedActivity.getActivitiesOfCategory(this.id);
 
         return this.actvities_array;
+    }
+
+    public ArrayList<TrackedActivity> getActivitiesInstancesArray(){
+
+        this.activitiesInstancesArray = TrackedActivity.getActivityInstancesOfCategory(this.id);
+
+        return this.activitiesInstancesArray;
+
     }
 
     public static ArrayList<String> getCategoryNamesList(){

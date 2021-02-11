@@ -25,7 +25,7 @@
     <string name="Friday">Fri</string>
     <string name="Saturday">Sat</string>
     <string name="Sunday">Sun</string>
-   <!-- Strings in DayOverview Activity -->
+    <!-- Strings in DayOverview Activity -->
     <string name="added_to_calendar">Added to calendar: </string>
 
 
@@ -33,6 +33,13 @@
     <string name="word_settings">Settings</string>
     <string name="filter">Filter</string>
     <string name="all">All</string>
+    <string name="edit_categories">Edit Category/Activity List</string>
+    <string name="deleteCategaoryOrActivity">Delete Category or Activity</string>
+    <string name="reallyDelete">Do you really want to delete this ?</string>
+    <string name="categoryWillBeDeleted">All Activities of this Category will be deleted</string>
+    <string name="activityWillBeDelete">This Activity will be deleted</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 
     <!-- Add Activit-->
     <string name="word_date">Date</string>

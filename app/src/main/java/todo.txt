@@ -1,2 +1,2 @@
-delete categories/activities from list
+Context field in TrackedActivity
 
