@@ -118,11 +118,14 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
             public void onClick(View v) {
 
                 String message;
+                final boolean isCategory;
 
                 if(hashMapIndicesWichAreCategories.containsKey(position)){
                     message = Resources.getSystem().getString(R.string.categoryWillBeDeleted);
+                    isCategory = true;
                 }else{
                     message = Resources.getSystem().getString(R.string.activityWillBeDelete);
+                    isCategory = false;
                 }
 
 
@@ -134,8 +137,16 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                //delete it
+                                if(isCategory){
+                                    TrackedActivity.deleteCategory(arrayListIds.get(position));
+                                }else{
+                                    TrackedActivity.deleteActivity(arrayListIds.get(position));
+                                }
+
+
                                 mCategories.updateCategoriesList();
+
+                                EditCategoriesActivitesList.rvAdapter.notifyDataSetChanged();
                             }
                         })
                         .setNegativeButton(Resources.getSystem().getString(R.string.cancel), null)

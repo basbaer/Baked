@@ -1,8 +1,13 @@
 package com.basbaer.baked;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
+
+import com.basbaer.baked.databinding.ActivityEditCategoriesActivitesListBinding;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,14 +16,30 @@ public class EditCategoriesActivitesList extends AppCompatActivity {
 
     ArrayList<mCategories> categoriesArrayList;
 
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    public static mEditListRVAdapter rvAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_categories_activites_list);
+        com.basbaer.baked.databinding.ActivityEditCategoriesActivitesListBinding activityEditCategoriesActivitesListBinding = ActivityEditCategoriesActivitesListBinding.inflate(getLayoutInflater());
+        View view = activityEditCategoriesActivitesListBinding.getRoot();
+        setContentView(view);
 
         categoriesArrayList = TrackedActivity.getDifferentCategories();
 
         HashMap<mCategories, ArrayList<TrackedActivity>> hm = createHashMap(categoriesArrayList);
+
+        recyclerView = activityEditCategoriesActivitesListBinding.recyclerViewEditList;
+
+        layoutManager = new LinearLayoutManager(this);
+
+        recyclerView.setLayoutManager(layoutManager);
+
+        rvAdapter = new mEditListRVAdapter(hm);
+
+        recyclerView.setAdapter(rvAdapter);
 
 
 

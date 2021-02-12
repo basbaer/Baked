@@ -8,6 +8,7 @@ import androidx.core.view.GestureDetectorCompat;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Bundle;
@@ -39,7 +40,11 @@ public class MainActivity extends AppCompatActivity {
     private GestureDetectorCompat gestureDetectorCompat;
 
     //the last day a ACTION_DOWN was done on
-    public CalendarDay clickedDay;
+    public static CalendarDay clickedDay;
+
+    //keeps track if the 'All' is checked
+    public static final String ISALLCHECKED = "isAllChecked";
+    public static SharedPreferences sharedPreferences;
 
 
 
@@ -51,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Calendar that gets displayed in the calendarGV
     //A calendar variable is always respresents one day with its corresponding information
-    protected CalendarAdapter calendarAdapter;
+    protected static CalendarAdapter calendarAdapter;
 
 
     //Variable that represents the current displayed month
@@ -90,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         AddActivity.sharedPreferences = this.getSharedPreferences("com.basbaer.baked", Context.MODE_PRIVATE);
+
+        sharedPreferences = this.getSharedPreferences("com.basbaer.baked", Context.MODE_PRIVATE);
 
         if(TrackedActivity.currentMonthHashMap == null) {
             TrackedActivity.currentMonthHashMap = new HashMap<>();
@@ -175,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //updating the categories list before passing it to adapter
-        mCategories.updateCategoriesList(this);
+        mCategories.updateCategoriesList();
 
 
 
@@ -298,9 +305,9 @@ public class MainActivity extends AppCompatActivity {
             if(checkbox.getText().toString().equals(getString(R.string.all))) {
 
                 TrackedActivity.setIsCheckedForAll(checked);
-                mCategories.sharedPreferences.edit().putBoolean(mCategories.ISALLCHECKED, checked).apply();
+                sharedPreferences.edit().putBoolean(ISALLCHECKED, checked).apply();
 
-                mCategories.updateCategoriesList(this);
+                mCategories.updateCategoriesList();
 
                 amountSelected = -1;
 
@@ -323,14 +330,14 @@ public class MainActivity extends AppCompatActivity {
         //-1 since the "all" categorie does not count for this
         if(amountSelected != -1 &&
                 amountSelected != mCategories.allCategories.size() &&
-                mCategories.sharedPreferences.getBoolean(mCategories.ISALLCHECKED, true)) {
+                sharedPreferences.getBoolean(ISALLCHECKED, true)) {
             //it means minimum one checkbox is not checked
-            mCategories.sharedPreferences.edit().putBoolean(mCategories.ISALLCHECKED, false).apply();
-        }else if(amountSelected == mCategories.allCategories.size()-1 && !mCategories.sharedPreferences.getBoolean(mCategories.ISALLCHECKED, false)){
-            mCategories.sharedPreferences.edit().putBoolean(mCategories.ISALLCHECKED, true).apply();
+            sharedPreferences.edit().putBoolean(ISALLCHECKED, false).apply();
+        }else if(amountSelected == mCategories.allCategories.size()-1 && !sharedPreferences.getBoolean(ISALLCHECKED, false)){
+            sharedPreferences.edit().putBoolean(ISALLCHECKED, true).apply();
         }
 
-        mCategories.updateCategoriesList(this);
+        mCategories.updateCategoriesList();
 
         updateCalendar(Calendar.getInstance());
 

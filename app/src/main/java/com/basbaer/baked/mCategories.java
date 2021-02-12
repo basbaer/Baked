@@ -2,6 +2,8 @@ package com.basbaer.baked;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,9 +15,7 @@ public class mCategories {
     //same as all categories but without "All"
     public static ArrayList<mCategories> selectableCategoriesList;
 
-    //keeps track if the 'All' is checked
-    public static final String ISALLCHECKED = "isAllChecked";
-    public static SharedPreferences sharedPreferences;
+
 
     private final int id;
     private final String name;
@@ -37,15 +37,17 @@ public class mCategories {
     }
 
 
-    public static void updateCategoriesList(Context context){
+    public static void updateCategoriesList(){
 
         allCategories = new ArrayList<>();
         selectableCategoriesList = new ArrayList<>();
-        sharedPreferences = context.getSharedPreferences("com.basbaer.baked", Context.MODE_PRIVATE);
+
 
         //first entry is the "All" entry
 
-        allCategories.add(new mCategories(-1, context.getString(R.string.all), sharedPreferences.getBoolean(ISALLCHECKED, false)));
+
+
+        allCategories.add(new mCategories(-1, "All", MainActivity.sharedPreferences.getBoolean(MainActivity.ISALLCHECKED, false)));
 
         ArrayList<mCategories> categories = TrackedActivity.getDifferentCategories();
 
@@ -94,7 +96,7 @@ public class mCategories {
 
     /**
      *
-     * @return ArrayList with all the activities of this categorey
+     * @return ArrayList with all the activities of this category
      */
     public ArrayList<TrackedActivity> getAllActvities_array(){
 
@@ -103,6 +105,11 @@ public class mCategories {
         return this.actvities_array;
     }
 
+
+    /**
+     *
+     * @return returs Array with one activity of each category as a representative of the activity
+     */
     public ArrayList<TrackedActivity> getActivitiesInstancesArray(){
 
         this.activitiesInstancesArray = TrackedActivity.getActivityInstancesOfCategory(this.id);
@@ -110,6 +117,7 @@ public class mCategories {
         return this.activitiesInstancesArray;
 
     }
+
 
     public static ArrayList<String> getCategoryNamesList(){
         ArrayList<String> list = new ArrayList<>();
@@ -120,6 +128,8 @@ public class mCategories {
 
         return list;
     }
+
+
 
 
     @Override

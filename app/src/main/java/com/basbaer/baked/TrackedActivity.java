@@ -64,7 +64,7 @@ public class TrackedActivity{
     private String color;
     private static Context mcontext;
 
-    public static HashMap<Long, View> currentMonthHashMap;
+    public static HashMap<Integer, View> currentMonthHashMap;
     private static int categoryIdCounter;
 
 
@@ -223,6 +223,8 @@ public class TrackedActivity{
         return name;
 
     }
+
+
 
     //------------------------------------------------------------------------------------
     //Overriding Methods
@@ -653,6 +655,56 @@ public class TrackedActivity{
 
 
     }
+
+    public static void deleteActivity(int id){
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE ? = ?", new String[]{ID, String.valueOf(id)});
+
+        if (c.moveToFirst()){
+
+            c.close();
+
+            database.execSQL("DELETE FROM " + ACTIVITIES_DB + " WHERE " + ID + " = " + id);
+
+
+        }
+
+
+
+    }
+
+    public static void deleteActivitiesWithSameName(String activityName){
+
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE ? = ?", new String[]{ACTIVITY, activityName});
+
+        if (c.moveToFirst()){
+
+            database.execSQL("DELETE FROM " + ACTIVITIES_DB + " WHERE " + ACTIVITY + " = " + activityName);
+
+            c.close();
+
+
+        }
+
+    }
+
+    public static void deleteCategory(int id){
+
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE ? = ?", new String[]{CATEGORYID, String.valueOf(id)});
+
+        if (c.moveToFirst()){
+
+            database.execSQL("DELETE FROM " + ACTIVITIES_DB + " WHERE " + CATEGORYID + " = " + id);
+
+            c.close();
+
+
+        }
+
+    }
+
 
 
     public static void clearDatabase() {
