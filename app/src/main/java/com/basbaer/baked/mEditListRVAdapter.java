@@ -76,6 +76,8 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
         }
 
+        Log.i("Adapter", arrayListIds.toString() + "ids: " + hashMapIndicesWichAreCategories.toString());
+
     }
 
 
@@ -97,7 +99,9 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
     //-> for each item of the ArrayList once
     //here it sets the text for each entry of the RecyclerView
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+
+
 
 
         //categories
@@ -105,11 +109,19 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
             holder.textView.setText(hashMapIndicesWichAreCategories.get(position));
 
+            holder.textView.setTextSize(25f);
+
 
 
         }else{
 
-            holder.textView.setText(TrackedActivity.getActivityNameById(arrayListIds.get(position)));
+            String text = TrackedActivity.getActivityNameById(arrayListIds.get(position));
+
+            Log.i("Text: ", text);
+
+            holder.textView.setText(text);
+
+            holder.textView.setTextSize(22f);
 
         }
 

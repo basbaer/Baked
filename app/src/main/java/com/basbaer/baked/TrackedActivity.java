@@ -83,7 +83,9 @@ public class TrackedActivity{
             createDB(context);
         }
 
-        categoryIdCounter = updateCategoryCounter();
+        categoryIdCounter = getCategoryCount(category);
+
+
 
         Calendar givenDateCalendar = Calendar.getInstance();
 
@@ -101,7 +103,7 @@ public class TrackedActivity{
         this.id = -1;
         mcontext = context;
 
-        categoryIdCounter++;
+
 
 
 
@@ -725,19 +727,33 @@ public class TrackedActivity{
     }
 
 
-    private static int updateCategoryCounter(){
+    private static int getCategoryCount(String category_name){
 
-        String sql = "SELECT MAX(" + CATEGORYID + ") FROM " + ACTIVITIES_DB;
-
-        Cursor c = database.rawQuery(sql, null);
+        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE " + CATEGORY + " = '" + category_name + "' LIMIT 1", null);
 
         int count = -1;
 
         int i = c.getCount();
 
-        if (c.getCount() > 0 && c.moveToFirst()){
+        boolean r = c.moveToFirst();
 
-            count = c.getInt(0);
+        if(c.getCount() > 0 && c.moveToFirst()){
+
+            count = c.getInt(categoryIdIndex)-1;
+
+        }else {
+
+            String sql = "SELECT MAX(" + CATEGORYID + ") FROM " + ACTIVITIES_DB;
+
+            c = database.rawQuery(sql, null);
+
+
+
+            if (c.getCount() > 0 && c.moveToFirst()) {
+
+                count = c.getInt(0);
+
+            }
 
         }
 

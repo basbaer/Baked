@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.basbaer.baked.databinding.ActivityEditCategoriesActivitesListBinding;
@@ -30,6 +31,8 @@ public class EditCategoriesActivitesList extends AppCompatActivity {
         categoriesArrayList = TrackedActivity.getDifferentCategories();
 
         HashMap<mCategories, ArrayList<TrackedActivity>> hm = createHashMap(categoriesArrayList);
+
+        Log.i("HashMap", String.valueOf(hm));
 
         recyclerView = activityEditCategoriesActivitesListBinding.recyclerViewEditList;
 
