@@ -3,8 +3,7 @@ package com.basbaer.baked;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Resources;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -27,6 +27,7 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
         public TextView textView;
         public ImageButton imageButton;
+        public CardView cardView;
 
         //in this constructor, the views are referenced
         public MyViewHolder(View incomingTextView){
@@ -36,6 +37,7 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
             //Option 2
             textView = incomingTextView.findViewById(R.id.editListTVname);
             imageButton = incomingTextView.findViewById(R.id.editListimageButton);
+            cardView = incomingTextView.findViewById(R.id.cardView_Adapter_EditList);
 
         }
     }
@@ -47,7 +49,7 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
     //save which indexes are categories
     private HashMap<Integer, String> hashMapIndicesWichAreCategories;
 
-    private Context context;
+    private final Context context;
 
 
 
@@ -95,17 +97,13 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
 
     //Sets up, how the Views in the ViewHolder have to look like and has to return the ViewHolder
+    @NonNull
     @Override
     public mEditListRVAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //Option 1: Set up given 'look' from Android
-        //View viewThatGetsDisplayed = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
 
-        //Option 2: Set up your own 'look' via a TextView which functions as a template (therefore you have to create an other .xml-file)
         View viewThatGetsDisplayed = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_editlist_layout, parent, false);
 
-        MyViewHolder viewHolder = new MyViewHolder(viewThatGetsDisplayed);
-
-        return viewHolder;
+        return new MyViewHolder(viewThatGetsDisplayed);
     }
 
     //this method is called as many times as the getItemCount()-Result
@@ -113,7 +111,6 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
     //here it sets the text for each entry of the RecyclerView
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-
 
 
 
@@ -130,8 +127,10 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
             String text =  TrackedActivity.getActivityNameById(arrayListIds.get(position));
 
-            Log.i("position", String.valueOf(position));
+            holder.textView.setPadding(40,0,0,0);
 
+
+            holder.cardView.setCardBackgroundColor(Color.parseColor(TrackedActivity.getActivityColorById(arrayListIds.get(position))));
 
             holder.textView.setText(text);
 
@@ -181,6 +180,8 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
                                 setUpLists(hm);
 
                                 notifyDataSetChanged();
+
+
 
 
                             }

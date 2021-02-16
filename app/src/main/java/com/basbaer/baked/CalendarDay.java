@@ -9,13 +9,11 @@ public class CalendarDay {
 
     Calendar displayedDate;
     HashMap<Integer, Calendar> datesHashMap;
-    Context context;
     int position;
 
     public CalendarDay(Calendar date, HashMap<Integer, Calendar> datesHashMap, Context context, int position){
         this.displayedDate = date;
         this.datesHashMap = datesHashMap;
-        this.context = context;
         this.position = position;
 
     }

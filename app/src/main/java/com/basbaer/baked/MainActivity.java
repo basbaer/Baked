@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Calendar that gets displayed in the calendarGV
     //A calendar variable is always respresents one day with its corresponding information
-    protected static CalendarAdapter calendarAdapter;
+    protected CalendarAdapter calendarAdapter;
 
 
     //Variable that represents the current displayed month

@@ -228,6 +228,25 @@ public class TrackedActivity{
 
     }
 
+    public static String getActivityColorById(int id){
+
+        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE " + ID + " = " + id + " LIMIT 1", null);
+
+        String color = "";
+
+        if(c.moveToFirst()){
+
+            color = c.getString(colorIndex);
+
+        }
+
+        c.close();
+
+        return color;
+
+
+    }
+
 
 
     //------------------------------------------------------------------------------------

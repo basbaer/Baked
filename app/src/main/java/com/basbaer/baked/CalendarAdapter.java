@@ -169,7 +169,7 @@ class CalendarAdapter extends BaseAdapter {
 
         if (activities.size() < 2) {
 
-            Intent intentToAddActivity = new Intent(calendarDay.context, AddActivity.class);
+            Intent intentToAddActivity = new Intent(context, AddActivity.class);
 
             long dateInSeconds = calendarDay.datesHashMap.get(calendarDay.position).getTime().getTime();
 
@@ -349,7 +349,7 @@ class CalendarAdapter extends BaseAdapter {
 
 
 
-                MainActivity.calendarAdapter.notifyDataSetChanged();
+                notifyDataSetChanged();
 
                 return false;
             }
