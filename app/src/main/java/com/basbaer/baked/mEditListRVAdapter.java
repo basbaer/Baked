@@ -1,6 +1,7 @@
 package com.basbaer.baked;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -46,11 +47,23 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
     //save which indexes are categories
     private HashMap<Integer, String> hashMapIndicesWichAreCategories;
 
+    private Context context;
 
 
 
 
-    public mEditListRVAdapter(HashMap<mCategories, ArrayList<TrackedActivity>> incomingHashMap){
+
+
+    public mEditListRVAdapter(HashMap<mCategories, ArrayList<TrackedActivity>> incomingHashMap, Context context){
+
+        this.context = context;
+
+        setUpLists(incomingHashMap);
+
+    }
+
+
+    private void setUpLists(HashMap<mCategories, ArrayList<TrackedActivity>> incomingHashMap){
 
         arrayListIds = new ArrayList<>();
 
@@ -115,9 +128,10 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
         }else{
 
-            String text = TrackedActivity.getActivityNameById(arrayListIds.get(position));
+            String text =  TrackedActivity.getActivityNameById(arrayListIds.get(position));
 
-            Log.i("Text: ", text);
+            Log.i("position", String.valueOf(position));
+
 
             holder.textView.setText(text);
 
@@ -133,19 +147,20 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
                 final boolean isCategory;
 
                 if(hashMapIndicesWichAreCategories.containsKey(position)){
-                    message = Resources.getSystem().getString(R.string.categoryWillBeDeleted);
+                    message = context.getString(R.string.categoryWillBeDeleted);
                     isCategory = true;
                 }else{
-                    message = Resources.getSystem().getString(R.string.activityWillBeDelete);
+                    message = context.getString(R.string.activityWillBeDelete);
                     isCategory = false;
                 }
 
 
                 new AlertDialog.Builder(holder.imageButton.getContext())
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle(Resources.getSystem().getString(R.string.reallyDelete))
+
+                        .setTitle(context.getString(R.string.reallyDelete))
                         .setMessage(message)
-                        .setPositiveButton(Resources.getSystem().getString(R.string.delete), new DialogInterface.OnClickListener() {
+                        .setPositiveButton(context.getString(R.string.delete), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -158,10 +173,19 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
                                 mCategories.updateCategoriesList();
 
-                                EditCategoriesActivitesList.rvAdapter.notifyDataSetChanged();
+
+                                ArrayList<mCategories> categoriesArrayList = TrackedActivity.getDifferentCategories();
+
+                                HashMap<mCategories, ArrayList<TrackedActivity>> hm = EditCategoriesActivitesList.createHashMap(categoriesArrayList);
+
+                                setUpLists(hm);
+
+                                notifyDataSetChanged();
+
+
                             }
                         })
-                        .setNegativeButton(Resources.getSystem().getString(R.string.cancel), null)
+                        .setNegativeButton(context.getString(R.string.cancel), null)
                         .show();
 
             }

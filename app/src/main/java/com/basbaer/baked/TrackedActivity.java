@@ -212,7 +212,7 @@ public class TrackedActivity{
 
     public static String getActivityNameById(int id){
 
-        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE ? = ? LIMIT 1", new String[]{ID, String.valueOf(id)});
+        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE " + ID + " = " + id + " LIMIT 1", null);
 
         String name = "";
 
@@ -221,6 +221,8 @@ public class TrackedActivity{
             name = c.getString(activityIndex);
 
         }
+
+        c.close();
 
         return name;
 
@@ -660,7 +662,7 @@ public class TrackedActivity{
 
     public static void deleteActivity(int id){
 
-        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE ? = ?", new String[]{ID, String.valueOf(id)});
+        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE " + ID + " = " + id, null);
 
         if (c.moveToFirst()){
 
@@ -694,7 +696,7 @@ public class TrackedActivity{
     public static void deleteCategory(int id){
 
 
-        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE ? = ?", new String[]{CATEGORYID, String.valueOf(id)});
+        Cursor c = database.rawQuery("SELECT * FROM " + ACTIVITIES_DB + " WHERE " + CATEGORYID + " = " + id, null);
 
         if (c.moveToFirst()){
 
