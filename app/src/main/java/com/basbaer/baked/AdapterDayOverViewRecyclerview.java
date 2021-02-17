@@ -15,11 +15,9 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+
 
 public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<AdapterDayOverViewRecyclerview.MyViewHolder> {
 
@@ -44,26 +42,25 @@ public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<Adapter
 
     private ArrayList<TrackedActivity> activitiesAL;
     private Context context;
-    private Calendar tappedCalendar;
 
-    public AdapterDayOverViewRecyclerview(Context context, ArrayList<TrackedActivity> activitiesAL, Calendar tappedCalendar){
+
+    public AdapterDayOverViewRecyclerview(Context context, ArrayList<TrackedActivity> activitiesAL){
 
         this.activitiesAL = activitiesAL;
         this.context = context;
-        this.tappedCalendar = tappedCalendar;
+
 
     }
 
 
 
+    @NonNull
     @Override
     public AdapterDayOverViewRecyclerview.MyViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
 
         View displayedView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_dayoverview_layout, parent, false);
 
-        MyViewHolder viewHolder = new MyViewHolder(displayedView);
-
-        return viewHolder;
+        return new MyViewHolder(displayedView);
     }
 
     @Override
@@ -79,7 +76,7 @@ public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<Adapter
 
         String date_string = DateFormat.getDateInstance().format(c);
 
-        //String printTime = s.format(c);
+
 
         String printTime = context.getString(R.string.added_to_calendar) + date_string;
 
@@ -106,7 +103,7 @@ public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<Adapter
 
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
 
-            TrackedActivity ta = activitiesAL.get(position);
+            final TrackedActivity ta = activitiesAL.get(position);
 
 
             @Override

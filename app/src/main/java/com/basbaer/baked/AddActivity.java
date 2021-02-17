@@ -92,6 +92,8 @@ public class AddActivity extends AppCompatActivity {
         View view = activityAddBinding.getRoot();
         setContentView(view);
 
+        //initialize db
+        TrackedActivity.createDB(this);
         //----------------------------------------------------------------------------------
         //setting up features
         alertDialogLayoutActivityBinding = AlertDialogLayoutActivityBinding.inflate(getLayoutInflater());
@@ -266,7 +268,7 @@ public class AddActivity extends AppCompatActivity {
 
         if (date != -1L && activity_name != null && color != null) {
 
-            TrackedActivity i = new TrackedActivity(activity_name, category, date, color, getApplicationContext());
+            TrackedActivity i = new TrackedActivity(activity_name, category, date, color);
 
             i.insertInDb();
 

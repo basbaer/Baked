@@ -13,7 +13,7 @@ import androidx.cardview.widget.CardView;
 
 public class ColorPickerAdapter extends BaseAdapter {
 
-    private Context context;
+    private final Context context;
 
     //implementing an constructor
     public ColorPickerAdapter(Context context){

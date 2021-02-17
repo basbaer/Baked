@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,10 +27,9 @@ class CalendarAdapter extends BaseAdapter {
 
     private  HashMap<Integer, Calendar> datesHashMap;
     private final Context context;
-    private TextView datesTextView;
     public static int weeksOfMonth;
     private static ArrayList<TrackedActivity> activitiesOfTheDay;
-    private static View currentConvertView;
+    private View currentConvertView;
 
 
 
@@ -78,7 +76,7 @@ class CalendarAdapter extends BaseAdapter {
         }
 
         final LinearLayout daysCl = currentConvertView.findViewById(R.id.daysCL);
-        datesTextView = currentConvertView.findViewById(R.id.daysTV);
+        TextView datesTextView = currentConvertView.findViewById(R.id.daysTV);
 
         //the date that is currently created
         final Calendar displayedDate = datesHashMap.get(position);
@@ -113,7 +111,7 @@ class CalendarAdapter extends BaseAdapter {
                     onClickListenerForFirstActivity(context);
 
                     //onLongClickListenerForDeleting
-                    onLongClickListenerForFirstActivity(context);
+                    onLongClickListenerForFirstActivity();
 
                 } else if (activitiesOfTheDay.size() > 1) {
 
@@ -147,7 +145,7 @@ class CalendarAdapter extends BaseAdapter {
 
                     //saves this date to the MainActivity, so the MainActivity is able to send it to the
                     //performClickX() method in case, there is no swipe done
-                    MainActivity.clickedDay = new CalendarDay(displayedDate, datesHashMap, context, position);
+                    MainActivity.clickedDay = new CalendarDay(displayedDate, datesHashMap, position);
 
                     return false;
                 }
@@ -158,37 +156,7 @@ class CalendarAdapter extends BaseAdapter {
         return convertView;
     }
 
-    //method is called from MainActivity and does, what normally the onClickListener would do
-    //onClickListener ist not setUp, since it cosumes the DOWN_EVENT and it's not possible for
-    //the GridView to know if a probably a swipe is done
-    public static void performClickX(CalendarDay calendarDay){
 
-
-        ArrayList<TrackedActivity> activities = TrackedActivity.getActivitiesOfTheDay(calendarDay.displayedDate);
-
-
-        if (activities.size() < 2) {
-
-            Intent intentToAddActivity = new Intent(context, AddActivity.class);
-
-            long dateInSeconds = calendarDay.datesHashMap.get(calendarDay.position).getTime().getTime();
-
-            intentToAddActivity.putExtra("date", dateInSeconds);
-
-            calendarDay.context.startActivity(intentToAddActivity);
-
-        } else {
-
-            //intent to day overview
-            Intent intentToDayOverview = new Intent(calendarDay.context, DayOverview.class);
-
-            intentToDayOverview.putExtra("date", calendarDay.displayedDate.getTime().getTime());
-
-            calendarDay.context.startActivity(intentToDayOverview);
-
-        }
-
-    }
 
     private static int getLayoutHeigth(Context context) {
 
@@ -208,7 +176,7 @@ class CalendarAdapter extends BaseAdapter {
         return height / (weeksOfMonth + 1);
     }
 
-    private static void setUpFirstEntryOfTheDay() {
+    private void setUpFirstEntryOfTheDay() {
 
 
         CardView cardView_1 = currentConvertView.findViewById(R.id.cardView_Adapter_1);
@@ -225,7 +193,7 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-    private static void setUpSecondEntryOfTheDay() {
+    private void setUpSecondEntryOfTheDay() {
 
 
         CardView cardView_2 = currentConvertView.findViewById(R.id.cardView_Adapter_2);
@@ -242,7 +210,7 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-    private static void setUpThirdEntryOfTheDay() {
+    private void setUpThirdEntryOfTheDay() {
 
         CardView cardView_3 = currentConvertView.findViewById(R.id.cardView_Adapter_3);
 
@@ -258,7 +226,7 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-    private static void setUpForthEntryOfTheDay() {
+    private void setUpForthEntryOfTheDay() {
 
         CardView cardView_4 = currentConvertView.findViewById(R.id.cardView_Adapter_4);
 
@@ -274,7 +242,7 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-    private static void setUpMoreThanFourEntryOfTheDay(int position) {
+    private void setUpMoreThanFourEntryOfTheDay(int position) {
 
         CardView cardView_4 = currentConvertView.findViewById(R.id.cardView_Adapter_4);
 
@@ -294,7 +262,7 @@ class CalendarAdapter extends BaseAdapter {
 
     }
 
-    private static void onClickListenerForFirstActivity(Context context) {
+    private void onClickListenerForFirstActivity(Context context) {
 
         final Context mContext = context;
 
@@ -321,9 +289,8 @@ class CalendarAdapter extends BaseAdapter {
     }
 
 
-    private void onLongClickListenerForFirstActivity(final Context context) {
+    private void onLongClickListenerForFirstActivity() {
 
-        final Context mContext = context;
 
         final TextView textView_entry_1 = currentConvertView.findViewById(R.id.ActivityTV_1);
 

@@ -1,6 +1,5 @@
 package com.basbaer.baked;
 
-import android.content.Context;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -11,7 +10,7 @@ public class CalendarDay {
     HashMap<Integer, Calendar> datesHashMap;
     int position;
 
-    public CalendarDay(Calendar date, HashMap<Integer, Calendar> datesHashMap, Context context, int position){
+    public CalendarDay(Calendar date, HashMap<Integer, Calendar> datesHashMap, int position){
         this.displayedDate = date;
         this.datesHashMap = datesHashMap;
         this.position = position;

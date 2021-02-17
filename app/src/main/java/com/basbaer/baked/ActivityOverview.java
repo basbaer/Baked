@@ -145,9 +145,9 @@ public class ActivityOverview extends AppCompatActivity {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
-                View row = convertView;
+
                 LayoutInflater inflater = getLayoutInflater();
-                row = inflater.inflate(R.layout.spinner_overview_activity, null);
+                View row = inflater.inflate(R.layout.spinner_overview_activity, spinnerLayoutBinding.getRoot());
                 TextView text = row.findViewById(R.id.textViewSpinnerDropDownOverview);
                 text.setText(spinnerArray[position]);
                 ImageView iv = row.findViewById(R.id.spinnerDropDownArrowIV);
@@ -188,9 +188,9 @@ public class ActivityOverview extends AppCompatActivity {
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                View row = convertView;
+
                 LayoutInflater inflater = getLayoutInflater();
-                row = inflater.inflate(R.layout.spinner_overview_activity, null);
+                View row = inflater.inflate(R.layout.spinner_overview_activity,null);
                 TextView text = row.findViewById(R.id.textViewSpinnerDropDownOverview);
                 text.setText(spinnerArray[position]);
 
@@ -348,13 +348,13 @@ public class ActivityOverview extends AppCompatActivity {
 
         int daysInBetween = 0;
 
-        if (Integer.valueOf(selectedAmount) > 0) {
+        if (Integer.parseInt(selectedAmount) > 0) {
 
             if (selectedAmountItem == 0) {
 
 
                 //here are the days between today and the day depending on the selection saved
-                daysInBetween = Integer.valueOf(selectedAmount);
+                daysInBetween = Integer.parseInt(selectedAmount);
 
 
                 //if 'weeks' was selected in the spinner
@@ -368,7 +368,7 @@ public class ActivityOverview extends AppCompatActivity {
                 //adds the days of the started week
                 daysInBetween = currentCalendar.get(Calendar.DAY_OF_WEEK) - calendarInPast.get(Calendar.DAY_OF_WEEK);
 
-                daysInBetween += 7 * (Integer.valueOf(selectedAmount) - 1);
+                daysInBetween += 7 * (Integer.parseInt(selectedAmount) - 1);
 
 
                 //if months was selected by the spinner
@@ -378,7 +378,7 @@ public class ActivityOverview extends AppCompatActivity {
 
                 daysInBetween = currentCalendar.get(Calendar.DATE);
 
-                for(int i = 0; i < Integer.valueOf(selectedAmount)-1; i++){
+                for(int i = 0; i < Integer.parseInt(selectedAmount)-1; i++){
                     calendarInPast.roll(Calendar.MONTH, -1);
 
                     if(calendarInPast.get(Calendar.MONTH) == calendarInPast.getActualMaximum(Calendar.MONTH)){
@@ -398,7 +398,7 @@ public class ActivityOverview extends AppCompatActivity {
 
                 daysInBetween = currentCalendar.get(Calendar.DAY_OF_YEAR);
 
-                for(int i = 0; i < Integer.valueOf(selectedAmount)-1; i++){
+                for(int i = 0; i < Integer.parseInt(selectedAmount)-1; i++){
 
                     calendarInPast.roll(Calendar.YEAR, -1);
 

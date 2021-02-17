@@ -62,10 +62,8 @@ public class TrackedActivity{
     private int dateMonth;
     private int dateYear;
     private String color;
-    private static Context mcontext;
 
     public static HashMap<Integer, View> currentMonthHashMap;
-    private static int categoryIdCounter;
 
 
     /***
@@ -74,16 +72,13 @@ public class TrackedActivity{
      * @param category : name of category
      * @param date : date in ms since epoch
      * @param color : name of color
-     * @param context : context of activity
      */
-    public TrackedActivity(String activity, String category, long date, String color, Context context) {
+    public TrackedActivity(String activity, String category, long date, String color) {
 
 
-        if (database == null) {
-            createDB(context);
-        }
 
-        categoryIdCounter = getCategoryCount(category);
+
+        int categoryIdCounter = getCategoryCount(category);
 
 
 
@@ -101,24 +96,17 @@ public class TrackedActivity{
         this.dateYear = givenDateCalendar.get(Calendar.YEAR);
         this.color = color;
         this.id = -1;
-        mcontext = context;
-
-
-
-
-
 
 
     }
+
+
 
     /***
      * Creates TrackActivity Object from db
      * @param activityId : id of the activity
      */
     private TrackedActivity(int activityId){
-        if (database == null) {
-            createDB(mcontext);
-        }
 
         String sql = "SELECT * FROM " + ACTIVITIES_DB + " WHERE "
                 + ID + " = " + activityId;
@@ -128,7 +116,8 @@ public class TrackedActivity{
 
 
         if(c.moveToFirst()){
-            this.activity = c.getString(activityId);
+            this.id = activityId;
+            this.activity = c.getString(activityIndex);
             this.category = c.getString(categoryIndex);
             this.categoryId = c.getInt(categoryIdIndex);
             this.isChecked = c.getInt(isCheckedIndex);
@@ -141,6 +130,8 @@ public class TrackedActivity{
 
 
         }
+
+        c.close();
 
 
 
@@ -203,10 +194,16 @@ public class TrackedActivity{
             dateYearIndex = c.getColumnIndex(DATEYEAR);
             colorIndex = c.getColumnIndex(COLOR);
 
+            c.close();
+
 
         } catch (Exception e) {
             e.printStackTrace();
+
+
         }
+
+
 
     }
 
@@ -295,6 +292,8 @@ public class TrackedActivity{
 
             }
 
+            c.close();
+
 
         }
 
@@ -322,7 +321,7 @@ public class TrackedActivity{
         while (moreEntries) {
 
             //create a new TrackedActivity
-            TrackedActivity i = new TrackedActivity(c.getString(activityIndex), c.getString(categoryIndex), c.getLong(exactDateIndex), c.getString(colorIndex), mcontext);
+            TrackedActivity i = new TrackedActivity(c.getString(activityIndex), c.getString(categoryIndex), c.getLong(exactDateIndex), c.getString(colorIndex));
 
             arrayListActivies.add(i);
 
@@ -360,6 +359,7 @@ public class TrackedActivity{
 
         }
 
+        c.close();
         //sort the list
         Collections.sort(list);
 
@@ -444,7 +444,7 @@ public class TrackedActivity{
         //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
         //so it can be put as a starting selection
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(lastSelectedActivity)) {
+            if (list.get(i).getName().equals(lastSelectedActivity)) {
                 pos = i;
 
             }
@@ -467,7 +467,11 @@ public class TrackedActivity{
 
         if (c.moveToFirst()) {
 
-            return c.getString(categoryIndex);
+            String s = c.getString(categoryIndex);
+
+            c.close();
+
+            return s;
 
         } else {
             return null;
@@ -487,7 +491,11 @@ public class TrackedActivity{
 
         if (c.moveToFirst()) {
 
-            return c.getString(colorIndex);
+            String s = c.getString(colorIndex);
+
+            c.close();
+
+            return s;
 
         } else {
             return null;
@@ -577,11 +585,13 @@ public class TrackedActivity{
         while (moreEntries) {
 
 
-            if(!tempActivityNames.contains(c.getString(activityIndex)))
+            if(!tempActivityNames.contains(c.getString(activityIndex))) {
 
                 tempActivityNames.add(c.getString(activityIndex));
 
                 activitiesAL.add(new TrackedActivity(c.getInt(idIndex)));
+
+            }
 
             moreEntries = c.moveToNext();
 
@@ -629,7 +639,7 @@ public class TrackedActivity{
 
         database.execSQL("UPDATE " + ACTIVITIES_DB
                 + " SET " + ISCHECKED
-                + " = " + String.valueOf(isChecked_int));
+                + " = " + isChecked_int);
 
 
 
@@ -675,6 +685,8 @@ public class TrackedActivity{
 
 
         }
+
+        c.close();
 
 
     }
@@ -754,10 +766,6 @@ public class TrackedActivity{
 
         int count = -1;
 
-        int i = c.getCount();
-
-        boolean r = c.moveToFirst();
-
         if(c.getCount() > 0 && c.moveToFirst()){
 
             count = c.getInt(categoryIdIndex)-1;
@@ -831,6 +839,8 @@ public class TrackedActivity{
 
         }
 
+        c.close();
+
         if (latestActivity == 0) {
             return null;
         } else {
@@ -880,6 +890,8 @@ public class TrackedActivity{
 
         }
 
+        c.close();
+
         return timesDoneThisMonth;
 
     }
@@ -923,6 +935,8 @@ public class TrackedActivity{
 
         }
 
+        c.close();
+
         return timesDoneThisYear;
 
     }
@@ -955,6 +969,8 @@ public class TrackedActivity{
             moreEntries = c.moveToNext();
 
         }
+
+        c.close();
 
         return amountInPeriod;
 

@@ -8,9 +8,6 @@ import android.widget.CheckBox;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Adapter_RecyclerView_AlertDialog extends RecyclerView.Adapter<Adapter_RecyclerView_AlertDialog.mViewHolder> {
 
     public static class mViewHolder extends RecyclerView.ViewHolder{
@@ -40,9 +37,7 @@ public class Adapter_RecyclerView_AlertDialog extends RecyclerView.Adapter<Adapt
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_category_checkboxes, parent, false);
 
-        mViewHolder mViewHolder = new mViewHolder(v);
-
-        return mViewHolder;
+        return new mViewHolder(v);
     }
 
     @Override
