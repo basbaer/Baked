@@ -363,18 +363,7 @@ public class TrackedActivity{
         //sort the list
         Collections.sort(list);
 
-        int pos = -1;
 
-        //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
-        //so it can be put as a starting selection
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(AddActivity.sharedPreferences.getString("activity", null))) {
-                pos = i;
-
-            }
-        }
-
-        AddActivity.sharedPreferences.edit().putInt("positionOfPreviousSelectedActivity", pos).apply();
 
         return list;
 
@@ -436,9 +425,9 @@ public class TrackedActivity{
         });
 
 
-        String lastSelectedActivity = getCategory(AddActivity.sharedPreferences.getString("activity", null));
+        String lastSelectedActivity = getCategory(AddActivity.sharedPreferences.getString(AddActivity.PREVIOUSSELCTEDACTIVITY, null));
 
-
+        /*
         int pos = -1;
 
         //checks if there is an last-selected activity and puts the the index of it in the array list in the sharedPreference
@@ -451,6 +440,9 @@ public class TrackedActivity{
         }
 
         AddActivity.sharedPreferences.edit().putInt("positionOfPreviousSelectedCategory", pos).apply();
+
+
+         */
 
         return list;
 
@@ -498,7 +490,7 @@ public class TrackedActivity{
             return s;
 
         } else {
-            return null;
+            return "";
         }
 
 

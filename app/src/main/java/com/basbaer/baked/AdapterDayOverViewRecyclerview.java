@@ -24,14 +24,14 @@ public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<Adapter
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         public CardView cardView;
-        public TextView dateTextView;
+        public TextView categoryTextView;
         public TextView activityNameTextView;
 
         public MyViewHolder(View incomingView){
             super(incomingView);
 
             cardView = incomingView.findViewById(R.id.cardView_layout_RecyclerView);
-            dateTextView = incomingView.findViewById(R.id.textView_date_RecyclerView);
+            categoryTextView = incomingView.findViewById(R.id.textView_date_RecyclerView);
             activityNameTextView = incomingView.findViewById(R.id.textView_activityname_RecyclerView);
 
 
@@ -68,19 +68,7 @@ public class AdapterDayOverViewRecyclerview extends RecyclerView.Adapter<Adapter
 
         holder.cardView.setCardBackgroundColor(Color.parseColor(activitiesAL.get(position).getActivityColor()));
 
-        //SimpleDateFormat s = new SimpleDateFormat("h:mm a");
-
-
-
-        Date c = activitiesAL.get(position).getCalendarDate().getTime();
-
-        String date_string = DateFormat.getDateInstance().format(c);
-
-
-
-        String printTime = context.getString(R.string.added_to_calendar) + date_string;
-
-        holder.dateTextView.setText(printTime);
+        holder.categoryTextView.setText(TrackedActivity.getCategory(activitiesAL.get(position).getActivityName()));
 
         holder.activityNameTextView.setText(activitiesAL.get(position).getActivityName());
 

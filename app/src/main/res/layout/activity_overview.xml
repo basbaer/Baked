@@ -15,7 +15,7 @@
 
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.70"
+        app:layout_constraintGuide_percent="0.67"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.cardview.widget.CardView
@@ -277,6 +277,7 @@
         app:layout_constraintStart_toEndOf="@id/amount_edit_text"
         app:layout_constraintTop_toTopOf="@id/done_this_variable_TV1"
         app:layout_constraintBottom_toBottomOf="@id/done_this_variable_TV1"
+        app:layout_constraintEnd_toEndOf="@id/guideline_vertical"
 
 
          />

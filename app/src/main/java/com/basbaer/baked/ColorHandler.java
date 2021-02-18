@@ -1,12 +1,15 @@
 package com.basbaer.baked;
 
 
+import android.graphics.Color;
+
 import java.util.ArrayList;
 
 //class that manages the shown colors and provides them in a HashSet
 public class ColorHandler {
 
     private static ArrayList<String> colorsArrayList;
+    private static int[] colorsIntArray;
 
     //setting the colors
     private static final String blue = "#0152CF";
@@ -25,8 +28,6 @@ public class ColorHandler {
     private static final String magenta_red = "#FA037B";
     private static final String yellow_green = "#C3FC00";
 
-    //needed for the selection of the color
-    public static String currentlySelectedColor;
 
 
 
@@ -66,14 +67,32 @@ public class ColorHandler {
             colorsArrayList.add(white);
 
 
-
+            createColorsIntArray();
 
 
         }
 
+
+
         return colorsArrayList;
 
 
+    }
+
+    private static void createColorsIntArray(){
+
+        colorsIntArray = new int[colorsArrayList.size()];
+
+        for(int i = 0; i < colorsArrayList.size(); i++){
+            colorsIntArray[i] = Color.parseColor(colorsArrayList.get(i));
+
+        }
+
+
+    }
+
+    public static int[] getColorsIntArray(){
+        return colorsIntArray;
     }
 
 

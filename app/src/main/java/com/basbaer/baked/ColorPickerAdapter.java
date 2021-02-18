@@ -14,20 +14,23 @@ import androidx.cardview.widget.CardView;
 public class ColorPickerAdapter extends BaseAdapter {
 
     private final Context context;
+    private int BLACK = Color.parseColor("#000000");
+    private int GREY = Color.parseColor("#AAAAAA");
+    private String currentlySelectedColor;
 
     //implementing an constructor
     public ColorPickerAdapter(Context context){
         super();
 
         this.context = context;
-        ColorHandler.currentlySelectedColor = null;
+        currentlySelectedColor = "";
     }
 
     public ColorPickerAdapter(Context context, String selectedColor){
         super();
 
         this.context = context;
-        ColorHandler.currentlySelectedColor = selectedColor;
+        this.currentlySelectedColor = selectedColor;
 
 
     }
@@ -36,7 +39,7 @@ public class ColorPickerAdapter extends BaseAdapter {
     //returns the amount of items
     @Override
     public int getCount() {
-        return 15;
+        return ColorHandler.getColorsArrayList().size();
     }
 
 
@@ -68,13 +71,13 @@ public class ColorPickerAdapter extends BaseAdapter {
         final String currentColor = ColorHandler.getColorsArrayList().get(position);
 
         //sets the color as selected
-        if(ColorHandler.currentlySelectedColor != null && ColorHandler.currentlySelectedColor.equals(currentColor)) {
+        if(currentlySelectedColor.equals(currentColor)) {
 
-            outerCardView.setCardBackgroundColor(Color.parseColor("#000000"));
+            outerCardView.setCardBackgroundColor(BLACK);
 
         }else{
 
-            outerCardView.setCardBackgroundColor(Color.parseColor("#AAAAAA"));
+            outerCardView.setCardBackgroundColor(GREY);
 
         }
 
@@ -92,22 +95,43 @@ public class ColorPickerAdapter extends BaseAdapter {
                 //sets the selected color as the color for creating a new activity
                 AddActivity.color = currentColor;
 
+                //deselect
+                if(outerCardView.getCardBackgroundColor().getDefaultColor() == BLACK){
 
-                //sets the tapped color as selected
-                outerCardView.setCardBackgroundColor(Color.parseColor("#000000"));
+                    outerCardView.setCardBackgroundColor(GREY);
 
-                //changes the currently selected color in the color handler
-                ColorHandler.currentlySelectedColor = currentColor;
+                    currentlySelectedColor = "";
 
-                AddActivity.previousSelectedColor = currentColor;
+                }else{
+
+                    //sets the tapped color as selected
+                    outerCardView.setCardBackgroundColor(BLACK);
 
 
-                Log.i("TappedColor", ColorHandler.getColorsArrayList().get(position));
+                    //changes the currently selected color in the color handler
+                    currentlySelectedColor = currentColor;
+
+                    AddActivity.color = currentColor;
+
+                }
+
+                notifyDataSetChanged();
+
+
+
 
             }
         });
 
         return convertView;
+    }
+
+    public void selectColor(String color){
+
+        this.currentlySelectedColor = color;
+
+        notifyDataSetChanged();
+
     }
 
 
