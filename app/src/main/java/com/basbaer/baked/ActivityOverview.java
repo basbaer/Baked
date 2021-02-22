@@ -4,34 +4,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.basbaer.baked.databinding.ActivityOverviewBinding;
-import com.basbaer.baked.databinding.SpinnerOverviewActivityBinding;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class ActivityOverview extends AppCompatActivity {
 
     private ActivityOverviewBinding activityOverviewBinding;
-    private SpinnerOverviewActivityBinding spinnerLayoutBinding;
     String activityName;
     TextView activityNameOverview;
 
@@ -48,8 +43,6 @@ public class ActivityOverview extends AppCompatActivity {
         setContentView(view);
 
         amountInSelectedPeriod = activityOverviewBinding.doneThisVariableValue;
-        spinnerLayoutBinding = SpinnerOverviewActivityBinding.inflate(getLayoutInflater());
-
         Intent intentFromCalendarAdapter = getIntent();
 
         activityName = intentFromCalendarAdapter.getStringExtra("activity");
@@ -66,7 +59,7 @@ public class ActivityOverview extends AppCompatActivity {
         }
 
 
-        getSupportActionBar().setTitle("Activity overview");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Activity overview");
 
 
         //sets the text of the textView
@@ -140,80 +133,17 @@ public class ActivityOverview extends AppCompatActivity {
         //setting up the spinner
         Spinner spinner = activityOverviewBinding.amountSpinner;
 
-        final String[] spinnerArray = {"day(s)", "week(s)", "month(s)", "year(s)"};
-        SpinnerAdapter spinnerAdapter = new SpinnerAdapter() {
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        //final String[] spinnerArray = {"day(s)", "week(s)", "month(s)", "year(s)"};
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.time_intervalls, R.layout.spinner_overview);
 
 
-                LayoutInflater inflater = getLayoutInflater();
-                View row = inflater.inflate(R.layout.spinner_overview_activity, spinnerLayoutBinding.getRoot());
-                TextView text = row.findViewById(R.id.textViewSpinnerDropDownOverview);
-                text.setText(spinnerArray[position]);
-                ImageView iv = row.findViewById(R.id.spinnerDropDownArrowIV);
-                iv.setVisibility(View.GONE);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_overview, R.id.spinner_overviewTV, spinnerArray);
 
-                return row;
-            }
+        adapter.setDropDownViewResource(R.layout.spinner_overview);
 
-            @Override
-            public void registerDataSetObserver(DataSetObserver observer) {
-            }
+        spinner.setAdapter(adapter);
 
-            @Override
-            public void unregisterDataSetObserver(DataSetObserver observer) {
-
-            }
-
-            @Override
-            public int getCount() {
-                return spinnerArray.length;
-            }
-
-            @Override
-            public Object getItem(int position) {
-
-                return spinnerArray[position];
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return 0;
-            }
-
-            @Override
-            public boolean hasStableIds() {
-                return false;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-
-                LayoutInflater inflater = getLayoutInflater();
-                View row = inflater.inflate(R.layout.spinner_overview_activity,null);
-                TextView text = row.findViewById(R.id.textViewSpinnerDropDownOverview);
-                text.setText(spinnerArray[position]);
-
-                return row;
-            }
-
-            @Override
-            public int getItemViewType(int position) {
-                return 0;
-            }
-
-            @Override
-            public int getViewTypeCount() {
-                return 1;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-        };
-
-        spinner.setAdapter(spinnerAdapter);
 
         //sets the wright code for the selectAmoutItem
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
