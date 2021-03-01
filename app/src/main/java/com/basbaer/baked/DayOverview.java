@@ -19,10 +19,6 @@ import java.util.Date;
 public class DayOverview extends AppCompatActivity {
 
     ActivityDayOverviewBinding activityDayOverviewBinding;
-    private static ArrayList<TrackedActivity> activitiesAL;
-    private RecyclerView mainRecyclerView;
-    private RecyclerView.LayoutManager lm;
-    private AdapterDayOverViewRecyclerview adapterForMainRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +27,9 @@ public class DayOverview extends AppCompatActivity {
         View view = activityDayOverviewBinding.getRoot();
         setContentView(view);
 
-        activitiesAL = new ArrayList<>();
-        mainRecyclerView = activityDayOverviewBinding.recyclerViewDayOverView;
-        lm = new LinearLayoutManager(this);
+        ArrayList<TrackedActivity> activitiesAL;
+        RecyclerView mainRecyclerView = activityDayOverviewBinding.recyclerViewDayOverView;
+        RecyclerView.LayoutManager lm = new LinearLayoutManager(this);
         mainRecyclerView.setLayoutManager(lm);
 
 
@@ -55,7 +51,7 @@ public class DayOverview extends AppCompatActivity {
             //gets all activities of the day
             activitiesAL = TrackedActivity.getActivitiesOfTheDay(tappedDayCalendar);
 
-            adapterForMainRecyclerView = new AdapterDayOverViewRecyclerview(this, activitiesAL, tappedDayCalendar);
+            AdapterDayOverViewRecyclerview adapterForMainRecyclerView = new AdapterDayOverViewRecyclerview(this, activitiesAL);
 
             mainRecyclerView.setAdapter(adapterForMainRecyclerView);
 

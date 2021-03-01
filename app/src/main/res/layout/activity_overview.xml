@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayoutOverview"
@@ -8,15 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".ActivityOverview">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.70"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -34,277 +24,290 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:contentDescription="@string/background_activity_overview"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/dawn"
-            android:scaleType="centerCrop"/>
+            android:background="@drawable/dawn">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintGuide_percent="0.67"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+            <TextView
+                android:id="@+id/activity_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="8dp"
+                android:layout_marginEnd="8dp"
+                android:elevation="2dp"
+                android:text="@string/word_activity"
+                android:textColor="@android:color/black"
+                android:textSize="25sp"
+                app:layout_constraintBottom_toTopOf="@id/total_done_field"
+
+                app:layout_constraintEnd_toStartOf="@id/activity_name_value"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/activity_name_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:elevation="2dp"
+                android:text="@string/word_unknown"
+                android:textColor="@android:color/black"
+                android:textSize="25sp"
+
+                app:layout_constraintBottom_toTopOf="@id/total_done_value"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+
+                app:layout_constraintStart_toEndOf="@id/activity_field"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/total_done_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:text="@string/done_amount_done"
+                android:textColor="@color/colorSubtext"
+                android:textSize="18sp"
+
+                app:layout_constraintBottom_toTopOf="@id/last_done_field"
+
+                app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activity_field" />
+
+            <TextView
+                android:id="@+id/total_done_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:text="@string/word_unknown"
+                android:textColor="@color/colorSubtext"
+                android:textSize="18sp"
+
+                app:layout_constraintBottom_toTopOf="@id/last_done_value"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+                app:layout_constraintTop_toBottomOf="@id/activity_name_value" />
+
+            <TextView
+                android:id="@+id/last_done_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:text="@string/word_last_done"
+                android:textColor="@color/colorSubtext"
+                android:textSize="18sp"
+
+                app:layout_constraintBottom_toTopOf="@id/done_this_month_field"
+
+                app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/total_done_field" />
+
+            <TextView
+                android:id="@+id/last_done_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:text="@string/word_unknown"
+                android:textColor="@color/colorSubtext"
+                android:textSize="18sp"
+
+                app:layout_constraintBottom_toTopOf="@id/done_this_month_value"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+                app:layout_constraintTop_toBottomOf="@id/total_done_value" />
+
+            <TextView
+                android:id="@+id/done_this_month_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:text="@string/word_times_done_this_month"
+                android:textColor="@color/colorSubtext"
+                android:textSize="18sp"
+
+                app:layout_constraintBaseline_toBaselineOf="@id/done_this_month_value"
+                app:layout_constraintBottom_toTopOf="@id/done_this_year_field"
+
+                app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/last_done_field" />
+
+            <TextView
+                android:id="@+id/done_this_month_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:text="@string/word_unknown"
+                android:textColor="@color/colorSubtext"
+                android:textSize="18sp"
+
+                app:layout_constraintBottom_toTopOf="@id/done_this_year_value"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+                app:layout_constraintTop_toBottomOf="@id/last_done_value" />
+
+            <TextView
+                android:id="@+id/done_this_year_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:text="@string/word_times_done_this_year"
+                android:textColor="@color/colorSubtext"
+                android:textSize="18sp"
+
+                app:layout_constraintBaseline_toBaselineOf="@id/done_this_year_value"
+                app:layout_constraintBottom_toTopOf="@id/done_this_variable_TV1"
+
+                app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/done_this_month_field" />
+
+            <TextView
+                android:id="@+id/done_this_year_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:text="@string/word_unknown"
+                android:textColor="@color/colorSubtext"
+                android:textSize="18sp"
+
+                app:layout_constraintBottom_toTopOf="@id/done_this_variable_value"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+                app:layout_constraintTop_toBottomOf="@id/done_this_month_value" />
+
+
+            <TextView
+                android:id="@+id/done_this_variable_TV1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:text="@string/word_done_in_last"
+                android:textColor="@color/colorSubtext"
+                android:textSize="18sp"
+
+                app:layout_constraintBaseline_toBaselineOf="@id/done_this_variable_value"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/done_this_year_field"
+                app:layout_constraintVertical_bias="0" />
+
+            <EditText
+                android:id="@+id/amount_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="13dp"
+                android:elevation="2dp"
+                android:hint="@string/hint_for_number"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:text="@string/standard_amount_of_preselected_days"
+                android:textColor="@color/colorSubtext"
+
+                app:layout_constraintBaseline_toBaselineOf="@id/done_this_variable_value"
+
+                app:layout_constraintEnd_toStartOf="@id/amount_spinner"
+                app:layout_constraintStart_toEndOf="@id/done_this_variable_TV1"
+                app:layout_constraintTop_toBottomOf="@id/done_this_year_field"
+
+
+                />
+
+            <Spinner
+                android:id="@+id/amount_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:dropDownWidth="wrap_content"
+
+
+                android:elevation="2dp"
+
+                android:spinnerMode="dropdown"
+
+                android:gravity="end"
+
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+
+                app:layout_constraintBottom_toBottomOf="@id/done_this_variable_TV1"
+                app:layout_constraintStart_toEndOf="@id/amount_edit_text"
+                app:layout_constraintTop_toTopOf="@id/done_this_variable_TV1"
+
+
+                />
+
+
+            <TextView
+                android:id="@+id/done_this_variable_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:text="@string/word_unknown"
+                android:textColor="@color/colorSubtext"
+                android:textSize="18sp"
+
+                app:layout_constraintBottom_toBottomOf="@id/done_this_variable_TV1"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+                app:layout_constraintTop_toBottomOf="@id/done_this_year_value"
+
+
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
-
-    <TextView
-        android:id="@+id/activity_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:elevation="2dp"
-        android:layout_margin="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/word_activity"
-        android:textColor="@android:color/black"
-        android:textSize="25sp"
-        app:layout_constraintHorizontal_chainStyle="packed"
-
-        app:layout_constraintBottom_toTopOf="@id/total_done_field"
-        app:layout_constraintEnd_toStartOf="@id/activity_name_value"
-        app:layout_constraintHorizontal_bias="0"
-
-        app:layout_constraintStart_toStartOf="@id/cardView"
-        app:layout_constraintTop_toTopOf="@id/cardView"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <TextView
-        android:id="@+id/activity_name_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_weight="1"
-        android:text="@string/word_unknown"
-        android:textColor="@android:color/black"
-        android:textSize="25sp"
-        android:elevation="2dp"
-
-        app:layout_constraintBottom_toTopOf="@id/total_done_value"
-        app:layout_constraintEnd_toEndOf="@id/cardView"
-        app:layout_constraintHorizontal_bias="0"
-
-        app:layout_constraintStart_toEndOf="@id/activity_field"
-        app:layout_constraintTop_toTopOf="@id/cardView"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <TextView
-        android:id="@+id/total_done_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/done_amount_done"
-        android:textColor="@color/colorSubtext"
-        android:textSize="18sp"
-        android:elevation="2dp"
-
-        app:layout_constraintBottom_toTopOf="@id/last_done_field"
-
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/cardView"
-        app:layout_constraintTop_toBottomOf="@id/activity_field" />
-
-    <TextView
-        android:id="@+id/total_done_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/word_unknown"
-        android:textColor="@color/colorSubtext"
-        android:textSize="18sp"
-        android:elevation="2dp"
-
-        app:layout_constraintBottom_toTopOf="@id/last_done_value"
-
-        app:layout_constraintEnd_toEndOf="@id/cardView"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@id/activity_name_value" />
-
-    <TextView
-        android:id="@+id/last_done_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/word_last_done"
-        android:textColor="@color/colorSubtext"
-        android:textSize="18sp"
-        android:elevation="2dp"
-
-        app:layout_constraintBottom_toTopOf="@id/done_this_month_field"
-
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/cardView"
-        app:layout_constraintTop_toBottomOf="@id/total_done_field" />
-
-    <TextView
-        android:id="@+id/last_done_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/word_unknown"
-        android:textColor="@color/colorSubtext"
-        android:textSize="18sp"
-        android:elevation="2dp"
-
-        app:layout_constraintBottom_toTopOf="@id/done_this_month_value"
-
-        app:layout_constraintEnd_toEndOf="@id/cardView"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@id/total_done_value" />
-
-    <TextView
-        android:id="@+id/done_this_month_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/word_times_done_this_month"
-        android:textColor="@color/colorSubtext"
-        android:textSize="18sp"
-        android:elevation="2dp"
-
-        app:layout_constraintBaseline_toBaselineOf="@id/done_this_month_value"
-        app:layout_constraintBottom_toTopOf="@id/done_this_year_field"
-
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/cardView"
-        app:layout_constraintTop_toBottomOf="@id/last_done_field" />
-
-    <TextView
-        android:id="@+id/done_this_month_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/word_unknown"
-        android:textColor="@color/colorSubtext"
-        android:textSize="18sp"
-        android:elevation="2dp"
-
-        app:layout_constraintBottom_toTopOf="@id/done_this_year_value"
-
-        app:layout_constraintEnd_toEndOf="@id/cardView"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@id/last_done_value" />
-
-    <TextView
-        android:id="@+id/done_this_year_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/word_times_done_this_year"
-        android:textColor="@color/colorSubtext"
-        android:textSize="18sp"
-        android:elevation="2dp"
-
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintBaseline_toBaselineOf="@id/done_this_year_value"
-
-        app:layout_constraintStart_toStartOf="@id/cardView"
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@id/done_this_month_field"
-        app:layout_constraintBottom_toTopOf="@id/done_this_variable_TV1"/>
-
-    <TextView
-        android:id="@+id/done_this_year_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/word_unknown"
-        android:textColor="@color/colorSubtext"
-        android:textSize="18sp"
-        android:elevation="2dp"
-
-        app:layout_constraintBottom_toTopOf="@id/done_this_variable_value"
-        app:layout_constraintEnd_toEndOf="@id/cardView"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@id/done_this_month_value" />
-
-
-    <TextView
-        android:id="@+id/done_this_variable_TV1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/word_done_in_last"
-        android:textColor="@color/colorSubtext"
-        android:textSize="18sp"
-        android:elevation="2dp"
-
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintVertical_bias="0"
-        app:layout_constraintBaseline_toBaselineOf="@id/done_this_variable_value"
-
-        app:layout_constraintStart_toStartOf="@id/cardView"
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@id/done_this_year_field"
-        app:layout_constraintBottom_toBottomOf="@id/cardView"/>
-
-    <EditText
-        android:importantForAutofill="no"
-        android:hint="@string/hint_for_number"
-        android:id="@+id/amount_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:elevation="2dp"
-        android:text="@string/standard_amount_of_preselected_days"
-        android:textColor="@color/colorSubtext"
-        android:layout_marginStart="15dp"
-
-        app:layout_constraintBaseline_toBaselineOf="@id/done_this_variable_value"
-
-        app:layout_constraintStart_toEndOf="@id/done_this_variable_TV1"
-        app:layout_constraintEnd_toStartOf="@id/amount_spinner"
-        app:layout_constraintTop_toBottomOf="@id/done_this_year_field"
-
-
-
-        />
-
-    <Spinner
-        android:id="@+id/amount_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="2dp"
-
-        android:dropDownWidth="wrap_content"
-
-        app:layout_constraintStart_toEndOf="@id/amount_edit_text"
-        app:layout_constraintTop_toTopOf="@id/done_this_variable_TV1"
-        app:layout_constraintBottom_toBottomOf="@id/done_this_variable_TV1"
-
-
-         />
-
-
-
-
-    <TextView
-        android:id="@+id/done_this_variable_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/word_unknown"
-        android:textColor="@color/colorSubtext"
-        android:elevation="2dp"
-        android:textSize="18sp"
-
-        app:layout_constraintHorizontal_bias="0"
-
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        app:layout_constraintEnd_toEndOf="@id/cardView"
-        app:layout_constraintTop_toBottomOf="@id/done_this_year_value"
-        app:layout_constraintBottom_toBottomOf="@id/done_this_variable_TV1"
-
-
-
-
-         />
 
     <Button
         android:id="@+id/backToCalendarButton"
@@ -314,9 +317,8 @@
 
         android:text="@string/back_to_calendar"
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

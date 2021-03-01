@@ -17,7 +17,6 @@ public class AlertDialog_RecyclerView extends Dialog{
 
     public Activity activity;
     RecyclerView recyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
     Adapter_RecyclerView_AlertDialog adapter;
 
 
@@ -41,7 +40,7 @@ public class AlertDialog_RecyclerView extends Dialog{
         recyclerView = alertDialogSelectCategoriesBinding.recyclerViewAlertDialog;
 
         //setting the layout manager
-        mLayoutManager = new LinearLayoutManager(activity);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(activity);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
 

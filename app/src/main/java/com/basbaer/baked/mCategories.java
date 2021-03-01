@@ -1,9 +1,6 @@
 package com.basbaer.baked;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.util.Log;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +30,8 @@ public class mCategories {
             this.actvities_array = TrackedActivity.getActivitiesOfCategory(id);
             this.activitiesInstancesArray = TrackedActivity.getActivityInstancesOfCategory(id);
         }
+
+
 
     }
 
@@ -121,6 +120,10 @@ public class mCategories {
 
     public static ArrayList<String> getCategoryNamesList(){
         ArrayList<String> list = new ArrayList<>();
+
+        if(selectableCategoriesList == null){
+            selectableCategoriesList.addAll(TrackedActivity.getDifferentCategories());
+        }
         for(int i = 0; i < selectableCategoriesList.size(); i++){
             list.add(selectableCategoriesList.get(i).getName());
 

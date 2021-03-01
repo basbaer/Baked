@@ -5,10 +5,7 @@ import android.view.MotionEvent;
 
 public class SwipeGestureDetector implements GestureDetector.OnGestureListener {
 
-    private final int MIN_X_SWIPE_DISTANCE = 180;
-    private final int MIN_Y_SWIPE_DISTANCE = 180;
-
-    private SwipeActions swipeActions;
+    private final SwipeActions swipeActions;
 
     public SwipeGestureDetector(SwipeActions actions){
 
@@ -51,6 +48,7 @@ public class SwipeGestureDetector implements GestureDetector.OnGestureListener {
 
         // Make Check For Horizontal Swipe
 
+        int MIN_X_SWIPE_DISTANCE = 180;
         if (Math.abs(distanceSwipedInX) > MIN_X_SWIPE_DISTANCE) {
 
             // Now Check Which Side Swipe Happened
@@ -65,6 +63,7 @@ public class SwipeGestureDetector implements GestureDetector.OnGestureListener {
 
         // Make Check For Horizontal Swipe
 
+        int MIN_Y_SWIPE_DISTANCE = 180;
         if (Math.abs(distanceSwipedInY) > MIN_Y_SWIPE_DISTANCE) {
 
             // Now Check Which Side Swipe Happened

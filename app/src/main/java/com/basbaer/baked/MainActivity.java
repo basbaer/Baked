@@ -26,6 +26,7 @@ import com.basbaer.baked.databinding.ActivityMainBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Calendar that gets displayed in the calendarGV
     //A calendar variable is always respresents one day with its corresponding information
-    protected static CalendarAdapter calendarAdapter;
+    protected CalendarAdapter calendarAdapter;
 
 
     //Variable that represents the current displayed month
@@ -87,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = activityMainBinding.getRoot();
         setContentView(view);
+
+        //initializing db
+        TrackedActivity.createDB(this);
 
 
         //---------------------------------------------------------------------------------
@@ -383,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
                 if (clickedDay != null) {
                     //if a click is done, the CalendarAdapter get's informed
                     //clickedDay is the last Day a ACTION_DOWN was done on
-                    CalendarAdapter.performClickX(clickedDay);
+                    performClickX(clickedDay);
                 }
 
             }
@@ -394,13 +398,45 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //method is called from MainActivity and does, what normally the onClickListener would do
+    //onClickListener ist not setUp, since it cosumes the DOWN_EVENT and it's not possible for
+    //the GridView to know if a probably a swipe is done
+    public void performClickX(CalendarDay calendarDay){
+
+
+        ArrayList<TrackedActivity> activities = TrackedActivity.getActivitiesOfTheDay(calendarDay.displayedDate);
+
+
+        if (activities.size() < 2) {
+
+            Intent intentToAddActivity = new Intent(getApplicationContext(), AddActivity.class);
+
+            long dateInSeconds = calendarDay.datesHashMap.get(calendarDay.position).getTime().getTime();
+
+            intentToAddActivity.putExtra("date", dateInSeconds);
+
+            startActivity(intentToAddActivity);
+
+        } else {
+
+            //intent to day overview
+            Intent intentToDayOverview = new Intent(getApplicationContext(), DayOverview.class);
+
+            intentToDayOverview.putExtra("date", calendarDay.displayedDate.getTime().getTime());
+
+            startActivity(intentToDayOverview);
+
+        }
+
+    }
+
 
 
 
     private HashMap<Integer, Calendar> getDatesToBeDisplayed(Calendar calendar) {
         //HashMap where the key says if it's for the weekdays in the first line(key = 0 - 6) or for the
         //actual dates (key = 7 - ...)
-        HashMap<Integer, Calendar> allDisplayedDatesAL = new HashMap<Integer, Calendar>();
+        HashMap<Integer, Calendar> allDisplayedDatesAL = new HashMap<>();
 
         //Calendar instance to loop through the week days
         Calendar weekdayscalendar = (Calendar) calendar.clone();
@@ -493,7 +529,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Calendar", displayedMonthCalendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
 
         //jumping from Januray to December
-        if (displayedMonthCalendar.get(Calendar.MONTH) == 0) {
+        if (displayedMonthCalendar.get(Calendar.MONTH) == Calendar.JANUARY) {
 
             displayedMonthCalendar.set(Calendar.MONTH, 11);
             displayedMonthCalendar.set(Calendar.YEAR, displayedMonthCalendar.get(Calendar.YEAR)-1);
@@ -514,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Calendar", displayedMonthCalendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
 
         //jumping from Januaray to December
-        if (displayedMonthCalendar.get(Calendar.MONTH) == 11) {
+        if (displayedMonthCalendar.get(Calendar.MONTH) == Calendar.DECEMBER) {
 
             displayedMonthCalendar.set(Calendar.MONTH, 0);
             displayedMonthCalendar.set(Calendar.YEAR, displayedMonthCalendar.get(Calendar.YEAR)+1);

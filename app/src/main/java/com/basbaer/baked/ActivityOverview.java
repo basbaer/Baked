@@ -4,34 +4,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.basbaer.baked.databinding.ActivityOverviewBinding;
-import com.basbaer.baked.databinding.SpinnerOverviewActivityBinding;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class ActivityOverview extends AppCompatActivity {
 
     private ActivityOverviewBinding activityOverviewBinding;
-    private SpinnerOverviewActivityBinding spinnerLayoutBinding;
     String activityName;
     TextView activityNameOverview;
 
@@ -48,8 +43,6 @@ public class ActivityOverview extends AppCompatActivity {
         setContentView(view);
 
         amountInSelectedPeriod = activityOverviewBinding.doneThisVariableValue;
-        spinnerLayoutBinding = SpinnerOverviewActivityBinding.inflate(getLayoutInflater());
-
         Intent intentFromCalendarAdapter = getIntent();
 
         activityName = intentFromCalendarAdapter.getStringExtra("activity");
@@ -66,7 +59,7 @@ public class ActivityOverview extends AppCompatActivity {
         }
 
 
-        getSupportActionBar().setTitle("Activity overview");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Activity overview");
 
 
         //sets the text of the textView
@@ -140,80 +133,17 @@ public class ActivityOverview extends AppCompatActivity {
         //setting up the spinner
         Spinner spinner = activityOverviewBinding.amountSpinner;
 
-        final String[] spinnerArray = {"day(s)", "week(s)", "month(s)", "year(s)"};
-        SpinnerAdapter spinnerAdapter = new SpinnerAdapter() {
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        //final String[] spinnerArray = {"day(s)", "week(s)", "month(s)", "year(s)"};
 
-                View row = convertView;
-                LayoutInflater inflater = getLayoutInflater();
-                row = inflater.inflate(R.layout.spinner_overview_activity, null);
-                TextView text = row.findViewById(R.id.textViewSpinnerDropDownOverview);
-                text.setText(spinnerArray[position]);
-                ImageView iv = row.findViewById(R.id.spinnerDropDownArrowIV);
-                iv.setVisibility(View.GONE);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.time_intervalls, R.layout.spinner_overview);
 
-                return row;
-            }
 
-            @Override
-            public void registerDataSetObserver(DataSetObserver observer) {
-            }
+        //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_overview, R.id.spinner_overviewTV, spinnerArray);
 
-            @Override
-            public void unregisterDataSetObserver(DataSetObserver observer) {
+        adapter.setDropDownViewResource(R.layout.spinner_overview);
 
-            }
+        spinner.setAdapter(adapter);
 
-            @Override
-            public int getCount() {
-                return spinnerArray.length;
-            }
-
-            @Override
-            public Object getItem(int position) {
-
-                return spinnerArray[position];
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return 0;
-            }
-
-            @Override
-            public boolean hasStableIds() {
-                return false;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View row = convertView;
-                LayoutInflater inflater = getLayoutInflater();
-                row = inflater.inflate(R.layout.spinner_overview_activity, null);
-                TextView text = row.findViewById(R.id.textViewSpinnerDropDownOverview);
-                text.setText(spinnerArray[position]);
-
-                return row;
-            }
-
-            @Override
-            public int getItemViewType(int position) {
-                return 0;
-            }
-
-            @Override
-            public int getViewTypeCount() {
-                return 1;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-        };
-
-        spinner.setAdapter(spinnerAdapter);
 
         //sets the wright code for the selectAmoutItem
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -348,13 +278,13 @@ public class ActivityOverview extends AppCompatActivity {
 
         int daysInBetween = 0;
 
-        if (Integer.valueOf(selectedAmount) > 0) {
+        if (Integer.parseInt(selectedAmount) > 0) {
 
             if (selectedAmountItem == 0) {
 
 
                 //here are the days between today and the day depending on the selection saved
-                daysInBetween = Integer.valueOf(selectedAmount);
+                daysInBetween = Integer.parseInt(selectedAmount);
 
 
                 //if 'weeks' was selected in the spinner
@@ -368,7 +298,7 @@ public class ActivityOverview extends AppCompatActivity {
                 //adds the days of the started week
                 daysInBetween = currentCalendar.get(Calendar.DAY_OF_WEEK) - calendarInPast.get(Calendar.DAY_OF_WEEK);
 
-                daysInBetween += 7 * (Integer.valueOf(selectedAmount) - 1);
+                daysInBetween += 7 * (Integer.parseInt(selectedAmount) - 1);
 
 
                 //if months was selected by the spinner
@@ -378,7 +308,7 @@ public class ActivityOverview extends AppCompatActivity {
 
                 daysInBetween = currentCalendar.get(Calendar.DATE);
 
-                for(int i = 0; i < Integer.valueOf(selectedAmount)-1; i++){
+                for(int i = 0; i < Integer.parseInt(selectedAmount)-1; i++){
                     calendarInPast.roll(Calendar.MONTH, -1);
 
                     if(calendarInPast.get(Calendar.MONTH) == calendarInPast.getActualMaximum(Calendar.MONTH)){
@@ -398,7 +328,7 @@ public class ActivityOverview extends AppCompatActivity {
 
                 daysInBetween = currentCalendar.get(Calendar.DAY_OF_YEAR);
 
-                for(int i = 0; i < Integer.valueOf(selectedAmount)-1; i++){
+                for(int i = 0; i < Integer.parseInt(selectedAmount)-1; i++){
 
                     calendarInPast.roll(Calendar.YEAR, -1);
 

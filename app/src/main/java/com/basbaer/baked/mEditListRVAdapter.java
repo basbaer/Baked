@@ -1,9 +1,9 @@
 package com.basbaer.baked;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Resources;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
         public TextView textView;
         public ImageButton imageButton;
+        public CardView cardView;
 
         //in this constructor, the views are referenced
         public MyViewHolder(View incomingTextView){
@@ -35,6 +37,7 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
             //Option 2
             textView = incomingTextView.findViewById(R.id.editListTVname);
             imageButton = incomingTextView.findViewById(R.id.editListimageButton);
+            cardView = incomingTextView.findViewById(R.id.cardView_Adapter_EditList);
 
         }
     }
@@ -46,11 +49,23 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
     //save which indexes are categories
     private HashMap<Integer, String> hashMapIndicesWichAreCategories;
 
+    private final Context context;
 
 
 
 
-    public mEditListRVAdapter(HashMap<mCategories, ArrayList<TrackedActivity>> incomingHashMap){
+
+
+    public mEditListRVAdapter(HashMap<mCategories, ArrayList<TrackedActivity>> incomingHashMap, Context context){
+
+        this.context = context;
+
+        setUpLists(incomingHashMap);
+
+    }
+
+
+    private void setUpLists(HashMap<mCategories, ArrayList<TrackedActivity>> incomingHashMap){
 
         arrayListIds = new ArrayList<>();
 
@@ -82,17 +97,13 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
 
     //Sets up, how the Views in the ViewHolder have to look like and has to return the ViewHolder
+    @NonNull
     @Override
     public mEditListRVAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //Option 1: Set up given 'look' from Android
-        //View viewThatGetsDisplayed = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
 
-        //Option 2: Set up your own 'look' via a TextView which functions as a template (therefore you have to create an other .xml-file)
         View viewThatGetsDisplayed = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_editlist_layout, parent, false);
 
-        MyViewHolder viewHolder = new MyViewHolder(viewThatGetsDisplayed);
-
-        return viewHolder;
+        return new MyViewHolder(viewThatGetsDisplayed);
     }
 
     //this method is called as many times as the getItemCount()-Result
@@ -100,7 +111,6 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
     //here it sets the text for each entry of the RecyclerView
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-
 
 
 
@@ -115,9 +125,12 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
         }else{
 
-            String text = TrackedActivity.getActivityNameById(arrayListIds.get(position));
+            String text =  TrackedActivity.getActivityNameById(arrayListIds.get(position));
 
-            Log.i("Text: ", text);
+            holder.textView.setPadding(40,0,0,0);
+
+
+            holder.cardView.setCardBackgroundColor(Color.parseColor(TrackedActivity.getActivityColorById(arrayListIds.get(position))));
 
             holder.textView.setText(text);
 
@@ -133,19 +146,20 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
                 final boolean isCategory;
 
                 if(hashMapIndicesWichAreCategories.containsKey(position)){
-                    message = Resources.getSystem().getString(R.string.categoryWillBeDeleted);
+                    message = context.getString(R.string.categoryWillBeDeleted);
                     isCategory = true;
                 }else{
-                    message = Resources.getSystem().getString(R.string.activityWillBeDelete);
+                    message = context.getString(R.string.activityWillBeDelete);
                     isCategory = false;
                 }
 
 
                 new AlertDialog.Builder(holder.imageButton.getContext())
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle(Resources.getSystem().getString(R.string.reallyDelete))
+
+                        .setTitle(context.getString(R.string.reallyDelete))
                         .setMessage(message)
-                        .setPositiveButton(Resources.getSystem().getString(R.string.delete), new DialogInterface.OnClickListener() {
+                        .setPositiveButton(context.getString(R.string.delete), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -158,10 +172,21 @@ public class mEditListRVAdapter extends RecyclerView.Adapter<mEditListRVAdapter.
 
                                 mCategories.updateCategoriesList();
 
-                                EditCategoriesActivitesList.rvAdapter.notifyDataSetChanged();
+
+                                ArrayList<mCategories> categoriesArrayList = TrackedActivity.getDifferentCategories();
+
+                                HashMap<mCategories, ArrayList<TrackedActivity>> hm = EditCategoriesActivitesList.createHashMap(categoriesArrayList);
+
+                                setUpLists(hm);
+
+                                notifyDataSetChanged();
+
+
+
+
                             }
                         })
-                        .setNegativeButton(Resources.getSystem().getString(R.string.cancel), null)
+                        .setNegativeButton(context.getString(R.string.cancel), null)
                         .show();
 
             }

@@ -35,7 +35,8 @@ public class AddActivity extends AppCompatActivity {
 
     //---------------------------------------------------------------------------------------
     //Strings
-    private static final String PREVIOUSSELECTEDCATEGORY = "positionOfPreviousSelectedCategory";
+    private static final String PREVIOUSSELECTEDCATEGORY = "previousSelectedCategory";
+    public static final String PREVIOUSSELCTEDACTIVITY = "previousSelectedActivity";
 
 
     //--------------------------------------------------------------------------------------------
@@ -92,6 +93,8 @@ public class AddActivity extends AppCompatActivity {
         View view = activityAddBinding.getRoot();
         setContentView(view);
 
+        //initialize db
+        TrackedActivity.createDB(this);
         //----------------------------------------------------------------------------------
         //setting up features
         alertDialogLayoutActivityBinding = AlertDialogLayoutActivityBinding.inflate(getLayoutInflater());
@@ -138,6 +141,7 @@ public class AddActivity extends AppCompatActivity {
         //Setting up Category-Spinner
 
         categoryNamesList = mCategories.getCategoryNamesList();
+        activtiesList = new ArrayList<>();
 
 
         categorySpinner = activityAddBinding.categorySpinner;
@@ -145,11 +149,35 @@ public class AddActivity extends AppCompatActivity {
         adapterCategorySpinner.setDropDownViewResource(R.layout.spinner_activity_layout);
         categorySpinner.setAdapter(adapterCategorySpinner);
 
+
+
         //setting up the previousSelectedCategory
-        int positionOfLastSelectedCategory = sharedPreferences.getInt(PREVIOUSSELECTEDCATEGORY, -1);
+        String lastSelectedCategory = sharedPreferences.getString(PREVIOUSSELECTEDCATEGORY, "");
+
+        int positionOfLastSelectedCategory = -1;
+
+        for(int i = 0; i < categoryNamesList.size(); i++){
+
+            if(categoryNamesList.get(i).equals(lastSelectedCategory)){
+                positionOfLastSelectedCategory = i;
+                break;
+            }
+        }
+
         if (positionOfLastSelectedCategory != -1) {
 
             categorySpinner.setSelection(positionOfLastSelectedCategory);
+
+            category_name = lastSelectedCategory;
+
+
+            //only shows activities of this category in the activity Spinner
+            List<String> activities = TrackedActivity.getActivitiesOfCategory(category_name);
+
+            activtiesList.clear();
+
+            activtiesList.addAll(activities);
+
 
 
         }
@@ -157,12 +185,6 @@ public class AddActivity extends AppCompatActivity {
 
         //--------------------------------------------------------------------------------------
         //Setting up Activity-Spinner
-
-
-        //get all Activities
-        //activtiesList = TrackedActivity.getDifferentActivties();
-        activtiesList = new ArrayList<>();
-
 
         //set the spinner for the Activity
         activitySpinner = activityAddBinding.activitySpinner;
@@ -178,13 +200,50 @@ public class AddActivity extends AppCompatActivity {
         activitySpinner.setAdapter(activitySpinnerAdapter);
 
         //setting the previous selection
-        int positionOfLastSelectedActivity = sharedPreferences.getInt("positionOfPreviousSelectedActivity", -1);
+        //setting up the previousSelectedCategory
+        String lastSelectedActivity = sharedPreferences.getString(PREVIOUSSELCTEDACTIVITY, "");
+
+        int positionOfLastSelectedActivity = -1;
+
+        for(int i = 0; i < activtiesList.size(); i++){
+
+            if(activtiesList.get(i).equals(lastSelectedActivity)){
+                positionOfLastSelectedActivity = i;
+                break;
+            }
+        }
 
         if (positionOfLastSelectedActivity != -1) {
 
             activitySpinner.setSelection(positionOfLastSelectedActivity);
 
+            activity_name = lastSelectedActivity;
+
+
+            //selects the color automatically if a activity was selected, that already existed
+            previousSelectedColor = TrackedActivity.getColor(activity_name);
+
+            //since the user does not select a color, the previous selected color is set automatically
+            color = previousSelectedColor;
+
+
+            //selects the color automatically if a activity was selected, that already existed
+            if(colorPickerAdapter == null){
+
+                colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), previousSelectedColor);
+
+                colorPickerGridView.setAdapter(colorPickerAdapter);
+
+            }else{
+                colorPickerAdapter.selectColor(color);
+            }
+
+
+
+
+
         }
+
 
 
 
@@ -193,6 +252,7 @@ public class AddActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 category_name = parent.getItemAtPosition(position).toString();
+
 
                 //only shows activities of this category in the activity Spinner
                 List<String> activities = TrackedActivity.getActivitiesOfCategory(category_name);
@@ -221,16 +281,30 @@ public class AddActivity extends AppCompatActivity {
                 activity_name = parent.getItemAtPosition(position).toString();
 
 
-                //selects the color automatically if a activity was selected, that already existed
+
                 previousSelectedColor = TrackedActivity.getColor(activity_name);
-
-                colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), previousSelectedColor);
-
-
-                colorPickerGridView.setAdapter(colorPickerAdapter);
 
                 //since the user does not select a color, the previous selected color is set automatically
                 color = previousSelectedColor;
+
+
+
+                //selects the color automatically if a activity was selected, that already existed
+                if(colorPickerAdapter == null){
+
+                    colorPickerAdapter = new ColorPickerAdapter(getApplicationContext(), previousSelectedColor);
+
+                    colorPickerGridView.setAdapter(colorPickerAdapter);
+
+
+
+                }else{
+
+                    colorPickerAdapter.selectColor(color);
+                }
+
+
+
 
 
             }
@@ -244,11 +318,15 @@ public class AddActivity extends AppCompatActivity {
         });
 
 
+        if(colorPickerAdapter == null){
+
+            colorPickerAdapter = new ColorPickerAdapter(getApplicationContext());
+
+            colorPickerGridView.setAdapter(colorPickerAdapter);
+
+        }
 
 
-        colorPickerAdapter = new ColorPickerAdapter(getApplicationContext());
-
-        colorPickerGridView.setAdapter(colorPickerAdapter);
 
 
     }
@@ -266,12 +344,10 @@ public class AddActivity extends AppCompatActivity {
 
         if (date != -1L && activity_name != null && color != null) {
 
-            TrackedActivity i = new TrackedActivity(activity_name, category, date, color, getApplicationContext());
+            TrackedActivity i = new TrackedActivity(activity_name, category, date, color);
 
             i.insertInDb();
 
-
-            TrackedActivity.printDatabase();
 
             //add category to category list
             mCategories.allCategories.add(new mCategories(-1, category, true));
@@ -280,7 +356,9 @@ public class AddActivity extends AppCompatActivity {
 
             intent.putExtra("date", date);
 
-            sharedPreferences.edit().putString("activity", activity_name).apply();
+            sharedPreferences.edit().putString(PREVIOUSSELECTEDCATEGORY, category_name).apply();
+
+            sharedPreferences.edit().putString(PREVIOUSSELCTEDACTIVITY, activity_name).apply();
 
             startActivity(intent);
 

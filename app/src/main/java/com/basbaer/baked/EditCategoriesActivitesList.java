@@ -17,9 +17,7 @@ public class EditCategoriesActivitesList extends AppCompatActivity {
 
     ArrayList<mCategories> categoriesArrayList;
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    public static mEditListRVAdapter rvAdapter;
+    public mEditListRVAdapter rvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +32,13 @@ public class EditCategoriesActivitesList extends AppCompatActivity {
 
         Log.i("HashMap", String.valueOf(hm));
 
-        recyclerView = activityEditCategoriesActivitesListBinding.recyclerViewEditList;
+        RecyclerView recyclerView = activityEditCategoriesActivitesListBinding.recyclerViewEditList;
 
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
         recyclerView.setLayoutManager(layoutManager);
 
-        rvAdapter = new mEditListRVAdapter(hm);
+        rvAdapter = new mEditListRVAdapter(hm, getApplicationContext());
 
         recyclerView.setAdapter(rvAdapter);
 
@@ -53,7 +51,7 @@ public class EditCategoriesActivitesList extends AppCompatActivity {
     }
 
     //key category, value: list of activities
-    private static HashMap<mCategories, ArrayList<TrackedActivity>> createHashMap(ArrayList<mCategories> categoriesArrayList){
+    protected static HashMap<mCategories, ArrayList<TrackedActivity>> createHashMap(ArrayList<mCategories> categoriesArrayList){
 
         HashMap<mCategories, ArrayList<TrackedActivity>> hm = new HashMap<>();
 
