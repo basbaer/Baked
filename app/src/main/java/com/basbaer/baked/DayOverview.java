@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.basbaer.baked.databinding.ActivityDayOverviewBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -33,10 +34,12 @@ public class DayOverview extends AppCompatActivity {
         mainRecyclerView.setLayoutManager(lm);
 
 
+
+
         //ArrayList with Activities of the Day
         Intent intentFromCalendarAdapter = getIntent();
 
-        long dateInMs = intentFromCalendarAdapter.getLongExtra("date", -1);
+        final long dateInMs = intentFromCalendarAdapter.getLongExtra("date", -1);
 
         if(dateInMs != -1){
             String printDate = DateFormat.getDateInstance().format(new Date(dateInMs));
@@ -54,6 +57,27 @@ public class DayOverview extends AppCompatActivity {
             AdapterDayOverViewRecyclerview adapterForMainRecyclerView = new AdapterDayOverViewRecyclerview(this, activitiesAL);
 
             mainRecyclerView.setAdapter(adapterForMainRecyclerView);
+
+            //adding the Add-Button
+            FloatingActionButton fab = activityDayOverviewBinding.fabOverview;
+
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    Intent intent = new Intent(getApplicationContext(), AddActivity.class);
+
+
+                    intent.putExtra("date", dateInMs);
+
+                    startActivity(intent);
+
+
+
+                }
+            });
+
 
 
 

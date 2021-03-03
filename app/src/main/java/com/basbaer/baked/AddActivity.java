@@ -260,6 +260,18 @@ public class AddActivity extends AppCompatActivity {
 
                 activtiesList.addAll(activities);
 
+                if(!activtiesList.isEmpty()) {
+
+                    activity_name = activtiesList.get(0);
+
+                    color = TrackedActivity.getColor(activtiesList.get(0));
+
+                    colorPickerAdapter.selectColor(color);
+
+                }
+
+
+
                 activitySpinnerAdapter.notifyDataSetChanged();
 
             }

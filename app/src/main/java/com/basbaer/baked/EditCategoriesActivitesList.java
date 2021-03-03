@@ -1,5 +1,6 @@
 package com.basbaer.baked;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +26,8 @@ public class EditCategoriesActivitesList extends AppCompatActivity {
         com.basbaer.baked.databinding.ActivityEditCategoriesActivitesListBinding activityEditCategoriesActivitesListBinding = ActivityEditCategoriesActivitesListBinding.inflate(getLayoutInflater());
         View view = activityEditCategoriesActivitesListBinding.getRoot();
         setContentView(view);
+
+        getSupportActionBar().setTitle("Edit Categories/Activities");
 
         categoriesArrayList = TrackedActivity.getDifferentCategories();
 

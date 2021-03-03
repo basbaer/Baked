@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Sets up up the current month as a calendar
-     * @param intent: intent (-1 if there is no intent from an other activity
+     * @param intent: intent (-1 if there is no intent from an other activity)
      */
     private void setUpCalendar(Intent intent){
         //get's the current month
@@ -214,12 +214,12 @@ public class MainActivity extends AppCompatActivity {
             updateCalendar(Calendar.getInstance());
 
         } else {
-            Calendar activeCalendar = Calendar.getInstance();
+            Calendar c = Calendar.getInstance();
 
-            activeCalendar.setTime(new Date(date));
+            c.setTime(new Date(date));
 
 
-            updateCalendar(activeCalendar);
+            updateCalendar(c);
         }
 
 
@@ -244,6 +244,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         calendarGV.setAdapter(calendarAdapter);
+
+
 
 
     }
