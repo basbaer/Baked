@@ -13,9 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -339,44 +341,131 @@ public class AddActivity extends AppCompatActivity {
         }
 
 
+        //-------------------------------------------------------------------------------
+        //Buttons
+
+        ImageButton changeDateButton = activityAddBinding.dateButton;
+
+        changeDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Calendar c = Calendar.getInstance();
+                c.setTime(new Date(dateLong));
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        onDateSetListener, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+
+                datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
+
+                datePickerDialog.show();
+
+            }
+        });
+
+
+        ImageButton addCategoryButton = activityAddBinding.addCategoryImageButton;
+
+        addCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //creating the AlertDialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
+
+                LayoutInflater layoutInflater = getLayoutInflater();
+
+                //get's the created layout
+                View alertdialogView = layoutInflater.inflate(R.layout.alert_dialog_layout_category, null);
+
+                alertDialogEditTextCategory = alertdialogView.findViewById(R.id.category_name);
+
+
+                //defines if the builder can be canceled
+                builder.setCancelable(true);
+
+                //sets the created Layout for the builder
+                builder.setView(alertdialogView);
+
+                alertDialogCategory = builder.create();
+
+
+                alertDialogCategory.show();
+
+            }
+        });
+
+        ImageButton addActivityButton = activityAddBinding.addActivityImageButton;
+
+        addActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //creating the AlertDialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
+
+                LayoutInflater layoutInflater = getLayoutInflater();
+
+                //get's the created layout
+                View alertdialogView = layoutInflater.inflate(R.layout.alert_dialog_layout_activity, null);
+
+                alertDialogEditTextActivity = alertdialogView.findViewById(R.id.activity_name);
+
+                alertDialogEditTextActivity.setTag(0);
+
+                //defines if the builder can be canceled
+                builder.setCancelable(true);
+
+                //sets the created Layout for the builder
+                builder.setView(alertdialogView);
+
+                alertDialogActivity = builder.create();
+
+
+                alertDialogActivity.show();
+
+            }
+        });
+
+        Button addActivitButton = activityAddBinding.addActivityButton;
+
+        addActivitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                long date = dateLong;
+                String category = getCategory();
+
+
+                if (date != -1L && activity_name != null && color != null) {
+
+                    TrackedActivity i = new TrackedActivity(activity_name, category, date, color);
+
+                    i.insertInDb();
+
+
+                    //add category to category list
+                    mCategories.allCategories.add(new mCategories(-1, category, true));
+
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+
+                    intent.putExtra("date", date);
+
+                    sharedPreferences.edit().putString(PREVIOUSSELECTEDCATEGORY, category_name).apply();
+
+                    sharedPreferences.edit().putString(PREVIOUSSELCTEDACTIVITY, activity_name).apply();
+
+                    startActivity(intent);
+
+                }
+
+            }
+        });
+
 
 
     }
 
-
-    /***
-     *
-     * @param view: Button which adds the activity
-     */
-    public void addActivity(View view) {
-
-        long date = dateLong;
-        String category = getCategory();
-
-
-        if (date != -1L && activity_name != null && color != null) {
-
-            TrackedActivity i = new TrackedActivity(activity_name, category, date, color);
-
-            i.insertInDb();
-
-
-            //add category to category list
-            mCategories.allCategories.add(new mCategories(-1, category, true));
-
-            Intent intent = new Intent(this, MainActivity.class);
-
-            intent.putExtra("date", date);
-
-            sharedPreferences.edit().putString(PREVIOUSSELECTEDCATEGORY, category_name).apply();
-
-            sharedPreferences.edit().putString(PREVIOUSSELCTEDACTIVITY, activity_name).apply();
-
-            startActivity(intent);
-
-        }
-
-    }
 
 
 
@@ -399,76 +488,10 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-    public void onImageButtonDateClicked(View view) {
-
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date(dateLong));
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(AddActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                onDateSetListener, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-
-        datePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.GRAY));
-
-        datePickerDialog.show();
-
-    }
 
 
 
-    public void onImageButtonActivityClicked(View view) {
 
-        //creating the AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
-
-        LayoutInflater layoutInflater = getLayoutInflater();
-
-        //get's the created layout
-        View alertdialogView = layoutInflater.inflate(R.layout.alert_dialog_layout_activity, null);
-
-        alertDialogEditTextActivity = alertdialogView.findViewById(R.id.activity_name);
-
-        alertDialogEditTextActivity.setTag(0);
-
-        //defines if the builder can be canceled
-        builder.setCancelable(true);
-
-        //sets the created Layout for the builder
-        builder.setView(alertdialogView);
-
-        alertDialogActivity = builder.create();
-
-
-        alertDialogActivity.show();
-
-
-    }
-
-    public void onImageButtonCategoryClicked(View view) {
-
-        //creating the AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
-
-        LayoutInflater layoutInflater = getLayoutInflater();
-
-        //get's the created layout
-        View alertdialogView = layoutInflater.inflate(R.layout.alert_dialog_layout_category, null);
-
-        alertDialogEditTextCategory = alertdialogView.findViewById(R.id.category_name);
-
-
-        //defines if the builder can be canceled
-        builder.setCancelable(true);
-
-        //sets the created Layout for the builder
-        builder.setView(alertdialogView);
-
-        alertDialogCategory = builder.create();
-
-
-        alertDialogCategory.show();
-
-
-    }
 
     public void alertDialogButtonClicked(View view) {
 
